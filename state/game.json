@@ -1,11 +1,11 @@
 {
-  "tick": 77504,
+  "tick": 79097,
   "resources": {
-    "dirt": 1180.4149999982933,
-    "nutrients": 15.469999999985315,
-    "fungus": 120.27999999982619,
-    "crystals": 0.4269999999998746,
-    "ore": 0.1340000000000001
+    "dirt": 1205.8099999981232,
+    "nutrients": 90.28999999998365,
+    "fungus": 126.20999999983434,
+    "crystals": 2.019999999999763,
+    "ore": 3.319999999999856
   },
   "systems": {
     "compost_heap": {
@@ -64,32 +64,7 @@
       "description": "Ants carefully extract precious metals from the vein"
     }
   },
-  "entities": [
-    {
-      "id": "4f6ce27d",
-      "type": "ant",
-      "role": "worker",
-      "tile": "fungus_farm",
-      "age": 6399,
-      "hunger": 60.1000000000162,
-      "hunger_rate": 0.1,
-      "max_age": 7200,
-      "food": "fungus"
-    },
-    {
-      "id": "bcd5bef1",
-      "type": "ant",
-      "role": "undertaker",
-      "tile": "origin",
-      "age": 5899,
-      "hunger": 55.149999999985994,
-      "hunger_rate": 0.15,
-      "max_age": 7200,
-      "food": "fungus",
-      "processing_corpse": false,
-      "processing_ticks": 0
-    }
-  ],
+  "entities": [],
   "map": {
     "tiles": {
       "origin": {
@@ -199,7 +174,9 @@
       "last_worker",
       "the_equilibrium",
       "what_are_crystals_for",
-      "what_are_they_working_toward"
+      "what_are_they_working_toward",
+      "first_nugget",
+      "lonely_undertaker"
     ],
     "goals": {
       "crystal_resonance_chamber": {
@@ -216,7 +193,15 @@
     }
   },
   "graveyard": {
-    "corpses": [],
-    "total_processed": 8
+    "corpses": [
+      {
+        "entity_id": "bcd5bef1",
+        "entity_type": "ant",
+        "death_tick": 78805,
+        "cause": "old_age",
+        "tile": "origin"
+      }
+    ],
+    "total_processed": 9
   }
 }
