@@ -1,3 +1,9 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+---
+
 # Langston's Anthill
 
 You are building and playing a self-modifying incremental game. You are both the player and the designer. The game evolves because you get bored, because cards demand things you haven't built yet, and because the architecture allows new systems to emerge from necessity.
@@ -178,27 +184,108 @@ Plugins can:
 
 6. **Let systems emerge.** Don't plan a grand design. Let the cards and your boredom drive what gets built.
 
+## Running the Simulation
+
+**Start everything:**
+```bash
+python3 main.py              # Tick engine with plugins loaded
+python3 viewer/server.py     # Viewer on http://localhost:5000
+```
+
+**Run in background:**
+```bash
+python3 engine/tick.py > logs/tick.log 2>&1 &
+python3 viewer/server.py > logs/viewer.log 2>&1 &
+```
+
+**Stop background processes:**
+```bash
+pkill -f "python3 engine/tick.py"
+pkill -f "python3 viewer/server.py"
+```
+
+**Inspect current state:**
+```bash
+cat state/game.json | jq '.resources'     # Check resources
+cat state/game.json | jq '.tick'          # Current tick
+cat state/game.json | jq '.entities'      # Living entities
+cat state/game.json | jq '.graveyard'     # The dead
+cat state/game.json | jq '.meta'          # Goals, fired cards, rejected ideas
+tail -f logs/decisions.jsonl              # Watch decisions
+```
+
+**Resuming from saved state:**
+The game auto-saves to `state/game.json` every tick. To resume:
+1. Check the current tick and resources
+2. Check which cards have fired (`meta.fired_cards`)
+3. Start the tick engine - it picks up where it left off
+4. Monitor for card events or threshold crossings
+5. No fast-forward - let the simulation run in real-time to observe volatility
+
+## Implementation Notes
+
+The codebase implements several systems not described above:
+
+**Graveyard & Undertaker:**
+- Dead entities create corpses in `state.graveyard`
+- Undertaker plugin processes corpses, converting them back to nutrients
+- The "death economy" recycles biomass through corpse processing
+- Without this, nutrient production stalls after entities die
+
+**Entity lifecycle:**
+- Ants age 1 tick per tick, hunger decreases over time
+- Default max_age: 7200 ticks (2 hours)
+- Death causes: starvation (hunger ≤ 0) or old_age (age ≥ max_age)
+- Food consumption: When hunger < 50, consume 1 fungus, gain 30 hunger
+
+**Blight mechanics:**
+- Tiles can become contaminated and blighted
+- Blighted tiles stop producing resources
+- Blight spreads if not addressed
+- Part of the "volatility" mentioned in cards
+
+**Decision log format (actual):**
+```json
+{"tick": 12345, "timestamp": "2025-12-23T17:11:42.123456", "type": "system_design", "choice": "added fishing", "why": "needed Quiet Thoughts for card #23", "alternatives_considered": ["meditation", "dreams"]}
+```
+
+**Additional plugins:**
+- `plugins/undertaker.py` - Handles corpse processing
+- `plugins/exploration.py` - Tile exploration mechanics
+- `plugins/reflection.py` - Boredom and decision tracking
+- Card waves: `starter_cards.py`, `wave_two.py`, `wave_three.py`, `wave_four.py`
+
 ## Directory Structure
 
 ```
 langstons-anthill/
 ├── CLAUDE.md (this file)
+├── README.md
+├── main.py (runs tick engine with plugins)
 ├── engine/
-│   ├── tick.py
-│   ├── bus.py
-│   └── state.py
+│   ├── tick.py (hot loop, no LLM calls)
+│   ├── bus.py (event system)
+│   └── state.py (state persistence)
 ├── state/
-│   └── game.json
+│   └── game.json (current game state)
 ├── logs/
-│   └── decisions.jsonl
+│   ├── decisions.jsonl (decision history)
+│   ├── tick.log (tick engine output)
+│   └── viewer.log (viewer output)
 ├── plugins/
-│   ├── loader.py
+│   ├── loader.py (plugin discovery)
+│   ├── undertaker.py (corpse processing)
+│   ├── exploration.py (tile mechanics)
+│   ├── reflection.py (boredom tracking)
 │   └── cards/
-│       └── starter_cards.py
+│       ├── starter_cards.py
+│       ├── wave_two.py
+│       ├── wave_three.py
+│       └── wave_four.py
 └── viewer/
-    ├── server.py
+    ├── server.py (Flask SSE server)
     └── static/
-        └── index.html
+        └── index.html (live map renderer)
 ```
 
 ## Tone
