@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Langston's Anthill</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: #1a1a1a;
+            color: #c0c0c0;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            padding: 20px;
+        }
+        h1 {
+            color: #808080;
+            font-weight: normal;
+            margin-bottom: 20px;
+            font-size: 18px;
+        }
+        .container {
+            display: grid;
+            grid-template-columns: 300px 1fr 300px;
+            gap: 20px;
+            height: calc(100vh - 80px);
+        }
+        .panel {
+            background: #222;
+            border: 1px solid #333;
+            padding: 15px;
+            overflow-y: auto;
+        }
+        .panel h2 {
+            color: #666;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+            font-weight: normal;
+        }
+        #map {
+            position: relative;
+            background: #1a1a1a;
+        }
+        .resource {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 0;
+            border-bottom: 1px solid #2a2a2a;
+        }
+        .resource-name {
+            color: #888;
+        }
+        .resource-value {
+            color: #aaa;
+        }
+        .system {
+            padding: 10px;
+            margin-bottom: 10px;
+            background: #2a2a2a;
+            border-left: 2px solid #444;
+        }
+        .system-name {
+            color: #999;
+            margin-bottom: 5px;
+        }
+        .system-output {
+            color: #666;
+            font-size: 12px;
+        }
+        .tile {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            background: #2a2a2a;
+            border: 1px solid #3a3a3a;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            font-size: 11px;
+            color: #666;
+            transition: all 0.3s;
+        }
+        .tile.has-system {
+            border-color: #555;
+            background: #333;
+        }
+        .tile.blighted {
+            background: #3a2020;
+            border-color: #633;
+        }
+        .tile .tile-name {
+            margin-bottom: 5px;
+        }
+        .tile .tile-info {
+            font-size: 9px;
+            color: #555;
+        }
+        .tile .ant-count {
+            font-size: 10px;
+            color: #886;
+            margin-top: 3px;
+        }
+        .entity-dot {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: #a85;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+        #tick {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            color: #444;
+            font-size: 12px;
+        }
+        .section {
+            margin-top: 20px;
+            padding-top: 10px;
+            border-top: 1px solid #333;
+        }
+        .bar {
+            height: 4px;
+            background: #2a2a2a;
+            margin-top: 5px;
+        }
+        .bar-fill {
+            height: 100%;
+            transition: width 0.5s;
+        }
+        .bar-fill.boredom { background: #554; }
+        .bar-fill.contamination { background: #744; }
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 3px 0;
+            font-size: 12px;
+        }
+        .stat-label { color: #666; }
+        .stat-value { color: #888; }
+        .graveyard-item {
+            color: #444;
+            font-style: italic;
+            padding: 3px 0;
+            font-size: 12px;
+        }
+        .corpse-item {
+            color: #654;
+            padding: 2px 0;
+            font-size: 11px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Langston's Anthill</h1>
+    <div id="tick">tick: 0</div>
+
+    <div class="container">
+        <div class="panel" id="left-panel">
+            <h2>Resources</h2>
+            <div id="resources"></div>
+
+            <div class="section">
+                <h2>Entities</h2>
+                <div id="entities"></div>
+            </div>
+
+            <div class="section">
+                <h2>Boredom</h2>
+                <div class="bar">
+                    <div class="bar-fill boredom" id="boredom-fill" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>Contamination</h2>
+                <div class="bar">
+                    <div class="bar-fill contamination" id="contamination-fill" style="width: 0%"></div>
+                </div>
+                <div id="contamination-status" style="font-size: 11px; color: #555; margin-top: 5px;"></div>
+            </div>
+        </div>
+
+        <div class="panel" id="map">
+            <div id="tiles"></div>
+        </div>
+
+        <div class="panel" id="right-panel">
+            <h2>Systems</h2>
+            <div id="systems"></div>
+
+            <div class="section">
+                <h2>Corpses</h2>
+                <div id="corpses"></div>
+            </div>
+
+            <div class="section">
+                <h2>Graveyard of Ideas</h2>
+                <div id="rejected"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const evtSource = new EventSource('/events');
+
+        evtSource.onmessage = function(event) {
+            const state = JSON.parse(event.data);
+            render(state);
+        };
+
+        function render(state) {
+            // Tick
+            document.getElementById('tick').textContent = `tick: ${state.tick}`;
+
+            // Resources
+            const resourcesEl = document.getElementById('resources');
+            resourcesEl.innerHTML = '';
+            for (const [name, value] of Object.entries(state.resources || {})) {
+                const div = document.createElement('div');
+                div.className = 'resource';
+                div.innerHTML = `
+                    <span class="resource-name">${name}</span>
+                    <span class="resource-value">${Math.floor(value)}</span>
+                `;
+                resourcesEl.appendChild(div);
+            }
+            if (Object.keys(state.resources || {}).length === 0) {
+                resourcesEl.innerHTML = '<div style="color: #444">nothing yet</div>';
+            }
+
+            // Entities
+            const entitiesEl = document.getElementById('entities');
+            const entities = state.entities || [];
+            if (entities.length === 0) {
+                entitiesEl.innerHTML = '<div style="color: #444">no entities</div>';
+            } else {
+                entitiesEl.innerHTML = '';
+                const byRole = {};
+                for (const e of entities) {
+                    const role = e.role || e.type || 'unknown';
+                    byRole[role] = (byRole[role] || 0) + 1;
+                }
+                for (const [role, count] of Object.entries(byRole)) {
+                    const div = document.createElement('div');
+                    div.className = 'stat-row';
+                    div.innerHTML = `
+                        <span class="stat-label">${role}</span>
+                        <span class="stat-value">${count}</span>
+                    `;
+                    entitiesEl.appendChild(div);
+                }
+            }
+
+            // Boredom
+            const boredom = state.meta?.boredom || 0;
+            const boredomPct = Math.min(100, (boredom / 60) * 100);
+            document.getElementById('boredom-fill').style.width = boredomPct + '%';
+
+            // Contamination
+            const compostTile = state.map?.tiles?.compost || {};
+            const contamination = compostTile.contamination || 0;
+            document.getElementById('contamination-fill').style.width = (contamination * 100) + '%';
+            const contStatus = document.getElementById('contamination-status');
+            if (compostTile.blighted) {
+                contStatus.textContent = `BLIGHTED (${compostTile.blight_ticks_remaining}t remaining)`;
+                contStatus.style.color = '#a55';
+            } else if (contamination > 0) {
+                contStatus.textContent = `${(contamination * 100).toFixed(1)}% blight chance`;
+                contStatus.style.color = '#755';
+            } else {
+                contStatus.textContent = 'clean';
+                contStatus.style.color = '#555';
+            }
+
+            // Systems
+            const systemsEl = document.getElementById('systems');
+            systemsEl.innerHTML = '';
+            for (const [id, system] of Object.entries(state.systems || {})) {
+                const div = document.createElement('div');
+                div.className = 'system';
+                let output = '';
+                if (system.generates && Object.keys(system.generates).length > 0) {
+                    output = Object.entries(system.generates)
+                        .map(([r, v]) => `+${v}/tick ${r}`)
+                        .join(', ');
+                }
+                div.innerHTML = `
+                    <div class="system-name">${system.name || id}</div>
+                    <div class="system-output">${output || 'idle'}</div>
+                `;
+                systemsEl.appendChild(div);
+            }
+            if (Object.keys(state.systems || {}).length === 0) {
+                systemsEl.innerHTML = '<div style="color: #444">no systems</div>';
+            }
+
+            // Map tiles
+            const tilesEl = document.getElementById('tiles');
+            tilesEl.innerHTML = '';
+            const tiles = state.map?.tiles || {};
+            for (const [id, tile] of Object.entries(tiles)) {
+                const div = document.createElement('div');
+                div.className = 'tile';
+                if (state.systems && state.systems[id]) {
+                    div.className += ' has-system';
+                }
+                if (tile.blighted) {
+                    div.className += ' blighted';
+                }
+                const x = (tile.x || 0) * 120 + 200;
+                const y = (tile.y || 0) * 120 + 100;
+                div.style.left = x + 'px';
+                div.style.top = y + 'px';
+
+                // Count ants on this tile
+                const antsHere = entities.filter(e => e.tile === id).length;
+
+                div.innerHTML = `
+                    <div class="tile-name">${tile.name || id}</div>
+                    <div class="tile-info">${tile.type || ''}</div>
+                    ${antsHere > 0 ? `<div class="ant-count">${antsHere} ant${antsHere > 1 ? 's' : ''}</div>` : ''}
+                `;
+                tilesEl.appendChild(div);
+            }
+
+            // Corpses
+            const corpsesEl = document.getElementById('corpses');
+            const graveyard = state.graveyard || {};
+            const corpses = graveyard.corpses || [];
+            const processed = graveyard.total_processed || 0;
+
+            if (corpses.length === 0 && processed === 0) {
+                corpsesEl.innerHTML = '<div style="color: #444">none</div>';
+            } else {
+                corpsesEl.innerHTML = `
+                    <div class="stat-row">
+                        <span class="stat-label">awaiting</span>
+                        <span class="stat-value">${corpses.length}</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">processed</span>
+                        <span class="stat-value">${processed}</span>
+                    </div>
+                `;
+            }
+
+            // Graveyard of rejected ideas
+            const rejectedEl = document.getElementById('rejected');
+            const rejected = state.meta?.rejected_ideas || [];
+            if (rejected.length === 0) {
+                rejectedEl.innerHTML = '<div style="color: #333">empty</div>';
+            } else {
+                rejectedEl.innerHTML = '';
+                for (const idea of rejected) {
+                    const div = document.createElement('div');
+                    div.className = 'graveyard-item';
+                    div.textContent = idea;
+                    rejectedEl.appendChild(div);
+                }
+            }
+        }
+
+        // Initial load
+        fetch('/state')
+            .then(r => r.json())
+            .then(render)
+            .catch(() => {});
+    </script>
+</body>
+</html>

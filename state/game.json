@@ -1,0 +1,129 @@
+{
+  "tick": 63755,
+  "resources": {
+    "dirt": 964.9249999994851,
+    "nutrients": 16.529999999984614,
+    "fungus": 195.35999999986194
+  },
+  "systems": {
+    "compost_heap": {
+      "name": "Compost Heap",
+      "type": "generator",
+      "generates": {
+        "nutrients": 0.01
+      },
+      "consumes": {
+        "dirt": 0.005
+      },
+      "description": "Dirt slowly breaks down into nutrients",
+      "corpse_boosts": []
+    },
+    "dig_site": {
+      "name": "Dig Site",
+      "type": "generator",
+      "generates": {
+        "dirt": 0.02
+      },
+      "description": "Ants slowly dig up dirt"
+    },
+    "fungus_farm": {
+      "name": "Fungus Farm",
+      "type": "converter",
+      "consumes": {
+        "nutrients": 0.02
+      },
+      "generates": {
+        "fungus": 0.01
+      },
+      "description": "Cultivates fungus from nutrients"
+    }
+  },
+  "entities": [],
+  "map": {
+    "tiles": {
+      "origin": {
+        "name": "The Starting Dirt",
+        "type": "empty",
+        "x": 0,
+        "y": 0
+      },
+      "compost": {
+        "name": "The Heap",
+        "type": "compost",
+        "x": 1,
+        "y": 0,
+        "contamination": 0,
+        "blighted": false,
+        "blight_ticks_remaining": 0
+      },
+      "dig_site": {
+        "name": "The Dig",
+        "type": "extraction",
+        "x": -1,
+        "y": 0
+      },
+      "fungus_farm": {
+        "name": "The Farm",
+        "type": "production",
+        "x": 0,
+        "y": 1
+      }
+    },
+    "connections": [
+      [
+        "origin",
+        "compost"
+      ],
+      [
+        "origin",
+        "dig_site"
+      ],
+      [
+        "origin",
+        "fungus_farm"
+      ]
+    ]
+  },
+  "queues": {
+    "actions": [],
+    "events": []
+  },
+  "meta": {
+    "boredom": 0,
+    "recent_decisions": [],
+    "rejected_ideas": [
+      "elevation/terrain system",
+      "depth layers",
+      "weather system",
+      "upgrade tiers for systems",
+      "research tree",
+      "efficiency multipliers"
+    ],
+    "fired_cards": [
+      "what_do_nutrients_do",
+      "the_second_grind",
+      "something_alive",
+      "the_map_is_flat",
+      "efficiency_question"
+    ]
+  },
+  "graveyard": {
+    "corpses": [
+      {
+        "entity_id": "274c49cb",
+        "entity_type": "ant",
+        "death_tick": 63155,
+        "cause": "old_age",
+        "tile": "fungus_farm"
+      },
+      {
+        "entity_id": "c0e5448a",
+        "entity_type": "ant",
+        "death_tick": 63155,
+        "cause": "old_age",
+        "tile": "fungus_farm"
+      }
+    ],
+    "total_processed": 2
+  }
+}
