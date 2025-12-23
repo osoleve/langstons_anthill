@@ -1,11 +1,12 @@
 {
-  "tick": 79392,
+  "tick": 80020,
   "resources": {
-    "dirt": 1210.2349999980856,
-    "nutrients": 92.0899999999855,
-    "fungus": 119.15999999983563,
-    "crystals": 2.3149999999997304,
-    "ore": 3.909999999999791
+    "dirt": 1221.1549999980384,
+    "nutrients": 140.2099999999856,
+    "fungus": 113.43999999983885,
+    "crystals": 2.942999999999661,
+    "ore": 3.1659999999996526,
+    "influence": 1.1030000000000009
   },
   "systems": {
     "compost_heap": {
@@ -67,32 +68,45 @@
       "name": "Queen's Chamber",
       "type": "spawner",
       "description": "The queen produces new ants, consuming nutrients and fungus"
+    },
+    "crafting_hollow": {
+      "name": "Crafting Hollow",
+      "type": "crafting",
+      "description": "A quiet alcove where ore becomes beauty. Here, ants cease to be tools."
     }
   },
   "entities": [
     {
       "id": "f18c2698",
       "type": "ant",
-      "role": "worker",
+      "role": "ornamental",
       "tile": "origin",
-      "age": 100,
-      "hunger": 90.00000000000057,
-      "hunger_rate": 0.1,
+      "age": 728,
+      "hunger": 51.60000000000235,
+      "hunger_rate": 0.30000000000000004,
       "max_age": 7200,
-      "food": "fungus"
+      "food": "fungus",
+      "adorned": true,
+      "ornament": "copper_ring",
+      "previous_role": "worker",
+      "influence_rate": 0.001
     },
     {
       "id": "f11e994d",
       "type": "ant",
-      "role": "undertaker",
+      "role": "ornamental",
       "tile": "origin",
-      "age": 100,
-      "hunger": 84.99999999999943,
-      "hunger_rate": 0.15,
+      "age": 728,
+      "hunger": 58.29999999999731,
+      "hunger_rate": 0.44999999999999996,
       "max_age": 7200,
       "food": "fungus",
-      "processing_corpse": true,
-      "processing_ticks": 99
+      "processing_corpse": false,
+      "processing_ticks": 0,
+      "adorned": true,
+      "ornament": "copper_ring",
+      "previous_role": "undertaker",
+      "influence_rate": 0.001
     }
   ],
   "map": {
@@ -153,6 +167,13 @@
         "x": 0,
         "y": -1,
         "description": "A warm, dark chamber where new life begins"
+      },
+      "crafting_hollow": {
+        "name": "The Crafting Hollow",
+        "type": "aesthetic",
+        "x": -2,
+        "y": -1,
+        "description": "A still alcove lined with unworked ore. Those who enter as workers leave as something else."
       }
     },
     "connections": [
@@ -183,6 +204,10 @@
       [
         "origin",
         "queen_chamber"
+      ],
+      [
+        "ore_vein",
+        "crafting_hollow"
       ]
     ]
   },
@@ -193,6 +218,22 @@
   "meta": {
     "boredom": 0,
     "recent_decisions": [],
+    "jewelry": [
+      {
+        "type": "copper_ring",
+        "name": "Copper Ring",
+        "created_tick": 79392,
+        "worn_by": "f18c2698",
+        "worn_tick": 79392
+      },
+      {
+        "type": "copper_ring",
+        "name": "Copper Ring",
+        "created_tick": 79545,
+        "worn_by": "f11e994d",
+        "worn_tick": 79545
+      }
+    ],
     "rejected_ideas": [
       "elevation/terrain system",
       "depth layers",
@@ -217,7 +258,11 @@
       "what_are_crystals_for",
       "what_are_they_working_toward",
       "first_nugget",
-      "lonely_undertaker"
+      "lonely_undertaker",
+      "vanity_or_identity",
+      "the_undertakers_ring",
+      "the_court",
+      "first_influence"
     ],
     "goals": {
       "crystal_resonance_chamber": {
@@ -243,6 +288,6 @@
   },
   "graveyard": {
     "corpses": [],
-    "total_processed": 9
+    "total_processed": 10
   }
 }
