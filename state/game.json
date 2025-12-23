@@ -1,12 +1,13 @@
 {
-  "tick": 80342,
+  "tick": 80700,
   "resources": {
-    "dirt": 1225.9849999979974,
-    "nutrients": 153.08999999998304,
-    "fungus": 107.6599999998405,
-    "crystals": 3.2649999999996258,
-    "ore": 3.8099999999995817,
-    "influence": 1.7470000000000014
+    "dirt": 1231.3549999979518,
+    "nutrients": 167.4099999999802,
+    "fungus": 103.23999999984233,
+    "crystals": 3.6229999999995863,
+    "ore": 4.525999999999503,
+    "influence": 0.28400000000001085,
+    "insight": 0.18900000000000014
   },
   "systems": {
     "compost_heap": {
@@ -86,8 +87,8 @@
       "type": "ant",
       "role": "ornamental",
       "tile": "origin",
-      "age": 1050,
-      "hunger": 75.00000000000327,
+      "age": 1408,
+      "hunger": 57.600000000004286,
       "hunger_rate": 0.30000000000000004,
       "max_age": 7200,
       "food": "fungus",
@@ -101,8 +102,8 @@
       "type": "ant",
       "role": "ornamental",
       "tile": "origin",
-      "age": 1050,
-      "hunger": 63.399999999996396,
+      "age": 1408,
+      "hunger": 52.29999999999538,
       "hunger_rate": 0.44999999999999996,
       "max_age": 7200,
       "food": "fungus",
@@ -112,6 +113,23 @@
       "ornament": "copper_ring",
       "previous_role": "undertaker",
       "influence_rate": 0.001
+    },
+    {
+      "id": "v_6dcc65",
+      "type": "visitor",
+      "subtype": "observer",
+      "name": "An Observer",
+      "tile": "receiver",
+      "age": 188,
+      "hunger": 90.60000000000053,
+      "hunger_rate": 0.05,
+      "max_age": 3600,
+      "food": "crystals",
+      "from_outside": true,
+      "description": "Watches. Generates insight from the watching.",
+      "generates": {
+        "insight": 0.001
+      }
     }
   ],
   "map": {
@@ -278,7 +296,10 @@
       "vanity_or_identity",
       "the_undertakers_ring",
       "the_court",
-      "first_influence"
+      "first_influence",
+      "the_receiver_built",
+      "first_visitor",
+      "visitor_departed"
     ],
     "goals": {
       "crystal_resonance_chamber": {
