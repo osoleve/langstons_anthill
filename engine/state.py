@@ -1,6 +1,7 @@
 """State management. Load, save, initialize."""
 
 import json
+import time
 from pathlib import Path
 
 STATE_FILE = Path(__file__).parent.parent / "state" / "game.json"
@@ -45,8 +46,9 @@ def load_state() -> dict:
 
 
 def save_state(state: dict):
-    """Persist state to disk."""
+    """Persist state to disk with timestamp."""
     STATE_FILE.parent.mkdir(parents=True, exist_ok=True)
+    state["last_save_timestamp"] = time.time()
     with open(STATE_FILE, 'w') as f:
         json.dump(state, f, indent=2)
 
