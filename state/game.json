@@ -1,11 +1,11 @@
 {
-  "tick": 87942,
+  "tick": 88472,
   "resources": {
-    "dirt": 1342.9849999970952,
-    "nutrients": 458.1900000000747,
-    "fungus": 14.659999999854083,
-    "crystals": 5.864999999999826,
-    "ore": 19.010000000000122,
+    "dirt": 1352.3099999970577,
+    "nutrients": 476.6400000000903,
+    "fungus": 8.95999999985397,
+    "crystals": 6.395000000000003,
+    "ore": 20.069999999999535,
     "influence": 2.317625258374534e-13,
     "insight": 3.5999999999997145
   },
@@ -13,14 +13,16 @@
     "compost_heap": {
       "name": "Compost Heap",
       "type": "generator",
-      "generates": {
+      "generates": {},
+      "consumes": {},
+      "description": "Dirt slowly breaks down into nutrients",
+      "corpse_boosts": [],
+      "original_generates": {
         "nutrients": 0.01
       },
-      "consumes": {
+      "original_consumes": {
         "dirt": 0.005
-      },
-      "description": "Dirt slowly breaks down into nutrients",
-      "corpse_boosts": []
+      }
     },
     "dig_site": {
       "name": "Dig Site",
@@ -81,7 +83,32 @@
       "description": "A jagged antenna of bone and crystal. It listens to frequencies the colony cannot hear."
     }
   },
-  "entities": [],
+  "entities": [
+    {
+      "id": "48bf1d52",
+      "type": "ant",
+      "role": "worker",
+      "tile": "origin",
+      "age": 495,
+      "hunger": 50.500000000001855,
+      "hunger_rate": 0.1,
+      "max_age": 7200,
+      "food": "fungus"
+    },
+    {
+      "id": "bbd8ff04",
+      "type": "ant",
+      "role": "undertaker",
+      "tile": "origin",
+      "age": 495,
+      "hunger": 55.749999999998266,
+      "hunger_rate": 0.15,
+      "max_age": 7200,
+      "food": "fungus",
+      "processing_corpse": true,
+      "processing_ticks": 98
+    }
+  ],
   "map": {
     "tiles": {
       "origin": {
@@ -95,9 +122,9 @@
         "type": "compost",
         "x": 1,
         "y": 0,
-        "contamination": 0,
-        "blighted": false,
-        "blight_ticks_remaining": 0
+        "contamination": 0.01,
+        "blighted": true,
+        "blight_ticks_remaining": 25
       },
       "dig_site": {
         "name": "The Dig",
@@ -292,20 +319,6 @@
   "graveyard": {
     "corpses": [
       {
-        "entity_id": "v_e5eacc",
-        "entity_type": "visitor",
-        "death_tick": 86100,
-        "cause": "starvation",
-        "tile": "receiver"
-      },
-      {
-        "entity_id": "009bae17",
-        "entity_type": "ant",
-        "death_tick": 86225,
-        "cause": "starvation",
-        "tile": "origin"
-      },
-      {
         "entity_id": "8d540390",
         "entity_type": "ant",
         "death_tick": 86459,
@@ -320,6 +333,6 @@
         "tile": "origin"
       }
     ],
-    "total_processed": 12
+    "total_processed": 13
   }
 }
