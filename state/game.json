@@ -1,11 +1,11 @@
 {
-  "tick": 79097,
+  "tick": 79348,
   "resources": {
-    "dirt": 1205.8099999981232,
-    "nutrients": 90.28999999998365,
-    "fungus": 126.20999999983434,
-    "crystals": 2.019999999999763,
-    "ore": 3.319999999999856
+    "dirt": 1209.5749999980912,
+    "nutrients": 90.32999999998522,
+    "fungus": 118.71999999983541,
+    "crystals": 2.2709999999997352,
+    "ore": 3.8219999999998007
   },
   "systems": {
     "compost_heap": {
@@ -62,9 +62,39 @@
         "ore": 0.002
       },
       "description": "Ants carefully extract precious metals from the vein"
+    },
+    "queen_chamber": {
+      "name": "Queen's Chamber",
+      "type": "spawner",
+      "description": "The queen produces new ants, consuming nutrients and fungus"
     }
   },
-  "entities": [],
+  "entities": [
+    {
+      "id": "f18c2698",
+      "type": "ant",
+      "role": "worker",
+      "tile": "origin",
+      "age": 56,
+      "hunger": 94.40000000000032,
+      "hunger_rate": 0.1,
+      "max_age": 7200,
+      "food": "fungus"
+    },
+    {
+      "id": "f11e994d",
+      "type": "ant",
+      "role": "undertaker",
+      "tile": "origin",
+      "age": 56,
+      "hunger": 91.59999999999968,
+      "hunger_rate": 0.15,
+      "max_age": 7200,
+      "food": "fungus",
+      "processing_corpse": true,
+      "processing_ticks": 55
+    }
+  ],
   "map": {
     "tiles": {
       "origin": {
@@ -116,6 +146,13 @@
         "y": -1,
         "resource": "ore",
         "description": "Veins of copper and gold thread through the stone"
+      },
+      "queen_chamber": {
+        "name": "The Queen's Chamber",
+        "type": "special",
+        "x": 0,
+        "y": -1,
+        "description": "A warm, dark chamber where new life begins"
       }
     },
     "connections": [
@@ -142,6 +179,10 @@
       [
         "dig_site",
         "ore_vein"
+      ],
+      [
+        "origin",
+        "queen_chamber"
       ]
     ]
   },
@@ -190,18 +231,18 @@
         },
         "built": true
       }
-    }
+    },
+    "reflections": [
+      {
+        "tick": 79165,
+        "trigger": "aftermath",
+        "prompt": "What surprised you since the last reflection?",
+        "response": null
+      }
+    ]
   },
   "graveyard": {
-    "corpses": [
-      {
-        "entity_id": "bcd5bef1",
-        "entity_type": "ant",
-        "death_tick": 78805,
-        "cause": "old_age",
-        "tile": "origin"
-      }
-    ],
+    "corpses": [],
     "total_processed": 9
   }
 }
