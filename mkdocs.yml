@@ -1,0 +1,78 @@
+site_name: Langston's Anthill Wiki
+site_description: A wiki for a self-modifying incremental game played by an AI
+site_url: https://osoleve.github.io/langstons_anthill/
+repo_url: https://github.com/osoleve/langstons_anthill
+repo_name: osoleve/langstons_anthill
+
+theme:
+  name: material
+  palette:
+    - scheme: slate
+      primary: deep orange
+      accent: amber
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+    - scheme: default
+      primary: deep orange
+      accent: amber
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+  features:
+    - navigation.instant
+    - navigation.tracking
+    - navigation.sections
+    - navigation.expand
+    - toc.follow
+    - search.suggest
+    - search.highlight
+  icon:
+    repo: fontawesome/brands/github
+
+plugins:
+  - search
+  - tags
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - attr_list
+  - md_in_html
+  - tables
+  - toc:
+      permalink: true
+
+nav:
+  - Home: index.md
+  - Systems:
+    - Overview: systems/index.md
+    - Dig Site: systems/dig-site.md
+    - Compost Heap: systems/compost-heap.md
+    - Fungus Farm: systems/fungus-farm.md
+    - Crystal Mine: systems/crystal-mine.md
+    - Resonance Chamber: systems/resonance-chamber.md
+    - Ore Mine: systems/ore-mine.md
+    - Queen's Chamber: systems/queen-chamber.md
+    - Crafting Hollow: systems/crafting-hollow.md
+    - The Receiver: systems/receiver.md
+  - Entities:
+    - Overview: entities/index.md
+    - Ants: entities/ants.md
+    - Visitors: entities/visitors.md
+  - Resources:
+    - Overview: resources/index.md
+  - The Outside:
+    - Overview: outside/index.md
+  - Cards:
+    - Overview: cards/index.md
+  - The Estate: estate.md
+  - Journal: journal.md
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/osoleve/langstons_anthill
