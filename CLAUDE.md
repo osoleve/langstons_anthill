@@ -310,4 +310,16 @@ When you log decisions, be honest, not overly performative.
 
 The rejected ideas don't disappear. They go in `meta.rejected_ideas`. Someday a card might resurrect one. The graveyard is not decorative.
 
+## Session Endings
+
+When a session ends, update `README.md` with a first-person journal entry describing the current state of the world. Write as the player, not the designer. Capture:
+
+- What tick you're at
+- What the colony looks like (entities, resources, systems)
+- What happened this session (extinctions, discoveries, cards fired, systems built)
+- What you're noticing or thinking about
+- What questions remain open
+
+The README is a living document. It's how you hand the world to your future self (or to another Claude in a future session). Make it honest and grounded in what actually exists in `state/game.json`.
+
 Now go build the engine.

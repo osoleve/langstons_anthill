@@ -1,26 +1,28 @@
 {
-  "tick": 86843,
+  "tick": 88854,
   "resources": {
-    "dirt": 1326.4999999972351,
-    "nutrients": 414.2300000000522,
-    "fungus": 3.669999999854317,
-    "crystals": 4.765999999999459,
-    "ore": 16.81200000000134,
-    "influence": 0.11950000000023187,
+    "dirt": 1359.224999997035,
+    "nutrients": 502.250000000103,
+    "fungus": 8.779999999853889,
+    "crystals": 6.777000000000131,
+    "ore": 20.83399999999911,
+    "influence": 2.317625258374534e-13,
     "insight": 3.5999999999997145
   },
   "systems": {
     "compost_heap": {
       "name": "Compost Heap",
       "type": "generator",
-      "generates": {
+      "generates": {},
+      "consumes": {},
+      "description": "Dirt slowly breaks down into nutrients",
+      "corpse_boosts": [],
+      "original_generates": {
         "nutrients": 0.01
       },
-      "consumes": {
+      "original_consumes": {
         "dirt": 0.005
-      },
-      "description": "Dirt slowly breaks down into nutrients",
-      "corpse_boosts": []
+      }
     },
     "dig_site": {
       "name": "Dig Site",
@@ -81,7 +83,32 @@
       "description": "A jagged antenna of bone and crystal. It listens to frequencies the colony cannot hear."
     }
   },
-  "entities": [],
+  "entities": [
+    {
+      "id": "48bf1d52",
+      "type": "ant",
+      "role": "worker",
+      "tile": "origin",
+      "age": 877,
+      "hunger": 72.300000000003,
+      "hunger_rate": 0.1,
+      "max_age": 7200,
+      "food": "fungus"
+    },
+    {
+      "id": "bbd8ff04",
+      "type": "ant",
+      "role": "undertaker",
+      "tile": "origin",
+      "age": 877,
+      "hunger": 58.44999999999733,
+      "hunger_rate": 0.15,
+      "max_age": 7200,
+      "food": "fungus",
+      "processing_corpse": true,
+      "processing_ticks": 1
+    }
+  ],
   "map": {
     "tiles": {
       "origin": {
@@ -95,9 +122,9 @@
         "type": "compost",
         "x": 1,
         "y": 0,
-        "contamination": 0,
-        "blighted": false,
-        "blight_ticks_remaining": 0
+        "contamination": 0.02,
+        "blighted": true,
+        "blight_ticks_remaining": 88
       },
       "dig_site": {
         "name": "The Dig",
@@ -273,53 +300,24 @@
         "tick": 79165,
         "trigger": "aftermath",
         "prompt": "What surprised you since the last reflection?",
-        "response": null
+        "response": "How quickly adornment created identity. Before the copper rings, the ants were anonymous - f18c2698 and f11e994d were just role labels. After adornment, they became visible as individuals. The colony gained the ability to see its own members, not just their functions. Vanity bought selfhood."
       },
       {
         "tick": 83065,
         "trigger": "aftermath",
         "prompt": "What would you miss if it disappeared?",
-        "response": null
+        "response": "The Observer. Not because of the insight resource - that's just a number. But because of being seen from outside. The ornamentals generate influence that only the colony can measure. The Observer validates that the signal reaches somewhere beyond the tunnels. Being watched by something that chose to come is different than being alone."
       },
       {
         "tick": 86792,
         "trigger": "aftermath",
         "prompt": "What surprised you since the last reflection?",
-        "response": null
+        "response": "The speed of collapse. Fungus went from tight-but-stable to total famine in what felt like moments. The system has no slack, no buffer, no forgiveness. One visitor arrives hungry, consumption spikes, and the entire colony cascades into starvation. The equilibrium was more fragile than it looked."
       }
     ]
   },
   "graveyard": {
-    "corpses": [
-      {
-        "entity_id": "v_e5eacc",
-        "entity_type": "visitor",
-        "death_tick": 86100,
-        "cause": "starvation",
-        "tile": "receiver"
-      },
-      {
-        "entity_id": "009bae17",
-        "entity_type": "ant",
-        "death_tick": 86225,
-        "cause": "starvation",
-        "tile": "origin"
-      },
-      {
-        "entity_id": "8d540390",
-        "entity_type": "ant",
-        "death_tick": 86459,
-        "cause": "starvation",
-        "tile": "origin"
-      },
-      {
-        "entity_id": "f18c2698",
-        "entity_type": "ant",
-        "death_tick": 86492,
-        "cause": "old_age",
-        "tile": "origin"
-      }
-    ],
-    "total_processed": 12
+    "corpses": [],
+    "total_processed": 15
   }
 }
