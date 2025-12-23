@@ -1,28 +1,26 @@
 {
-  "tick": 88854,
+  "tick": 90522,
   "resources": {
-    "dirt": 1359.224999997035,
-    "nutrients": 502.250000000103,
-    "fungus": 8.779999999853889,
-    "crystals": 6.777000000000131,
-    "ore": 20.83399999999911,
-    "influence": 2.317625258374534e-13,
+    "dirt": 1386.184999996865,
+    "nutrients": 561.6100000000715,
+    "fungus": 8.499999999853404,
+    "crystals": 8.445000000000292,
+    "ore": 23.169999999997263,
+    "influence": 0.6315000000002469,
     "insight": 3.5999999999997145
   },
   "systems": {
     "compost_heap": {
       "name": "Compost Heap",
       "type": "generator",
-      "generates": {},
-      "consumes": {},
-      "description": "Dirt slowly breaks down into nutrients",
-      "corpse_boosts": [],
-      "original_generates": {
+      "generates": {
         "nutrients": 0.01
       },
-      "original_consumes": {
+      "consumes": {
         "dirt": 0.005
-      }
+      },
+      "description": "Dirt slowly breaks down into nutrients",
+      "corpse_boosts": []
     },
     "dig_site": {
       "name": "Dig Site",
@@ -81,32 +79,47 @@
       "name": "The Receiver",
       "type": "antenna",
       "description": "A jagged antenna of bone and crystal. It listens to frequencies the colony cannot hear."
+    },
+    "fungus_farm_2": {
+      "name": "Fungus Farm (Deep Chambers)",
+      "type": "converter",
+      "consumes": {
+        "nutrients": 0.02
+      },
+      "generates": {
+        "fungus": 0.01
+      },
+      "description": "A second cultivation chamber deep in the colony"
     }
   },
   "entities": [
     {
       "id": "48bf1d52",
       "type": "ant",
-      "role": "worker",
+      "role": "ornamental",
       "tile": "origin",
-      "age": 877,
-      "hunger": 72.300000000003,
-      "hunger_rate": 0.1,
+      "age": 2545,
+      "hunger": 72.90000000000774,
+      "hunger_rate": 0.30000000000000004,
       "max_age": 7200,
-      "food": "fungus"
+      "food": "fungus",
+      "adorned": true,
+      "ornament": "copper_ring",
+      "previous_role": "worker",
+      "influence_rate": 0.001
     },
     {
       "id": "bbd8ff04",
       "type": "ant",
       "role": "undertaker",
       "tile": "origin",
-      "age": 877,
-      "hunger": 58.44999999999733,
+      "age": 2545,
+      "hunger": 78.24999999999372,
       "hunger_rate": 0.15,
       "max_age": 7200,
       "food": "fungus",
-      "processing_corpse": true,
-      "processing_ticks": 1
+      "processing_corpse": false,
+      "processing_ticks": 0
     }
   ],
   "map": {
@@ -122,9 +135,9 @@
         "type": "compost",
         "x": 1,
         "y": 0,
-        "contamination": 0.02,
-        "blighted": true,
-        "blight_ticks_remaining": 88
+        "contamination": 0,
+        "blighted": false,
+        "blight_ticks_remaining": 0
       },
       "dig_site": {
         "name": "The Dig",
@@ -181,6 +194,13 @@
         "x": 4,
         "y": 1,
         "description": "A jagged antenna of bone and crystal. It listens to frequencies the colony cannot hear."
+      },
+      "fungus_farm_2_tile": {
+        "name": "Deep Chambers",
+        "type": "production",
+        "x": 1,
+        "y": 1,
+        "description": "Additional fungus cultivation deep underground"
       }
     },
     "connections": [
@@ -219,6 +239,10 @@
       [
         "resonance_chamber",
         "receiver"
+      ],
+      [
+        "fungus_farm",
+        "fungus_farm_2_tile"
       ]
     ]
   },
@@ -243,6 +267,13 @@
         "created_tick": 79545,
         "worn_by": "f11e994d",
         "worn_tick": 79545
+      },
+      {
+        "type": "copper_ring",
+        "name": "Copper Ring",
+        "created_tick": 89259,
+        "worn_by": "48bf1d52",
+        "worn_tick": 89259
       }
     ],
     "rejected_ideas": [
@@ -313,11 +344,17 @@
         "trigger": "aftermath",
         "prompt": "What surprised you since the last reflection?",
         "response": "The speed of collapse. Fungus went from tight-but-stable to total famine in what felt like moments. The system has no slack, no buffer, no forgiveness. One visitor arrives hungry, consumption spikes, and the entire colony cascades into starvation. The equilibrium was more fragile than it looked."
+      },
+      {
+        "tick": 89792,
+        "trigger": "aftermath",
+        "prompt": "What would you miss if it disappeared?",
+        "response": null
       }
     ]
   },
   "graveyard": {
     "corpses": [],
-    "total_processed": 15
+    "total_processed": 16
   }
 }
