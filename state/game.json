@@ -1,25 +1,24 @@
 {
-  "tick": 71755,
+  "tick": 77504,
   "resources": {
-    "dirt": 1089.5549999989244,
-    "nutrients": 0.009999999985004844,
-    "fungus": 147.28999999981653,
-    "crystals": 4.677999999999897
+    "dirt": 1180.4149999982933,
+    "nutrients": 15.469999999985315,
+    "fungus": 120.27999999982619,
+    "crystals": 0.4269999999998746,
+    "ore": 0.1340000000000001
   },
   "systems": {
     "compost_heap": {
       "name": "Compost Heap",
       "type": "generator",
-      "generates": {},
-      "consumes": {},
-      "description": "Dirt slowly breaks down into nutrients",
-      "corpse_boosts": [],
-      "original_generates": {
+      "generates": {
         "nutrients": 0.01
       },
-      "original_consumes": {
+      "consumes": {
         "dirt": 0.005
-      }
+      },
+      "description": "Dirt slowly breaks down into nutrients",
+      "corpse_boosts": []
     },
     "dig_site": {
       "name": "Dig Site",
@@ -47,38 +46,32 @@
         "crystals": 0.001
       },
       "description": "Ants carefully extract crystals from cave walls"
+    },
+    "crystal_resonance_chamber": {
+      "name": "Crystal Resonance Chamber",
+      "type": "generator",
+      "generates": {
+        "nutrients": 0.05
+      },
+      "description": "Crystals hum with energy, generating nutrients from vibration alone"
+    },
+    "ore_mine": {
+      "name": "Ore Mine",
+      "type": "generator",
+      "generates": {
+        "ore": 0.002
+      },
+      "description": "Ants carefully extract precious metals from the vein"
     }
   },
   "entities": [
-    {
-      "id": "b0ee1061",
-      "type": "ant",
-      "role": "worker",
-      "tile": "fungus_farm",
-      "age": 5088,
-      "hunger": 71.200000000013,
-      "hunger_rate": 0.1,
-      "max_age": 7200,
-      "food": "fungus"
-    },
-    {
-      "id": "41f3755e",
-      "type": "ant",
-      "role": "worker",
-      "tile": "fungus_farm",
-      "age": 5088,
-      "hunger": 71.200000000013,
-      "hunger_rate": 0.1,
-      "max_age": 7200,
-      "food": "fungus"
-    },
     {
       "id": "4f6ce27d",
       "type": "ant",
       "role": "worker",
       "tile": "fungus_farm",
-      "age": 650,
-      "hunger": 65.0000000000027,
+      "age": 6399,
+      "hunger": 60.1000000000162,
       "hunger_rate": 0.1,
       "max_age": 7200,
       "food": "fungus"
@@ -88,8 +81,8 @@
       "type": "ant",
       "role": "undertaker",
       "tile": "origin",
-      "age": 150,
-      "hunger": 77.49999999999915,
+      "age": 5899,
+      "hunger": 55.149999999985994,
       "hunger_rate": 0.15,
       "max_age": 7200,
       "food": "fungus",
@@ -110,9 +103,9 @@
         "type": "compost",
         "x": 1,
         "y": 0,
-        "contamination": 0.01,
-        "blighted": true,
-        "blight_ticks_remaining": 274
+        "contamination": 0,
+        "blighted": false,
+        "blight_ticks_remaining": 0
       },
       "dig_site": {
         "name": "The Dig",
@@ -133,6 +126,21 @@
         "y": 0,
         "resource": "crystals",
         "description": "Strange formations glitter in the dark"
+      },
+      "resonance_chamber": {
+        "name": "Resonance Chamber",
+        "type": "special",
+        "x": 3,
+        "y": 0,
+        "description": "The crystals sing"
+      },
+      "ore_vein": {
+        "name": "Glittering Vein",
+        "type": "resource",
+        "x": -1,
+        "y": -1,
+        "resource": "ore",
+        "description": "Veins of copper and gold thread through the stone"
       }
     },
     "connections": [
@@ -151,6 +159,14 @@
       [
         "origin",
         "crystal_cave"
+      ],
+      [
+        "crystal_cave",
+        "resonance_chamber"
+      ],
+      [
+        "dig_site",
+        "ore_vein"
       ]
     ]
   },
@@ -195,12 +211,12 @@
         "effect": {
           "nutrients_per_tick": 0.05
         },
-        "built": false
+        "built": true
       }
     }
   },
   "graveyard": {
     "corpses": [],
-    "total_processed": 6
+    "total_processed": 8
   }
 }
