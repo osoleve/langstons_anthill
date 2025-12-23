@@ -1,10 +1,11 @@
 {
-  "tick": 77211,
+  "tick": 77462,
   "resources": {
-    "dirt": 1176.0199999983306,
-    "nutrients": 3.749999999985142,
-    "fungus": 119.34999999982469,
-    "crystals": 0.13399999999987433
+    "dirt": 1179.7849999982986,
+    "nutrients": 13.789999999985277,
+    "fungus": 119.85999999982597,
+    "crystals": 0.38499999999987455,
+    "ore": 0.05000000000000003
   },
   "systems": {
     "compost_heap": {
@@ -53,6 +54,14 @@
         "nutrients": 0.05
       },
       "description": "Crystals hum with energy, generating nutrients from vibration alone"
+    },
+    "ore_mine": {
+      "name": "Ore Mine",
+      "type": "generator",
+      "generates": {
+        "ore": 0.002
+      },
+      "description": "Ants carefully extract precious metals from the vein"
     }
   },
   "entities": [
@@ -61,8 +70,8 @@
       "type": "ant",
       "role": "worker",
       "tile": "fungus_farm",
-      "age": 6106,
-      "hunger": 59.40000000001548,
+      "age": 6357,
+      "hunger": 64.30000000001624,
       "hunger_rate": 0.1,
       "max_age": 7200,
       "food": "fungus"
@@ -72,8 +81,8 @@
       "type": "ant",
       "role": "undertaker",
       "tile": "origin",
-      "age": 5606,
-      "hunger": 69.09999999998655,
+      "age": 5857,
+      "hunger": 61.449999999985934,
       "hunger_rate": 0.15,
       "max_age": 7200,
       "food": "fungus",
@@ -124,6 +133,14 @@
         "x": 3,
         "y": 0,
         "description": "The crystals sing"
+      },
+      "ore_vein": {
+        "name": "Glittering Vein",
+        "type": "resource",
+        "x": -1,
+        "y": -1,
+        "resource": "ore",
+        "description": "Veins of copper and gold thread through the stone"
       }
     },
     "connections": [
@@ -146,6 +163,10 @@
       [
         "crystal_cave",
         "resonance_chamber"
+      ],
+      [
+        "dig_site",
+        "ore_vein"
       ]
     ]
   },

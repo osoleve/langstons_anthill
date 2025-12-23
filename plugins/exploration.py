@@ -41,6 +41,15 @@ DISCOVERIES = [
         "y": 2,
         "resource": "sap",
         "description": "Thick roots from the surface, dripping with sap"
+    },
+    {
+        "id": "ore_vein",
+        "name": "Glittering Vein",
+        "type": "resource",
+        "x": -1,
+        "y": -1,
+        "resource": "ore",
+        "description": "Veins of copper and gold thread through the stone"
     }
 ]
 
