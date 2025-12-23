@@ -1,10 +1,10 @@
 {
-  "tick": 67227,
+  "tick": 71605,
   "resources": {
-    "dirt": 1020.004999999435,
-    "nutrients": 0.009999999984961188,
-    "fungus": 187.4799999998391,
-    "crystals": 0.1500000000000001
+    "dirt": 1087.1749999989406,
+    "nutrients": 0.009999999985004834,
+    "fungus": 149.46999999981728,
+    "crystals": 4.527999999999847
   },
   "systems": {
     "compost_heap": {
@@ -49,36 +49,12 @@
   },
   "entities": [
     {
-      "id": "da8f1229",
-      "type": "ant",
-      "role": "worker",
-      "tile": "dig_site",
-      "age": 3472,
-      "hunger": 52.80000000000899,
-      "hunger_rate": 0.1,
-      "max_age": 7200,
-      "food": "fungus"
-    },
-    {
-      "id": "d40e54a2",
-      "type": "ant",
-      "role": "undertaker",
-      "tile": "origin",
-      "age": 3007,
-      "hunger": 68.94999999999246,
-      "hunger_rate": 0.15,
-      "max_age": 7200,
-      "food": "fungus",
-      "processing_corpse": false,
-      "processing_ticks": 0
-    },
-    {
       "id": "b0ee1061",
       "type": "ant",
       "role": "worker",
       "tile": "fungus_farm",
-      "age": 560,
-      "hunger": 74.00000000000219,
+      "age": 4938,
+      "hunger": 56.200000000012594,
       "hunger_rate": 0.1,
       "max_age": 7200,
       "food": "fungus"
@@ -88,9 +64,31 @@
       "type": "ant",
       "role": "worker",
       "tile": "fungus_farm",
-      "age": 560,
-      "hunger": 74.00000000000219,
+      "age": 4938,
+      "hunger": 56.200000000012594,
       "hunger_rate": 0.1,
+      "max_age": 7200,
+      "food": "fungus"
+    },
+    {
+      "id": "4f6ce27d",
+      "type": "ant",
+      "role": "worker",
+      "tile": "fungus_farm",
+      "age": 500,
+      "hunger": 50.00000000000185,
+      "hunger_rate": 0.1,
+      "max_age": 7200,
+      "food": "fungus"
+    },
+    {
+      "id": "bcd5bef1",
+      "type": "ant",
+      "role": "undertaker",
+      "tile": "origin",
+      "age": 0,
+      "hunger": 100,
+      "hunger_rate": 0.15,
       "max_age": 7200,
       "food": "fungus"
     }
@@ -180,7 +178,8 @@
       "nutrient_crisis",
       "last_worker",
       "the_equilibrium",
-      "what_are_crystals_for"
+      "what_are_crystals_for",
+      "what_are_they_working_toward"
     ],
     "goals": {
       "crystal_resonance_chamber": {
@@ -197,7 +196,15 @@
     }
   },
   "graveyard": {
-    "corpses": [],
-    "total_processed": 4
+    "corpses": [
+      {
+        "entity_id": "d40e54a2",
+        "entity_type": "ant",
+        "death_tick": 71420,
+        "cause": "old_age",
+        "tile": "origin"
+      }
+    ],
+    "total_processed": 5
   }
 }
