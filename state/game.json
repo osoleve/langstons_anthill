@@ -1,12 +1,12 @@
 {
-  "tick": 79392,
+  "tick": 79593,
   "resources": {
-    "dirt": 1210.2349999980856,
-    "nutrients": 92.0899999999855,
-    "fungus": 119.15999999983563,
-    "crystals": 2.3149999999997304,
-    "ore": 2.909999999999791,
-    "influence": 0
+    "dirt": 1213.24999999806,
+    "nutrients": 118.22999999998572,
+    "fungus": 119.16999999983666,
+    "crystals": 2.5159999999997082,
+    "ore": 2.3119999999997467,
+    "influence": 0.2490000000000002
   },
   "systems": {
     "compost_heap": {
@@ -19,7 +19,12 @@
         "dirt": 0.005
       },
       "description": "Dirt slowly breaks down into nutrients",
-      "corpse_boosts": []
+      "corpse_boosts": [
+        {
+          "expires_at_tick": 80013,
+          "bonus": 0.1
+        }
+      ]
     },
     "dig_site": {
       "name": "Dig Site",
@@ -81,8 +86,8 @@
       "type": "ant",
       "role": "ornamental",
       "tile": "origin",
-      "age": 100,
-      "hunger": 90.00000000000057,
+      "age": 301,
+      "hunger": 59.70000000000114,
       "hunger_rate": 0.30000000000000004,
       "max_age": 7200,
       "food": "fungus",
@@ -94,15 +99,19 @@
     {
       "id": "f11e994d",
       "type": "ant",
-      "role": "undertaker",
+      "role": "ornamental",
       "tile": "origin",
-      "age": 100,
-      "hunger": 84.99999999999943,
-      "hunger_rate": 0.15,
+      "age": 301,
+      "hunger": 70.44999999999852,
+      "hunger_rate": 0.44999999999999996,
       "max_age": 7200,
       "food": "fungus",
-      "processing_corpse": true,
-      "processing_ticks": 99
+      "processing_corpse": false,
+      "processing_ticks": 0,
+      "adorned": true,
+      "ornament": "copper_ring",
+      "previous_role": "undertaker",
+      "influence_rate": 0.001
     }
   ],
   "map": {
@@ -118,7 +127,7 @@
         "type": "compost",
         "x": 1,
         "y": 0,
-        "contamination": 0,
+        "contamination": 0.01,
         "blighted": false,
         "blight_ticks_remaining": 0
       },
@@ -221,6 +230,13 @@
         "created_tick": 79392,
         "worn_by": "f18c2698",
         "worn_tick": 79392
+      },
+      {
+        "type": "copper_ring",
+        "name": "Copper Ring",
+        "created_tick": 79545,
+        "worn_by": "f11e994d",
+        "worn_tick": 79545
       }
     ],
     "rejected_ideas": [
@@ -247,7 +263,9 @@
       "what_are_crystals_for",
       "what_are_they_working_toward",
       "first_nugget",
-      "lonely_undertaker"
+      "lonely_undertaker",
+      "vanity_or_identity",
+      "the_undertakers_ring"
     ],
     "goals": {
       "crystal_resonance_chamber": {
@@ -273,6 +291,6 @@
   },
   "graveyard": {
     "corpses": [],
-    "total_processed": 9
+    "total_processed": 10
   }
 }
