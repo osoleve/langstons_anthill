@@ -1,24 +1,23 @@
 {
-  "tick": 66450,
+  "tick": 67227,
   "resources": {
-    "dirt": 1007.3199999994465,
-    "nutrients": 1.3799999999849621,
-    "fungus": 191.9399999998423
+    "dirt": 1020.004999999435,
+    "nutrients": 0.009999999984961188,
+    "fungus": 187.4799999998391,
+    "crystals": 0.1500000000000001
   },
   "systems": {
     "compost_heap": {
       "name": "Compost Heap",
       "type": "generator",
-      "generates": {},
-      "consumes": {},
-      "description": "Dirt slowly breaks down into nutrients",
-      "corpse_boosts": [],
-      "original_generates": {
+      "generates": {
         "nutrients": 0.01
       },
-      "original_consumes": {
+      "consumes": {
         "dirt": 0.005
-      }
+      },
+      "description": "Dirt slowly breaks down into nutrients",
+      "corpse_boosts": []
     },
     "dig_site": {
       "name": "Dig Site",
@@ -38,6 +37,14 @@
         "fungus": 0.01
       },
       "description": "Cultivates fungus from nutrients"
+    },
+    "crystal_mine": {
+      "name": "Crystal Mine",
+      "type": "generator",
+      "generates": {
+        "crystals": 0.001
+      },
+      "description": "Ants carefully extract crystals from cave walls"
     }
   },
   "entities": [
@@ -46,8 +53,8 @@
       "type": "ant",
       "role": "worker",
       "tile": "dig_site",
-      "age": 2695,
-      "hunger": 70.50000000000736,
+      "age": 3472,
+      "hunger": 52.80000000000899,
       "hunger_rate": 0.1,
       "max_age": 7200,
       "food": "fungus"
@@ -57,13 +64,35 @@
       "type": "ant",
       "role": "undertaker",
       "tile": "origin",
-      "age": 2230,
-      "hunger": 65.49999999999415,
+      "age": 3007,
+      "hunger": 68.94999999999246,
       "hunger_rate": 0.15,
       "max_age": 7200,
       "food": "fungus",
       "processing_corpse": false,
       "processing_ticks": 0
+    },
+    {
+      "id": "b0ee1061",
+      "type": "ant",
+      "role": "worker",
+      "tile": "fungus_farm",
+      "age": 560,
+      "hunger": 74.00000000000219,
+      "hunger_rate": 0.1,
+      "max_age": 7200,
+      "food": "fungus"
+    },
+    {
+      "id": "41f3755e",
+      "type": "ant",
+      "role": "worker",
+      "tile": "fungus_farm",
+      "age": 560,
+      "hunger": 74.00000000000219,
+      "hunger_rate": 0.1,
+      "max_age": 7200,
+      "food": "fungus"
     }
   ],
   "map": {
@@ -79,9 +108,9 @@
         "type": "compost",
         "x": 1,
         "y": 0,
-        "contamination": 0.01,
-        "blighted": true,
-        "blight_ticks_remaining": 206
+        "contamination": 0,
+        "blighted": false,
+        "blight_ticks_remaining": 0
       },
       "dig_site": {
         "name": "The Dig",
@@ -94,6 +123,14 @@
         "type": "production",
         "x": 0,
         "y": 1
+      },
+      "crystal_cave": {
+        "name": "Crystal Cave",
+        "type": "resource",
+        "x": 2,
+        "y": 0,
+        "resource": "crystals",
+        "description": "Strange formations glitter in the dark"
       }
     },
     "connections": [
@@ -108,6 +145,10 @@
       [
         "origin",
         "fungus_farm"
+      ],
+      [
+        "origin",
+        "crystal_cave"
       ]
     ]
   },
@@ -136,8 +177,24 @@
       "undertaker_mortality",
       "resurrect_an_idea",
       "the_quiet",
-      "nutrient_crisis"
-    ]
+      "nutrient_crisis",
+      "last_worker",
+      "the_equilibrium",
+      "what_are_crystals_for"
+    ],
+    "goals": {
+      "crystal_resonance_chamber": {
+        "name": "Crystal Resonance Chamber",
+        "description": "A chamber that generates nutrients from crystal vibrations, bypassing the death economy",
+        "cost": {
+          "crystals": 10
+        },
+        "effect": {
+          "nutrients_per_tick": 0.05
+        },
+        "built": false
+      }
+    }
   },
   "graveyard": {
     "corpses": [],

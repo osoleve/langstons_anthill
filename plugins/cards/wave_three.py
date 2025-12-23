@@ -86,6 +86,61 @@ CARDS = {
             state["resources"].get("nutrients", 0) < 1 and
             state["tick"] > 66000
         )
+    },
+    "last_worker": {
+        "id": "last_worker",
+        "type": "crisis",
+        "prompt": "Only one worker remains. If they die, who will do the labor? The undertaker cannot dig or farm. The colony needs workers to function. Consider your options.",
+        "requirements": {
+            "minimum_specs": ["Address worker shortage"],
+            "completion": {"decision_made": True}
+        },
+        "fires_once": True,
+        "condition": lambda state: (
+            len([e for e in state["entities"] if e.get("role") == "worker"]) == 1 and
+            len([e for e in state["entities"] if e.get("role") == "undertaker"]) >= 1
+        )
+    },
+    "lonely_undertaker": {
+        "id": "lonely_undertaker",
+        "type": "observation",
+        "prompt": "The undertaker is alone. No workers remain. There is nothing to do. The corpses are processed, the living are gone. What is an undertaker without the dying?",
+        "requirements": {
+            "minimum_specs": ["Acknowledge or address the empty colony"],
+            "completion": {"decision_made": True}
+        },
+        "fires_once": True,
+        "condition": lambda state: (
+            len([e for e in state["entities"] if e.get("role") == "worker"]) == 0 and
+            len([e for e in state["entities"] if e.get("role") == "undertaker"]) >= 1
+        )
+    },
+    "the_equilibrium": {
+        "id": "the_equilibrium",
+        "type": "meta",
+        "prompt": "The colony has found equilibrium. Resources flow. Ants live and die. But nothing changes. Is stability the goal, or is it stagnation wearing a mask? What breaks the pattern?",
+        "requirements": {
+            "minimum_specs": ["Decide what disrupts equilibrium"],
+            "completion": {"decision_made": True}
+        },
+        "fires_once": True,
+        "condition": lambda state: (
+            state["tick"] > 67000 and
+            len(state["entities"]) >= 3
+        )
+    },
+    "what_are_crystals_for": {
+        "id": "what_are_crystals_for",
+        "type": "design_prompt",
+        "prompt": "Crystals are accumulating. But like nutrients before them, they need a purpose. What do crystals enable that dirt and fungus cannot? Consider: what does the colony lack?",
+        "requirements": {
+            "minimum_specs": ["Design a use for crystals"],
+            "completion": {"crystals_used": True}
+        },
+        "fires_once": True,
+        "condition": lambda state: (
+            state["resources"].get("crystals", 0) >= 0.1
+        )
     }
 }
 
