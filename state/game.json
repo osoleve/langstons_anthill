@@ -1,12 +1,12 @@
 {
-  "tick": 90522,
+  "tick": 92700,
   "resources": {
-    "dirt": 1386.184999996865,
-    "nutrients": 561.6100000000715,
-    "fungus": 8.499999999853404,
-    "crystals": 8.445000000000292,
-    "ore": 23.169999999997263,
-    "influence": 0.6315000000002469,
+    "dirt": 1418.8549999965876,
+    "nutrients": 605.1700000000319,
+    "fungus": 28.059999999857638,
+    "crystals": 10.622999999999085,
+    "ore": 27.52599999999485,
+    "influence": 1.4315000000002793,
     "insight": 3.5999999999997145
   },
   "systems": {
@@ -98,8 +98,8 @@
       "type": "ant",
       "role": "ornamental",
       "tile": "origin",
-      "age": 2545,
-      "hunger": 72.90000000000774,
+      "age": 4723,
+      "hunger": 62.40000000000859,
       "hunger_rate": 0.30000000000000004,
       "max_age": 7200,
       "food": "fungus",
@@ -113,8 +113,8 @@
       "type": "ant",
       "role": "undertaker",
       "tile": "origin",
-      "age": 2545,
-      "hunger": 78.24999999999372,
+      "age": 4723,
+      "hunger": 72.99999999998789,
       "hunger_rate": 0.15,
       "max_age": 7200,
       "food": "fungus",
@@ -251,7 +251,7 @@
     "events": []
   },
   "meta": {
-    "boredom": 0,
+    "boredom": 43,
     "recent_decisions": [],
     "estate": {
       "name": "The Listening Hill",
@@ -326,7 +326,8 @@
       "pretty_things",
       "observer_insight",
       "the_first_craft",
-      "the_hungry_one"
+      "the_hungry_one",
+      "visitor_gift"
     ],
     "goals": {
       "crystal_resonance_chamber": {
@@ -371,5 +372,6 @@
   "graveyard": {
     "corpses": [],
     "total_processed": 16
-  }
+  },
+  "last_save_timestamp": 1766532795.963718
 }
