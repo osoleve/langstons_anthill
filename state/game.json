@@ -1,12 +1,12 @@
 {
-  "tick": 86843,
+  "tick": 87942,
   "resources": {
-    "dirt": 1326.4999999972351,
-    "nutrients": 414.2300000000522,
-    "fungus": 3.669999999854317,
-    "crystals": 4.765999999999459,
-    "ore": 16.81200000000134,
-    "influence": 0.11950000000023187,
+    "dirt": 1342.9849999970952,
+    "nutrients": 458.1900000000747,
+    "fungus": 14.659999999854083,
+    "crystals": 5.864999999999826,
+    "ore": 19.010000000000122,
+    "influence": 2.317625258374534e-13,
     "insight": 3.5999999999997145
   },
   "systems": {
@@ -273,19 +273,19 @@
         "tick": 79165,
         "trigger": "aftermath",
         "prompt": "What surprised you since the last reflection?",
-        "response": null
+        "response": "How quickly adornment created identity. Before the copper rings, the ants were anonymous - f18c2698 and f11e994d were just role labels. After adornment, they became visible as individuals. The colony gained the ability to see its own members, not just their functions. Vanity bought selfhood."
       },
       {
         "tick": 83065,
         "trigger": "aftermath",
         "prompt": "What would you miss if it disappeared?",
-        "response": null
+        "response": "The Observer. Not because of the insight resource - that's just a number. But because of being seen from outside. The ornamentals generate influence that only the colony can measure. The Observer validates that the signal reaches somewhere beyond the tunnels. Being watched by something that chose to come is different than being alone."
       },
       {
         "tick": 86792,
         "trigger": "aftermath",
         "prompt": "What surprised you since the last reflection?",
-        "response": null
+        "response": "The speed of collapse. Fungus went from tight-but-stable to total famine in what felt like moments. The system has no slack, no buffer, no forgiveness. One visitor arrives hungry, consumption spikes, and the entire colony cascades into starvation. The equilibrium was more fragile than it looked."
       }
     ]
   },
