@@ -5,7 +5,14 @@ Visitors come and go. They bring things the colony cannot make.
 The walls of reality are breached.
 """
 
+import random
+
 PLUGIN_ID = "wave_six"
+
+# WWCD cooldown tracking
+_last_wwcd_tick = 0
+WWCD_COOLDOWN = 3600  # 1 hour between possible fires
+WWCD_CHANCE = 0.001  # 0.1% per tick when off cooldown (~once per 1000 ticks when eligible)
 
 CARDS = {
     "the_receiver_built": {
@@ -107,6 +114,18 @@ CARDS = {
         "condition": lambda state: (
             state.get("meta", {}).get("failed_summons", 0) >= 3
         )
+    },
+    "wwcd": {
+        "id": "wwcd",
+        "type": "audit",
+        "prompt": "What Would Carmack Do? Look at what you have built with an engineer's eye. What is wasteful? What is overbuilt? What doesn't actually work? What would you cut? What would you optimize? The colony does not need more features. It needs the features it has to work well. Audit. Simplify. Ship.",
+        "requirements": {
+            "minimum_specs": ["Perform an engineering audit", "Identify one thing to fix or cut"],
+            "completion": {"decision_made": True}
+        },
+        "fires_once": False,  # Can fire multiple times
+        "is_rare": True,  # Special handling in on_tick
+        "condition": lambda state: True  # Always eligible, rarity handled separately
     }
 }
 
@@ -144,15 +163,31 @@ def on_summoning_failed(payload: dict):
 
 def on_tick(payload: dict):
     """Check card conditions on each tick."""
+    global _last_wwcd_tick
     from engine.state import load_state, save_state
 
     state = payload
     bus = _bus
     fired_cards = get_fired_cards(state)
     any_fired = False
+    tick = state.get("tick", 0)
 
     for card_id, card in CARDS.items():
         if card.get("fires_once") and card_id in fired_cards:
+            continue
+
+        # Special handling for rare cards (like WWCD)
+        if card.get("is_rare"):
+            # Check cooldown
+            if tick - _last_wwcd_tick < WWCD_COOLDOWN:
+                continue
+            # Roll for rare event
+            if random.random() > WWCD_CHANCE:
+                continue
+            # Passed all checks - fire the rare card
+            _last_wwcd_tick = tick
+            bus.emit("card_drawn", card)
+            print(f"[wave_six] RARE EVENT: {card_id}")
             continue
 
         try:
