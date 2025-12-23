@@ -1,12 +1,13 @@
 {
-  "tick": 80342,
+  "tick": 86843,
   "resources": {
-    "dirt": 1225.9849999979974,
-    "nutrients": 153.08999999998304,
-    "fungus": 107.6599999998405,
-    "crystals": 3.2649999999996258,
-    "ore": 3.8099999999995817,
-    "influence": 1.7470000000000014
+    "dirt": 1326.4999999972351,
+    "nutrients": 414.2300000000522,
+    "fungus": 3.669999999854317,
+    "crystals": 4.765999999999459,
+    "ore": 16.81200000000134,
+    "influence": 0.11950000000023187,
+    "insight": 3.5999999999997145
   },
   "systems": {
     "compost_heap": {
@@ -73,42 +74,14 @@
       "name": "Crafting Hollow",
       "type": "crafting",
       "description": "A quiet alcove where ore becomes beauty. Here, ants cease to be tools."
+    },
+    "receiver": {
+      "name": "The Receiver",
+      "type": "antenna",
+      "description": "A jagged antenna of bone and crystal. It listens to frequencies the colony cannot hear."
     }
   },
-  "entities": [
-    {
-      "id": "f18c2698",
-      "type": "ant",
-      "role": "ornamental",
-      "tile": "origin",
-      "age": 1050,
-      "hunger": 75.00000000000327,
-      "hunger_rate": 0.30000000000000004,
-      "max_age": 7200,
-      "food": "fungus",
-      "adorned": true,
-      "ornament": "copper_ring",
-      "previous_role": "worker",
-      "influence_rate": 0.001
-    },
-    {
-      "id": "f11e994d",
-      "type": "ant",
-      "role": "ornamental",
-      "tile": "origin",
-      "age": 1050,
-      "hunger": 63.399999999996396,
-      "hunger_rate": 0.44999999999999996,
-      "max_age": 7200,
-      "food": "fungus",
-      "processing_corpse": false,
-      "processing_ticks": 0,
-      "adorned": true,
-      "ornament": "copper_ring",
-      "previous_role": "undertaker",
-      "influence_rate": 0.001
-    }
-  ],
+  "entities": [],
   "map": {
     "tiles": {
       "origin": {
@@ -174,6 +147,13 @@
         "x": -2,
         "y": -1,
         "description": "A still alcove lined with unworked ore. Those who enter as workers leave as something else."
+      },
+      "receiver": {
+        "name": "The Receiver",
+        "type": "antenna",
+        "x": 4,
+        "y": 1,
+        "description": "A jagged antenna of bone and crystal. It listens to frequencies the colony cannot hear."
       }
     },
     "connections": [
@@ -208,6 +188,10 @@
       [
         "ore_vein",
         "crafting_hollow"
+      ],
+      [
+        "resonance_chamber",
+        "receiver"
       ]
     ]
   },
@@ -262,7 +246,14 @@
       "vanity_or_identity",
       "the_undertakers_ring",
       "the_court",
-      "first_influence"
+      "first_influence",
+      "the_receiver_built",
+      "first_visitor",
+      "visitor_departed",
+      "pretty_things",
+      "observer_insight",
+      "the_first_craft",
+      "the_hungry_one"
     ],
     "goals": {
       "crystal_resonance_chamber": {
@@ -283,11 +274,52 @@
         "trigger": "aftermath",
         "prompt": "What surprised you since the last reflection?",
         "response": null
+      },
+      {
+        "tick": 83065,
+        "trigger": "aftermath",
+        "prompt": "What would you miss if it disappeared?",
+        "response": null
+      },
+      {
+        "tick": 86792,
+        "trigger": "aftermath",
+        "prompt": "What surprised you since the last reflection?",
+        "response": null
       }
     ]
   },
   "graveyard": {
-    "corpses": [],
-    "total_processed": 10
+    "corpses": [
+      {
+        "entity_id": "v_e5eacc",
+        "entity_type": "visitor",
+        "death_tick": 86100,
+        "cause": "starvation",
+        "tile": "receiver"
+      },
+      {
+        "entity_id": "009bae17",
+        "entity_type": "ant",
+        "death_tick": 86225,
+        "cause": "starvation",
+        "tile": "origin"
+      },
+      {
+        "entity_id": "8d540390",
+        "entity_type": "ant",
+        "death_tick": 86459,
+        "cause": "starvation",
+        "tile": "origin"
+      },
+      {
+        "entity_id": "f18c2698",
+        "entity_type": "ant",
+        "death_tick": 86492,
+        "cause": "old_age",
+        "tile": "origin"
+      }
+    ],
+    "total_processed": 12
   }
 }

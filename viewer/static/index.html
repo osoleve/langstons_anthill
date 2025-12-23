@@ -94,6 +94,20 @@
             background: #3a2020;
             border-color: #633;
         }
+        .tile.antenna {
+            background: #252530;
+            border-color: #446;
+            box-shadow: 0 0 10px rgba(100, 100, 200, 0.2);
+        }
+        .tile.antenna::before {
+            content: '';
+            position: absolute;
+            top: -8px;
+            left: 50%;
+            width: 2px;
+            height: 8px;
+            background: linear-gradient(to top, #446, #88a);
+        }
         .tile .tile-name {
             margin-bottom: 5px;
         }
@@ -114,9 +128,22 @@
             border-radius: 50%;
             animation: pulse 2s infinite;
         }
+        .entity-dot.visitor {
+            background: #8af;
+            box-shadow: 0 0 6px rgba(136, 170, 255, 0.5);
+            animation: visitor-pulse 1.5s infinite;
+        }
+        .entity-dot.visitor.hungry {
+            background: #f88;
+            box-shadow: 0 0 6px rgba(255, 136, 136, 0.5);
+        }
         @keyframes pulse {
             0%, 100% { opacity: 0.6; }
             50% { opacity: 1; }
+        }
+        @keyframes visitor-pulse {
+            0%, 100% { opacity: 0.4; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.2); }
         }
         #tick {
             position: fixed;
@@ -160,6 +187,27 @@
             padding: 2px 0;
             font-size: 11px;
         }
+        #particle-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: 10;
+        }
+        .tile.generating {
+            animation: system-pulse 2s infinite;
+        }
+        @keyframes system-pulse {
+            0%, 100% { box-shadow: inset 0 0 5px rgba(100, 150, 100, 0.2); }
+            50% { box-shadow: inset 0 0 15px rgba(100, 150, 100, 0.4); }
+        }
+        .tile.antenna.broadcasting {
+            animation: broadcast-pulse 1s infinite;
+        }
+        @keyframes broadcast-pulse {
+            0%, 100% { box-shadow: 0 0 10px rgba(100, 100, 200, 0.2); }
+            50% { box-shadow: 0 0 25px rgba(100, 100, 200, 0.5), 0 0 40px rgba(100, 100, 200, 0.2); }
+        }
     </style>
 </head>
 <body>
@@ -193,6 +241,7 @@
         </div>
 
         <div class="panel" id="map">
+            <canvas id="particle-canvas"></canvas>
             <div id="tiles"></div>
         </div>
 
@@ -248,9 +297,14 @@
             } else {
                 entitiesEl.innerHTML = '';
                 const byRole = {};
+                const visitors = [];
                 for (const e of entities) {
-                    const role = e.role || e.type || 'unknown';
-                    byRole[role] = (byRole[role] || 0) + 1;
+                    if (e.type === 'visitor') {
+                        visitors.push(e);
+                    } else {
+                        const role = e.role || e.type || 'unknown';
+                        byRole[role] = (byRole[role] || 0) + 1;
+                    }
                 }
                 for (const [role, count] of Object.entries(byRole)) {
                     const div = document.createElement('div');
@@ -258,6 +312,17 @@
                     div.innerHTML = `
                         <span class="stat-label">${role}</span>
                         <span class="stat-value">${count}</span>
+                    `;
+                    entitiesEl.appendChild(div);
+                }
+                // Show visitors separately
+                for (const v of visitors) {
+                    const div = document.createElement('div');
+                    div.className = 'stat-row';
+                    div.style.color = '#8af';
+                    div.innerHTML = `
+                        <span class="stat-label">${v.name || v.subtype || 'visitor'}</span>
+                        <span class="stat-value" style="font-size: 10px; color: #668">${v.subtype || ''}</span>
                     `;
                     entitiesEl.appendChild(div);
                 }
@@ -315,22 +380,41 @@
                 div.className = 'tile';
                 if (state.systems && state.systems[id]) {
                     div.className += ' has-system';
+                    const sys = state.systems[id];
+                    if (sys.generates && Object.keys(sys.generates).length > 0) {
+                        div.className += ' generating';
+                    }
                 }
                 if (tile.blighted) {
                     div.className += ' blighted';
+                }
+                if (tile.type === 'antenna') {
+                    div.className += ' antenna';
+                    if (state.resources?.influence > 0.5) {
+                        div.className += ' broadcasting';
+                    }
                 }
                 const x = (tile.x || 0) * 120 + 200;
                 const y = (tile.y || 0) * 120 + 100;
                 div.style.left = x + 'px';
                 div.style.top = y + 'px';
 
-                // Count ants on this tile
-                const antsHere = entities.filter(e => e.tile === id).length;
+                // Count entities on this tile
+                const antsHere = entities.filter(e => e.tile === id && e.type !== 'visitor').length;
+                const visitorsHere = entities.filter(e => e.tile === id && e.type === 'visitor').length;
+
+                let entityInfo = '';
+                if (antsHere > 0) {
+                    entityInfo += `<div class="ant-count">${antsHere} ant${antsHere > 1 ? 's' : ''}</div>`;
+                }
+                if (visitorsHere > 0) {
+                    entityInfo += `<div class="ant-count" style="color: #8af">${visitorsHere} visitor${visitorsHere > 1 ? 's' : ''}</div>`;
+                }
 
                 div.innerHTML = `
                     <div class="tile-name">${tile.name || id}</div>
                     <div class="tile-info">${tile.type || ''}</div>
-                    ${antsHere > 0 ? `<div class="ant-count">${antsHere} ant${antsHere > 1 ? 's' : ''}</div>` : ''}
+                    ${entityInfo}
                 `;
                 tilesEl.appendChild(div);
             }
@@ -377,6 +461,256 @@
             .then(r => r.json())
             .then(render)
             .catch(() => {});
+
+        // Particle system
+        const canvas = document.getElementById('particle-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        let lastState = null;
+
+        function resizeCanvas() {
+            const map = document.getElementById('map');
+            canvas.width = map.clientWidth;
+            canvas.height = map.clientHeight;
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        function getTileCenter(tileId, tiles) {
+            const tile = tiles[tileId];
+            if (!tile) return null;
+            return {
+                x: (tile.x || 0) * 120 + 250,
+                y: (tile.y || 0) * 120 + 150
+            };
+        }
+
+        function spawnParticle(from, to, color) {
+            particles.push({
+                x: from.x,
+                y: from.y,
+                targetX: to.x,
+                targetY: to.y,
+                progress: 0,
+                speed: 0.01 + Math.random() * 0.01,
+                color: color,
+                size: 2 + Math.random() * 2
+            });
+        }
+
+        function updateParticles() {
+            particles = particles.filter(p => {
+                p.progress += p.speed;
+                p.x = p.x + (p.targetX - p.x) * p.speed * 2;
+                p.y = p.y + (p.targetY - p.y) * p.speed * 2;
+                return p.progress < 1;
+            });
+        }
+
+        function drawConnections(state) {
+            if (!state || !state.map?.connections || !state.map?.tiles) return;
+            const tiles = state.map.tiles;
+            const connections = state.map.connections;
+
+            ctx.strokeStyle = '#333';
+            ctx.lineWidth = 1;
+            ctx.setLineDash([4, 4]);
+
+            for (const [from, to] of connections) {
+                const fromCenter = getTileCenter(from, tiles);
+                const toCenter = getTileCenter(to, tiles);
+                if (fromCenter && toCenter) {
+                    ctx.beginPath();
+                    ctx.moveTo(fromCenter.x, fromCenter.y);
+                    ctx.lineTo(toCenter.x, toCenter.y);
+                    ctx.stroke();
+                }
+            }
+            ctx.setLineDash([]);
+        }
+
+        // Entity dots that drift within tiles
+        let entityDots = {};
+        function updateEntityDots(state) {
+            if (!state || !state.entities || !state.map?.tiles) return;
+            const tiles = state.map.tiles;
+
+            // Update or create dots for each entity
+            for (const entity of state.entities) {
+                const tileCenter = getTileCenter(entity.tile, tiles);
+                if (!tileCenter) continue;
+
+                if (!entityDots[entity.id]) {
+                    // Create new dot with random offset
+                    entityDots[entity.id] = {
+                        x: tileCenter.x + (Math.random() - 0.5) * 60,
+                        y: tileCenter.y + (Math.random() - 0.5) * 60,
+                        targetX: tileCenter.x + (Math.random() - 0.5) * 60,
+                        targetY: tileCenter.y + (Math.random() - 0.5) * 60,
+                        type: entity.type,
+                        subtype: entity.subtype,
+                        adorned: entity.adorned
+                    };
+                }
+
+                const dot = entityDots[entity.id];
+                // Slowly drift toward target
+                dot.x += (dot.targetX - dot.x) * 0.02;
+                dot.y += (dot.targetY - dot.y) * 0.02;
+
+                // Pick new target occasionally
+                if (Math.random() < 0.01) {
+                    dot.targetX = tileCenter.x + (Math.random() - 0.5) * 60;
+                    dot.targetY = tileCenter.y + (Math.random() - 0.5) * 60;
+                }
+
+                dot.type = entity.type;
+                dot.subtype = entity.subtype;
+                dot.adorned = entity.adorned;
+            }
+
+            // Remove dots for dead entities
+            const livingIds = new Set(state.entities.map(e => e.id));
+            for (const id of Object.keys(entityDots)) {
+                if (!livingIds.has(id)) {
+                    delete entityDots[id];
+                }
+            }
+        }
+
+        function drawEntityDots() {
+            for (const [id, dot] of Object.entries(entityDots)) {
+                ctx.beginPath();
+                const size = dot.adorned ? 5 : 4;
+
+                if (dot.type === 'visitor') {
+                    // Visitors glow blue (or red if hungry)
+                    const color = dot.subtype === 'hungry' ? '#f88' : '#8af';
+                    ctx.arc(dot.x, dot.y, size, 0, Math.PI * 2);
+                    ctx.fillStyle = color;
+                    ctx.shadowColor = color;
+                    ctx.shadowBlur = 8;
+                } else if (dot.adorned) {
+                    // Adorned ants have golden glow
+                    ctx.arc(dot.x, dot.y, size, 0, Math.PI * 2);
+                    ctx.fillStyle = '#ca8';
+                    ctx.shadowColor = '#ca8';
+                    ctx.shadowBlur = 6;
+                } else {
+                    // Regular ants
+                    ctx.arc(dot.x, dot.y, size - 1, 0, Math.PI * 2);
+                    ctx.fillStyle = '#a85';
+                    ctx.shadowBlur = 0;
+                }
+                ctx.fill();
+                ctx.shadowBlur = 0;
+            }
+        }
+
+        function drawParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Draw connections first (behind everything)
+            drawConnections(lastState);
+
+            // Draw entity dots
+            drawEntityDots();
+
+            // Draw resource particles on top
+            for (const p of particles) {
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size * (1 - p.progress * 0.5), 0, Math.PI * 2);
+                ctx.fillStyle = p.color;
+                ctx.globalAlpha = 1 - p.progress;
+                ctx.fill();
+            }
+            ctx.globalAlpha = 1;
+        }
+
+        // Spawn particles based on resource flows
+        function spawnResourceParticles(state) {
+            if (!state || !state.map?.tiles) return;
+            const tiles = state.map.tiles;
+
+            // Dig site -> origin (dirt)
+            if (Math.random() < 0.1) {
+                const from = getTileCenter('dig_site', tiles);
+                const to = getTileCenter('origin', tiles);
+                if (from && to) spawnParticle(from, to, '#8b7355');
+            }
+
+            // Compost -> origin (nutrients)
+            if (Math.random() < 0.05) {
+                const from = getTileCenter('compost', tiles);
+                const to = getTileCenter('origin', tiles);
+                if (from && to) spawnParticle(from, to, '#5a8a5a');
+            }
+
+            // Origin -> fungus farm (nutrients)
+            if (Math.random() < 0.05) {
+                const from = getTileCenter('origin', tiles);
+                const to = getTileCenter('fungus_farm', tiles);
+                if (from && to) spawnParticle(from, to, '#5a8a5a');
+            }
+
+            // Fungus farm -> origin (fungus)
+            if (Math.random() < 0.03) {
+                const from = getTileCenter('fungus_farm', tiles);
+                const to = getTileCenter('origin', tiles);
+                if (from && to) spawnParticle(from, to, '#7a6a9a');
+            }
+
+            // Crystal cave -> resonance (crystals)
+            if (Math.random() < 0.02) {
+                const from = getTileCenter('crystal_cave', tiles);
+                const to = getTileCenter('resonance_chamber', tiles);
+                if (from && to) spawnParticle(from, to, '#aaccff');
+            }
+
+            // Resonance -> origin (nutrients from crystals)
+            if (Math.random() < 0.08) {
+                const from = getTileCenter('resonance_chamber', tiles);
+                const to = getTileCenter('origin', tiles);
+                if (from && to) spawnParticle(from, to, '#88aacc');
+            }
+
+            // Origin -> receiver (influence)
+            if (state.resources?.influence > 0 && Math.random() < 0.05) {
+                const from = getTileCenter('origin', tiles);
+                const to = getTileCenter('receiver', tiles);
+                if (from && to) spawnParticle(from, to, '#aa88ff');
+            }
+
+            // Observer generating insight
+            const hasObserver = state.entities?.some(e => e.subtype === 'observer');
+            if (hasObserver && Math.random() < 0.1) {
+                const from = getTileCenter('receiver', tiles);
+                if (from) {
+                    spawnParticle(
+                        { x: from.x + (Math.random() - 0.5) * 30, y: from.y + (Math.random() - 0.5) * 30 },
+                        { x: from.x, y: from.y - 40 },
+                        '#88ffaa'
+                    );
+                }
+            }
+        }
+
+        function animateParticles() {
+            spawnResourceParticles(lastState);
+            updateEntityDots(lastState);
+            updateParticles();
+            drawParticles();
+            requestAnimationFrame(animateParticles);
+        }
+
+        // Store state for particle system
+        const originalRender = render;
+        render = function(state) {
+            lastState = state;
+            originalRender(state);
+        };
+
+        animateParticles();
     </script>
 </body>
 </html>

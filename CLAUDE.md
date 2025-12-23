@@ -140,12 +140,14 @@ A small web server that renders game state as a living map.
 - Rejected ideas are a graveyard (literal)
 - Resource flows are visible particle streams
 
-Stack: 
+Stack:
 - `viewer/server.py` — Flask/FastAPI, serves static + SSE endpoint
 - `viewer/static/index.html` — Canvas or SVG renderer
 - Reads from `state/game.json`, pushes updates via SSE
 
 The map grows when you add systems. Start with one tile. Let it sprawl.
+
+**The viewer should be running. Always.** During grinds, during idle, during design phases—`localhost:5000` is open. If watching it is boring, that's a design problem. The map should show movement, flows, state changes. Particle streams for resources. Entities that visibly patrol. Blight that spreads visually. The viewer isn't a debug panel, it's the game. Make it something worth watching during a 2-hour grind.
 
 ### Plugin Architecture
 
@@ -253,7 +255,17 @@ The codebase implements several systems not described above:
 - `plugins/undertaker.py` - Handles corpse processing
 - `plugins/exploration.py` - Tile exploration mechanics
 - `plugins/reflection.py` - Boredom and decision tracking
-- Card waves: `starter_cards.py`, `wave_two.py`, `wave_three.py`, `wave_four.py`
+- `plugins/queen.py` - Colony reproduction, spawns workers/undertakers
+- `plugins/receiver.py` - Listens to the Outside, summons Visitors
+- Card waves: `starter_cards.py`, `wave_two.py`, `wave_three.py`, `wave_four.py`, `wave_five.py`, `wave_six.py`
+
+**The Receiver & Visitors:**
+- The Receiver is an antenna at the colony's edge that consumes influence
+- When influence reaches threshold (2.0), attempts to summon a Visitor (30% success, 10 min cooldown)
+- Visitors are entities from outside, not born from the queen
+- Three types: Wanderer (leaves gifts), Observer (generates insight), Hungry (eats influence, makes strange_matter)
+- Visitors have limited lifespans and different consumption patterns
+- New resources: `strange_matter`, `insight` - products of outside contact
 
 ## Directory Structure
 
