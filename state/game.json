@@ -1,22 +1,24 @@
 {
-  "tick": 63755,
+  "tick": 66450,
   "resources": {
-    "dirt": 964.9249999994851,
-    "nutrients": 16.529999999984614,
-    "fungus": 195.35999999986194
+    "dirt": 1007.3199999994465,
+    "nutrients": 1.3799999999849621,
+    "fungus": 191.9399999998423
   },
   "systems": {
     "compost_heap": {
       "name": "Compost Heap",
       "type": "generator",
-      "generates": {
+      "generates": {},
+      "consumes": {},
+      "description": "Dirt slowly breaks down into nutrients",
+      "corpse_boosts": [],
+      "original_generates": {
         "nutrients": 0.01
       },
-      "consumes": {
+      "original_consumes": {
         "dirt": 0.005
-      },
-      "description": "Dirt slowly breaks down into nutrients",
-      "corpse_boosts": []
+      }
     },
     "dig_site": {
       "name": "Dig Site",
@@ -38,7 +40,32 @@
       "description": "Cultivates fungus from nutrients"
     }
   },
-  "entities": [],
+  "entities": [
+    {
+      "id": "da8f1229",
+      "type": "ant",
+      "role": "worker",
+      "tile": "dig_site",
+      "age": 2695,
+      "hunger": 70.50000000000736,
+      "hunger_rate": 0.1,
+      "max_age": 7200,
+      "food": "fungus"
+    },
+    {
+      "id": "d40e54a2",
+      "type": "ant",
+      "role": "undertaker",
+      "tile": "origin",
+      "age": 2230,
+      "hunger": 65.49999999999415,
+      "hunger_rate": 0.15,
+      "max_age": 7200,
+      "food": "fungus",
+      "processing_corpse": false,
+      "processing_ticks": 0
+    }
+  ],
   "map": {
     "tiles": {
       "origin": {
@@ -52,9 +79,9 @@
         "type": "compost",
         "x": 1,
         "y": 0,
-        "contamination": 0,
-        "blighted": false,
-        "blight_ticks_remaining": 0
+        "contamination": 0.01,
+        "blighted": true,
+        "blight_ticks_remaining": 206
       },
       "dig_site": {
         "name": "The Dig",
@@ -104,26 +131,16 @@
       "the_second_grind",
       "something_alive",
       "the_map_is_flat",
-      "efficiency_question"
+      "efficiency_question",
+      "the_death_economy",
+      "undertaker_mortality",
+      "resurrect_an_idea",
+      "the_quiet",
+      "nutrient_crisis"
     ]
   },
   "graveyard": {
-    "corpses": [
-      {
-        "entity_id": "274c49cb",
-        "entity_type": "ant",
-        "death_tick": 63155,
-        "cause": "old_age",
-        "tile": "fungus_farm"
-      },
-      {
-        "entity_id": "c0e5448a",
-        "entity_type": "ant",
-        "death_tick": 63155,
-        "cause": "old_age",
-        "tile": "fungus_farm"
-      }
-    ],
-    "total_processed": 2
+    "corpses": [],
+    "total_processed": 4
   }
 }
