@@ -1,23 +1,25 @@
 {
-  "tick": 71605,
+  "tick": 71755,
   "resources": {
-    "dirt": 1087.1749999989406,
-    "nutrients": 0.009999999985004834,
-    "fungus": 149.46999999981728,
-    "crystals": 4.527999999999847
+    "dirt": 1089.5549999989244,
+    "nutrients": 0.009999999985004844,
+    "fungus": 147.28999999981653,
+    "crystals": 4.677999999999897
   },
   "systems": {
     "compost_heap": {
       "name": "Compost Heap",
       "type": "generator",
-      "generates": {
+      "generates": {},
+      "consumes": {},
+      "description": "Dirt slowly breaks down into nutrients",
+      "corpse_boosts": [],
+      "original_generates": {
         "nutrients": 0.01
       },
-      "consumes": {
+      "original_consumes": {
         "dirt": 0.005
-      },
-      "description": "Dirt slowly breaks down into nutrients",
-      "corpse_boosts": []
+      }
     },
     "dig_site": {
       "name": "Dig Site",
@@ -53,8 +55,8 @@
       "type": "ant",
       "role": "worker",
       "tile": "fungus_farm",
-      "age": 4938,
-      "hunger": 56.200000000012594,
+      "age": 5088,
+      "hunger": 71.200000000013,
       "hunger_rate": 0.1,
       "max_age": 7200,
       "food": "fungus"
@@ -64,8 +66,8 @@
       "type": "ant",
       "role": "worker",
       "tile": "fungus_farm",
-      "age": 4938,
-      "hunger": 56.200000000012594,
+      "age": 5088,
+      "hunger": 71.200000000013,
       "hunger_rate": 0.1,
       "max_age": 7200,
       "food": "fungus"
@@ -75,8 +77,8 @@
       "type": "ant",
       "role": "worker",
       "tile": "fungus_farm",
-      "age": 500,
-      "hunger": 50.00000000000185,
+      "age": 650,
+      "hunger": 65.0000000000027,
       "hunger_rate": 0.1,
       "max_age": 7200,
       "food": "fungus"
@@ -86,11 +88,13 @@
       "type": "ant",
       "role": "undertaker",
       "tile": "origin",
-      "age": 0,
-      "hunger": 100,
+      "age": 150,
+      "hunger": 77.49999999999915,
       "hunger_rate": 0.15,
       "max_age": 7200,
-      "food": "fungus"
+      "food": "fungus",
+      "processing_corpse": false,
+      "processing_ticks": 0
     }
   ],
   "map": {
@@ -106,9 +110,9 @@
         "type": "compost",
         "x": 1,
         "y": 0,
-        "contamination": 0,
-        "blighted": false,
-        "blight_ticks_remaining": 0
+        "contamination": 0.01,
+        "blighted": true,
+        "blight_ticks_remaining": 274
       },
       "dig_site": {
         "name": "The Dig",
@@ -196,15 +200,7 @@
     }
   },
   "graveyard": {
-    "corpses": [
-      {
-        "entity_id": "d40e54a2",
-        "entity_type": "ant",
-        "death_tick": 71420,
-        "cause": "old_age",
-        "tile": "origin"
-      }
-    ],
-    "total_processed": 5
+    "corpses": [],
+    "total_processed": 6
   }
 }
