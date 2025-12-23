@@ -1,25 +1,23 @@
 {
-  "tick": 71755,
+  "tick": 74543,
   "resources": {
-    "dirt": 1089.5549999989244,
-    "nutrients": 0.009999999985004844,
-    "fungus": 147.28999999981653,
-    "crystals": 4.677999999999897
+    "dirt": 1135.9999999986703,
+    "nutrients": 7.359999999985135,
+    "fungus": 123.87999999981575,
+    "crystals": 7.466000000000828
   },
   "systems": {
     "compost_heap": {
       "name": "Compost Heap",
       "type": "generator",
-      "generates": {},
-      "consumes": {},
-      "description": "Dirt slowly breaks down into nutrients",
-      "corpse_boosts": [],
-      "original_generates": {
+      "generates": {
         "nutrients": 0.01
       },
-      "original_consumes": {
+      "consumes": {
         "dirt": 0.005
-      }
+      },
+      "description": "Dirt slowly breaks down into nutrients",
+      "corpse_boosts": []
     },
     "dig_site": {
       "name": "Dig Site",
@@ -51,34 +49,12 @@
   },
   "entities": [
     {
-      "id": "b0ee1061",
-      "type": "ant",
-      "role": "worker",
-      "tile": "fungus_farm",
-      "age": 5088,
-      "hunger": 71.200000000013,
-      "hunger_rate": 0.1,
-      "max_age": 7200,
-      "food": "fungus"
-    },
-    {
-      "id": "41f3755e",
-      "type": "ant",
-      "role": "worker",
-      "tile": "fungus_farm",
-      "age": 5088,
-      "hunger": 71.200000000013,
-      "hunger_rate": 0.1,
-      "max_age": 7200,
-      "food": "fungus"
-    },
-    {
       "id": "4f6ce27d",
       "type": "ant",
       "role": "worker",
       "tile": "fungus_farm",
-      "age": 650,
-      "hunger": 65.0000000000027,
+      "age": 3438,
+      "hunger": 56.20000000000904,
       "hunger_rate": 0.1,
       "max_age": 7200,
       "food": "fungus"
@@ -88,8 +64,8 @@
       "type": "ant",
       "role": "undertaker",
       "tile": "origin",
-      "age": 150,
-      "hunger": 77.49999999999915,
+      "age": 2938,
+      "hunger": 79.29999999999285,
       "hunger_rate": 0.15,
       "max_age": 7200,
       "food": "fungus",
@@ -110,9 +86,9 @@
         "type": "compost",
         "x": 1,
         "y": 0,
-        "contamination": 0.01,
-        "blighted": true,
-        "blight_ticks_remaining": 274
+        "contamination": 0,
+        "blighted": false,
+        "blight_ticks_remaining": 0
       },
       "dig_site": {
         "name": "The Dig",
@@ -201,6 +177,6 @@
   },
   "graveyard": {
     "corpses": [],
-    "total_processed": 6
+    "total_processed": 8
   }
 }
