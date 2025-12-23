@@ -73,6 +73,11 @@
       "name": "Crafting Hollow",
       "type": "crafting",
       "description": "A quiet alcove where ore becomes beauty. Here, ants cease to be tools."
+    },
+    "receiver": {
+      "name": "The Receiver",
+      "type": "antenna",
+      "description": "A jagged antenna of bone and crystal. It listens to frequencies the colony cannot hear."
     }
   },
   "entities": [
@@ -174,6 +179,13 @@
         "x": -2,
         "y": -1,
         "description": "A still alcove lined with unworked ore. Those who enter as workers leave as something else."
+      },
+      "receiver": {
+        "name": "The Receiver",
+        "type": "antenna",
+        "x": 4,
+        "y": 1,
+        "description": "A jagged antenna of bone and crystal. It listens to frequencies the colony cannot hear."
       }
     },
     "connections": [
@@ -208,6 +220,10 @@
       [
         "ore_vein",
         "crafting_hollow"
+      ],
+      [
+        "resonance_chamber",
+        "receiver"
       ]
     ]
   },

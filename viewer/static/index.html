@@ -94,6 +94,20 @@
             background: #3a2020;
             border-color: #633;
         }
+        .tile.antenna {
+            background: #252530;
+            border-color: #446;
+            box-shadow: 0 0 10px rgba(100, 100, 200, 0.2);
+        }
+        .tile.antenna::before {
+            content: '';
+            position: absolute;
+            top: -8px;
+            left: 50%;
+            width: 2px;
+            height: 8px;
+            background: linear-gradient(to top, #446, #88a);
+        }
         .tile .tile-name {
             margin-bottom: 5px;
         }
@@ -114,9 +128,22 @@
             border-radius: 50%;
             animation: pulse 2s infinite;
         }
+        .entity-dot.visitor {
+            background: #8af;
+            box-shadow: 0 0 6px rgba(136, 170, 255, 0.5);
+            animation: visitor-pulse 1.5s infinite;
+        }
+        .entity-dot.visitor.hungry {
+            background: #f88;
+            box-shadow: 0 0 6px rgba(255, 136, 136, 0.5);
+        }
         @keyframes pulse {
             0%, 100% { opacity: 0.6; }
             50% { opacity: 1; }
+        }
+        @keyframes visitor-pulse {
+            0%, 100% { opacity: 0.4; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.2); }
         }
         #tick {
             position: fixed;
@@ -248,9 +275,14 @@
             } else {
                 entitiesEl.innerHTML = '';
                 const byRole = {};
+                const visitors = [];
                 for (const e of entities) {
-                    const role = e.role || e.type || 'unknown';
-                    byRole[role] = (byRole[role] || 0) + 1;
+                    if (e.type === 'visitor') {
+                        visitors.push(e);
+                    } else {
+                        const role = e.role || e.type || 'unknown';
+                        byRole[role] = (byRole[role] || 0) + 1;
+                    }
                 }
                 for (const [role, count] of Object.entries(byRole)) {
                     const div = document.createElement('div');
@@ -258,6 +290,17 @@
                     div.innerHTML = `
                         <span class="stat-label">${role}</span>
                         <span class="stat-value">${count}</span>
+                    `;
+                    entitiesEl.appendChild(div);
+                }
+                // Show visitors separately
+                for (const v of visitors) {
+                    const div = document.createElement('div');
+                    div.className = 'stat-row';
+                    div.style.color = '#8af';
+                    div.innerHTML = `
+                        <span class="stat-label">${v.name || v.subtype || 'visitor'}</span>
+                        <span class="stat-value" style="font-size: 10px; color: #668">${v.subtype || ''}</span>
                     `;
                     entitiesEl.appendChild(div);
                 }
@@ -319,18 +362,30 @@
                 if (tile.blighted) {
                     div.className += ' blighted';
                 }
+                if (tile.type === 'antenna') {
+                    div.className += ' antenna';
+                }
                 const x = (tile.x || 0) * 120 + 200;
                 const y = (tile.y || 0) * 120 + 100;
                 div.style.left = x + 'px';
                 div.style.top = y + 'px';
 
-                // Count ants on this tile
-                const antsHere = entities.filter(e => e.tile === id).length;
+                // Count entities on this tile
+                const antsHere = entities.filter(e => e.tile === id && e.type !== 'visitor').length;
+                const visitorsHere = entities.filter(e => e.tile === id && e.type === 'visitor').length;
+
+                let entityInfo = '';
+                if (antsHere > 0) {
+                    entityInfo += `<div class="ant-count">${antsHere} ant${antsHere > 1 ? 's' : ''}</div>`;
+                }
+                if (visitorsHere > 0) {
+                    entityInfo += `<div class="ant-count" style="color: #8af">${visitorsHere} visitor${visitorsHere > 1 ? 's' : ''}</div>`;
+                }
 
                 div.innerHTML = `
                     <div class="tile-name">${tile.name || id}</div>
                     <div class="tile-info">${tile.type || ''}</div>
-                    ${antsHere > 0 ? `<div class="ant-count">${antsHere} ant${antsHere > 1 ? 's' : ''}</div>` : ''}
+                    ${entityInfo}
                 `;
                 tilesEl.appendChild(div);
             }
