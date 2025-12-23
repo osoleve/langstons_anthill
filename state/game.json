@@ -6,7 +6,7 @@
     "fungus": 28.059999999857638,
     "crystals": 10.622999999999085,
     "ore": 27.52599999999485,
-    "influence": 1.4315000000002793,
+    "influence": 1.4415000000002782,
     "insight": 3.5999999999997145
   },
   "systems": {
@@ -373,5 +373,5 @@
     "corpses": [],
     "total_processed": 16
   },
-  "last_save_timestamp": 1766532795.963718
+  "last_save_timestamp": 1766532816.09281
 }
