@@ -1,13 +1,13 @@
 {
-  "tick": 81142,
+  "tick": 86803,
   "resources": {
-    "dirt": 1237.9849999978956,
-    "nutrients": 185.08999999997667,
-    "fungus": 95.65999999984459,
-    "crystals": 4.064999999999566,
-    "ore": 5.409999999999406,
-    "influence": 0.9470000000000278,
-    "insight": 0.6310000000000004
+    "dirt": 1325.8999999972402,
+    "nutrients": 412.6300000000514,
+    "fungus": 3.2699999998543254,
+    "crystals": 4.725999999999446,
+    "ore": 16.732000000001385,
+    "influence": 0.13950000000023188,
+    "insight": 3.5999999999997145
   },
   "systems": {
     "compost_heap": {
@@ -81,57 +81,7 @@
       "description": "A jagged antenna of bone and crystal. It listens to frequencies the colony cannot hear."
     }
   },
-  "entities": [
-    {
-      "id": "f18c2698",
-      "type": "ant",
-      "role": "ornamental",
-      "tile": "origin",
-      "age": 1850,
-      "hunger": 75.00000000000554,
-      "hunger_rate": 0.30000000000000004,
-      "max_age": 7200,
-      "food": "fungus",
-      "adorned": true,
-      "ornament": "copper_ring",
-      "previous_role": "worker",
-      "influence_rate": 0.001
-    },
-    {
-      "id": "f11e994d",
-      "type": "ant",
-      "role": "ornamental",
-      "tile": "origin",
-      "age": 1850,
-      "hunger": 63.39999999999412,
-      "hunger_rate": 0.44999999999999996,
-      "max_age": 7200,
-      "food": "fungus",
-      "processing_corpse": false,
-      "processing_ticks": 0,
-      "adorned": true,
-      "ornament": "copper_ring",
-      "previous_role": "undertaker",
-      "influence_rate": 0.001
-    },
-    {
-      "id": "v_6dcc65",
-      "type": "visitor",
-      "subtype": "observer",
-      "name": "An Observer",
-      "tile": "receiver",
-      "age": 630,
-      "hunger": 68.50000000000179,
-      "hunger_rate": 0.05,
-      "max_age": 3600,
-      "food": "crystals",
-      "from_outside": true,
-      "description": "Watches. Generates insight from the watching.",
-      "generates": {
-        "insight": 0.001
-      }
-    }
-  ],
+  "entities": [],
   "map": {
     "tiles": {
       "origin": {
@@ -301,7 +251,9 @@
       "first_visitor",
       "visitor_departed",
       "pretty_things",
-      "observer_insight"
+      "observer_insight",
+      "the_first_craft",
+      "the_hungry_one"
     ],
     "goals": {
       "crystal_resonance_chamber": {
@@ -322,11 +274,52 @@
         "trigger": "aftermath",
         "prompt": "What surprised you since the last reflection?",
         "response": null
+      },
+      {
+        "tick": 83065,
+        "trigger": "aftermath",
+        "prompt": "What would you miss if it disappeared?",
+        "response": null
+      },
+      {
+        "tick": 86792,
+        "trigger": "aftermath",
+        "prompt": "What surprised you since the last reflection?",
+        "response": null
       }
     ]
   },
   "graveyard": {
-    "corpses": [],
-    "total_processed": 10
+    "corpses": [
+      {
+        "entity_id": "v_e5eacc",
+        "entity_type": "visitor",
+        "death_tick": 86100,
+        "cause": "starvation",
+        "tile": "receiver"
+      },
+      {
+        "entity_id": "009bae17",
+        "entity_type": "ant",
+        "death_tick": 86225,
+        "cause": "starvation",
+        "tile": "origin"
+      },
+      {
+        "entity_id": "8d540390",
+        "entity_type": "ant",
+        "death_tick": 86459,
+        "cause": "starvation",
+        "tile": "origin"
+      },
+      {
+        "entity_id": "f18c2698",
+        "entity_type": "ant",
+        "death_tick": 86492,
+        "cause": "old_age",
+        "tile": "origin"
+      }
+    ],
+    "total_processed": 12
   }
 }
