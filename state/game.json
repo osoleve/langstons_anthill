@@ -253,6 +253,21 @@
   "meta": {
     "boredom": 0,
     "recent_decisions": [],
+    "estate": {
+      "name": "The Listening Hill",
+      "named_tick": 90522,
+      "description": "A sprawl of tunnels and chambers that reaches toward the Outside. The name comes from the Receiver at its edge, always listening."
+    },
+    "decor": [
+      {
+        "name": "Eye of Elsewhere",
+        "type": "ornament",
+        "origin": "observer",
+        "description": "A polished stone that always seems to be watching. Left behind by the first Observer. Placed near the origin tile.",
+        "location": "origin",
+        "acquired_tick": 90522
+      }
+    ],
     "jewelry": [
       {
         "type": "copper_ring",
