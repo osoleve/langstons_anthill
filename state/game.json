@@ -1,10 +1,10 @@
 {
-  "tick": 75717,
+  "tick": 77142,
   "resources": {
-    "dirt": 1153.6099999985208,
-    "nutrients": 0.01999999998515871,
-    "fungus": 124.41999999982063,
-    "crystals": 8.64000000000065
+    "dirt": 1174.9849999983394,
+    "nutrients": 0.9899999999851591,
+    "fungus": 118.65999999982434,
+    "crystals": 0.06499999999987427
   },
   "systems": {
     "compost_heap": {
@@ -45,6 +45,14 @@
         "crystals": 0.001
       },
       "description": "Ants carefully extract crystals from cave walls"
+    },
+    "crystal_resonance_chamber": {
+      "name": "Crystal Resonance Chamber",
+      "type": "generator",
+      "generates": {
+        "nutrients": 0.05
+      },
+      "description": "Crystals hum with energy, generating nutrients from vibration alone"
     }
   },
   "entities": [
@@ -53,8 +61,8 @@
       "type": "ant",
       "role": "worker",
       "tile": "fungus_farm",
-      "age": 4612,
-      "hunger": 58.80000000001192,
+      "age": 6037,
+      "hunger": 66.30000000001542,
       "hunger_rate": 0.1,
       "max_age": 7200,
       "food": "fungus"
@@ -64,8 +72,8 @@
       "type": "ant",
       "role": "undertaker",
       "tile": "origin",
-      "age": 4112,
-      "hunger": 53.199999999990105,
+      "age": 5537,
+      "hunger": 79.44999999998694,
       "hunger_rate": 0.15,
       "max_age": 7200,
       "food": "fungus",
@@ -109,6 +117,13 @@
         "y": 0,
         "resource": "crystals",
         "description": "Strange formations glitter in the dark"
+      },
+      "resonance_chamber": {
+        "name": "Resonance Chamber",
+        "type": "special",
+        "x": 3,
+        "y": 0,
+        "description": "The crystals sing"
       }
     },
     "connections": [
@@ -127,6 +142,10 @@
       [
         "origin",
         "crystal_cave"
+      ],
+      [
+        "crystal_cave",
+        "resonance_chamber"
       ]
     ]
   },
@@ -171,7 +190,7 @@
         "effect": {
           "nutrients_per_tick": 0.05
         },
-        "built": false
+        "built": true
       }
     }
   },
