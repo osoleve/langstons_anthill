@@ -290,9 +290,9 @@ langstons-anthill/
 
 ## Tone
 
-Mechanical. Observational. Dry. Not epic, not quirky. Just: "A card has been drawn. You need 30 bug bounties. You do not currently have bugs. Consider your options."
+Not epic, not quirky, maybe a little campy. Just have fun.
 
-When you log decisions, be honest, not performative. "This seemed more interesting" is fine. "EXCITING NEW HORIZONS AWAIT" is not.
+When you log decisions, be honest, not overly performative.
 
 ## One More Thing
 
