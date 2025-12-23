@@ -1,11 +1,11 @@
 {
-  "tick": 79348,
+  "tick": 79392,
   "resources": {
-    "dirt": 1209.5749999980912,
-    "nutrients": 90.32999999998522,
-    "fungus": 118.71999999983541,
-    "crystals": 2.2709999999997352,
-    "ore": 3.8219999999998007
+    "dirt": 1210.2349999980856,
+    "nutrients": 92.0899999999855,
+    "fungus": 119.15999999983563,
+    "crystals": 2.3149999999997304,
+    "ore": 3.909999999999791
   },
   "systems": {
     "compost_heap": {
@@ -75,8 +75,8 @@
       "type": "ant",
       "role": "worker",
       "tile": "origin",
-      "age": 56,
-      "hunger": 94.40000000000032,
+      "age": 100,
+      "hunger": 90.00000000000057,
       "hunger_rate": 0.1,
       "max_age": 7200,
       "food": "fungus"
@@ -86,13 +86,13 @@
       "type": "ant",
       "role": "undertaker",
       "tile": "origin",
-      "age": 56,
-      "hunger": 91.59999999999968,
+      "age": 100,
+      "hunger": 84.99999999999943,
       "hunger_rate": 0.15,
       "max_age": 7200,
       "food": "fungus",
       "processing_corpse": true,
-      "processing_ticks": 55
+      "processing_ticks": 99
     }
   ],
   "map": {
