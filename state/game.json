@@ -5,7 +5,7 @@
     "nutrients": 92.0899999999855,
     "fungus": 119.15999999983563,
     "crystals": 2.3149999999997304,
-    "ore": 3.909999999999791,
+    "ore": 2.909999999999791,
     "influence": 0
   },
   "systems": {
@@ -79,13 +79,17 @@
     {
       "id": "f18c2698",
       "type": "ant",
-      "role": "worker",
+      "role": "ornamental",
       "tile": "origin",
       "age": 100,
       "hunger": 90.00000000000057,
-      "hunger_rate": 0.1,
+      "hunger_rate": 0.30000000000000004,
       "max_age": 7200,
-      "food": "fungus"
+      "food": "fungus",
+      "adorned": true,
+      "ornament": "copper_ring",
+      "previous_role": "worker",
+      "influence_rate": 0.001
     },
     {
       "id": "f11e994d",
@@ -210,7 +214,15 @@
   "meta": {
     "boredom": 0,
     "recent_decisions": [],
-    "jewelry": [],
+    "jewelry": [
+      {
+        "type": "copper_ring",
+        "name": "Copper Ring",
+        "created_tick": 79392,
+        "worn_by": "f18c2698",
+        "worn_tick": 79392
+      }
+    ],
     "rejected_ideas": [
       "elevation/terrain system",
       "depth layers",
