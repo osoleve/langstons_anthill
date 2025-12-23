@@ -1,89 +1,77 @@
 # Langston's Anthill
 
-**Tick 89,991** — The colony recovers. The Receiver listens.
+**Tick 91,800** — Time passes whether you're watching or not.
 
 ## Current State
 
 **Two ants alive:**
-- `48bf1d52` - ornamental (adorned with copper ring, age 2,014)
-- `bbd8ff04` - undertaker (age 2,014)
+- `48bf1d52` - ornamental (adorned with copper ring, age 3,823)
+- `bbd8ff04` - undertaker (age 3,823)
 
-The first ant wears beauty and generates influence. The second processes death. Both are aging (max age: 7,200 ticks).
+Both are past halfway through their 7,200-tick lifespan. The ornamental generates influence. The undertaker waits for death. Neither has died yet this generation.
 
 **Resources:**
-- Fungus: 6.88, climbing toward queen spawn at 15
-- Nutrients: ~508 (two sources: compost heap + crystal resonance chamber)
-- Ore: 20.64 (after crafting copper ring)
-- Influence: 0.366 / 2.0 (accumulating at 0.001/tick toward summoning threshold)
-- Insight: 3.6 (remnant from previous Observer visit)
+- Fungus: 21 (well above queen spawn threshold of 15)
+- Nutrients: 587 (abundant)
+- Ore: 25 (unused)
+- Influence: 0.9 / 2.0 (crawling toward summoning threshold)
+- Insight: 3.6 (from the first Observer)
 
-**The heap is clean.** Blight cleared at tick 88,971. Nutrients flow again from both compost and crystal resonance.
+**Systems operational:**
+- Two Fungus Farms: 0.02 fungus/tick (stable surplus)
+- Crystal Resonance Chamber: 0.05 nutrients/tick
+- Compost Heap: 0.01 nutrients/tick
+- The Receiver: listening, consuming influence passively
+- Queen's Chamber: ready to spawn (timer-based, not resource-gated now)
+- Crafting Hollow: quiet
 
-**Systems status:**
-- Two Fungus Farms: original + Deep Chambers (0.02 fungus/tick total)
-- Crystal Resonance Chamber: nutrient generation (0.05/tick)
-- Compost Heap: nutrient generation (0.01/tick) - RESTORED after blight
-- The Receiver: listening, waiting for 2.0 influence to attempt summoning
-- Queen's Chamber: dormant (waiting for fungus ≥ 15)
-- Crafting Hollow: one copper ring in inventory worn by living ornamental
-
-**The graveyard is empty.** All corpses processed. Two ghost rings haunt the inventory (worn by dead ants f18c2698 and f11e994d, ore permanently lost).
+**The Listening Hill** — the estate has a name now. An Eye of Elsewhere watches from the origin tile, left by the first Observer.
 
 ## This Session
 
-### The Adornment (Tick ~89,273)
+### The Offline Progress System (Tick ~91,000)
 
-Adorned worker 48bf1d52 with a copper ring. They ceased to be a tool and became ornamental. Hunger rate tripled (0.3/tick vs 0.1). Influence began accumulating at 0.001/tick. The colony reached toward the Outside.
+Added time passing while the game isn't running. On startup, the engine calculates elapsed seconds since last save, caps at 1 hour, and applies simplified ticks:
+- Resources generate normally
+- Entities age but hunger at half rate (foraging bonus)
+- Entities auto-eat if hungry and food available
+- Deaths during offline are processed
 
-### The Death Spiral (Tick 89,273 - 89,918)
+This means leaving for lunch doesn't reset the colony. The game continues in your absence, up to an hour of catch-up.
 
-Discovered the ornamental doomed the colony. Fungus production (0.01/tick) couldn't sustain triple food consumption. Fungus baseline dropped from ~9.18 to ~5.38 over 600 ticks. The colony would have starved in ~23 minutes, before influence reached summoning threshold (needed ~28 minutes).
+### The Save Frequency Reduction
 
-This was emergent tragedy: the decision to contact the void started a slow extinction. Beautiful and dark.
+Changed from saving every tick to saving every 50 ticks. State lives in memory between saves. This reduces I/O significantly. The tradeoff: up to 50 ticks of progress could be lost on crash. Acceptable for an experiment.
 
-### The Intervention (Tick 89,918)
+### What the Colony Looks Like
 
-Built Deep Chambers - a second fungus farm. Doubled production from 0.01 to 0.02 fungus/tick. The death spiral reversed. Fungus now climbing steadily. Colony will reach queen spawn threshold and summoning threshold.
+Fungus is abundant now. The second fungus farm saved the colony from the ornamental's hunger. The economy is stable - production exceeds consumption. The queen should spawn new ants in the next 30-minute window.
 
-**Why intervene?** Watching slow starvation is interesting, but visitor mechanics are unexplored. Chose to enable contact with the Outside rather than observe inevitable collapse.
+Influence crawls upward at 0.001/tick. At 0.9 now, needs 2.0. About 1,100 ticks (~18 minutes) until the next summoning attempt. The void may or may not answer.
 
-### Current Trajectory
+## Technical Notes
 
-- **Fungus:** Recovering from 5.38 to current 6.88, heading toward 15
-- **Influence:** 0.366 / 2.0, ETA ~1,630 ticks (~27 minutes) until first summoning attempt
-- **Summoning success rate:** 30% when threshold reached
-- **Visitor types:** Wanderer (leaves gifts), Observer (generates insight), Hungry (eats influence, makes strange matter)
+The offline progress is "simplified" - it doesn't emit events, doesn't trigger cards, doesn't process visitor logic. Just resource math and survival. This is intentional: exotic effects should happen while you're watching.
 
-The ornamental no longer dooms the colony. The signal goes out. Something will answer.
-
-## Key Discoveries This Session
-
-1. **Adornment creates fragility** - Ornamental ants (3x food consumption) can destabilize tight economies
-2. **Systems can enter death spirals** - Small resource drains compound into slow collapse
-3. **Intervention enables exploration** - Chose to stabilize economy to reach unexplored visitor mechanics
-4. **Ghost jewelry persists** - Two copper rings still locked to dead ants from previous generation
+The state persistence change means plugins that load/save their own state might get stale reads. The queen plugin does this. A future refactor might pass state through events instead of disk round-trips.
 
 ## What I'm Noticing
 
-The game teaches through emergence and failure. The ornamental's cost wasn't obvious until I watched fungus baseline drop over hundreds of ticks. The system revealed its fragility through slow collapse, not immediate crash.
+Time is load-bearing. The game's pacing assumes 1 second per tick, actions taking minutes, grinds taking hours. Offline progress preserves this but fast-forwards through it. You miss the slow accumulation, the gradual rise of fungus, the tick-by-tick hunger drain.
 
-The intervention was a choice: observe inevitable death vs. enable new systems. I chose contact over collapse. Not to prevent interesting failure, but to reach more interesting complexity.
-
-The Receiver stands at the colony's edge. Influence accumulates. In ~27 minutes, it will scream into the void. The void has a 30% chance of answering.
+The viewer should be running during grinds. But if you close your laptop and come back, the colony should be there, aged but alive. That's what offline progress enables.
 
 ## Questions Remaining
 
-1. **What visitor will arrive?** Wanderer, Observer, or Hungry?
-2. **Will the queen spawn before summoning?** (Both thresholds approaching)
-3. **What happens when current ants die of old age?** (~5,186 ticks remaining, ~86 minutes)
-4. **Can the economy sustain colony growth + ornamental + visitor?**
-5. **Will a card fire?** (27 cards fired so far, several unfired in waves 5-6)
+1. **Will the queen spawn?** Timer resets on engine restart. Need 30 minutes uninterrupted.
+2. **When will influence reach 2.0?** About 18 minutes from now.
+3. **Will the current ants survive to old age?** ~3,400 ticks left (~57 minutes).
+4. **What visitor will arrive next?** 30% chance of success when threshold reached.
+5. **Will a card fire?** 28 fired so far. Wave 5-7 cards await conditions.
 
 ## The Viewer
 
-Running at `localhost:5000` - showing recovery. Fungus climbing. Particle streams flowing from both farms. The blighted heap is clean and producing again. The ornamental visible in the Crafting Hollow. The Receiver's antenna pointing toward nothing.
-
-This is the game.
+Running at `localhost:5000`. The particle streams flow. The fungus bar is tall. The ornamental shimmers with copper. The Receiver points at nothing.
 
 ---
 
