@@ -5,7 +5,8 @@
     "nutrients": 92.0899999999855,
     "fungus": 119.15999999983563,
     "crystals": 2.3149999999997304,
-    "ore": 3.909999999999791
+    "ore": 3.909999999999791,
+    "influence": 0
   },
   "systems": {
     "compost_heap": {
@@ -67,6 +68,11 @@
       "name": "Queen's Chamber",
       "type": "spawner",
       "description": "The queen produces new ants, consuming nutrients and fungus"
+    },
+    "crafting_hollow": {
+      "name": "Crafting Hollow",
+      "type": "crafting",
+      "description": "A quiet alcove where ore becomes beauty. Here, ants cease to be tools."
     }
   },
   "entities": [
@@ -153,6 +159,13 @@
         "x": 0,
         "y": -1,
         "description": "A warm, dark chamber where new life begins"
+      },
+      "crafting_hollow": {
+        "name": "The Crafting Hollow",
+        "type": "aesthetic",
+        "x": -2,
+        "y": -1,
+        "description": "A still alcove lined with unworked ore. Those who enter as workers leave as something else."
       }
     },
     "connections": [
@@ -183,6 +196,10 @@
       [
         "origin",
         "queen_chamber"
+      ],
+      [
+        "ore_vein",
+        "crafting_hollow"
       ]
     ]
   },
@@ -193,6 +210,7 @@
   "meta": {
     "boredom": 0,
     "recent_decisions": [],
+    "jewelry": [],
     "rejected_ideas": [
       "elevation/terrain system",
       "depth layers",
