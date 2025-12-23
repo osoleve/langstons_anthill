@@ -78,11 +78,11 @@ COMPLACENCY_COOLDOWN = 3600  # 1 hour between complacency warnings
 
 
 def apply_event_effect(state: dict, effect: str) -> dict:
-    """Apply the effect of a random event."""
-    from engine.state import load_state, save_state
+    """Apply the effect of a random event to the passed state.
 
-    state = load_state()
-
+    Note: Effects are applied to the in-memory state passed from the tick loop.
+    The main loop will save state periodically.
+    """
     if effect == "crystal_boost":
         # Double crystal generation for a while (we'll just give bonus now)
         state["resources"]["crystals"] = state["resources"].get("crystals", 0) + 2
@@ -97,7 +97,6 @@ def apply_event_effect(state: dict, effect: str) -> dict:
     elif effect == "influence_bonus":
         state["resources"]["influence"] = state["resources"].get("influence", 0) + 0.5
 
-    save_state(state)
     return state
 
 
