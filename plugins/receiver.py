@@ -263,7 +263,10 @@ def check_bootstrap_mode(state: dict) -> dict:
     BOOTSTRAP_CRYSTALS = 10
     BOOTSTRAP_SANITY = 20
 
-    if ore >= BOOTSTRAP_ORE and crystals >= BOOTSTRAP_CRYSTALS and sanity >= BOOTSTRAP_SANITY:
+    # In crisis (sanity <= 0), waive the sanity requirement - desperation is its own fuel
+    sanity_requirement = 0 if sanity <= 0 else BOOTSTRAP_SANITY
+
+    if ore >= BOOTSTRAP_ORE and crystals >= BOOTSTRAP_CRYSTALS and sanity >= sanity_requirement:
         # Check if enough time has passed since failure (prevent immediate spam)
         tick = state["tick"]
         failed_tick = meta.get("receiver_failed_tick", 0)
@@ -275,13 +278,19 @@ def check_bootstrap_mode(state: dict) -> dict:
             # Perform bootstrap
             state["resources"]["ore"] -= BOOTSTRAP_ORE
             state["resources"]["crystals"] -= BOOTSTRAP_CRYSTALS
-            state["meta"]["sanity"] -= BOOTSTRAP_SANITY
+            if sanity_requirement > 0:
+                state["meta"]["sanity"] -= BOOTSTRAP_SANITY
             state["meta"]["receiver_silent"] = False
             state["meta"]["receiver_bootstrap_tick"] = tick
 
-            print("[receiver] EMERGENCY BOOTSTRAP ACTIVATED!")
-            print(f"[receiver] Consumed: {BOOTSTRAP_ORE} ore, {BOOTSTRAP_CRYSTALS} crystals, {BOOTSTRAP_SANITY} sanity")
-            print("[receiver] The antenna flickers, powered by desperation and precious metals.")
+            if sanity_requirement == 0:
+                print("[receiver] EMERGENCY BOOTSTRAP ACTIVATED - DESPERATION MODE!")
+                print(f"[receiver] Consumed: {BOOTSTRAP_ORE} ore, {BOOTSTRAP_CRYSTALS} crystals (sanity already broken)")
+                print("[receiver] When you have nothing left to lose, even the void listens.")
+            else:
+                print("[receiver] EMERGENCY BOOTSTRAP ACTIVATED!")
+                print(f"[receiver] Consumed: {BOOTSTRAP_ORE} ore, {BOOTSTRAP_CRYSTALS} crystals, {BOOTSTRAP_SANITY} sanity")
+                print("[receiver] The antenna flickers, powered by desperation and precious metals.")
             print("[receiver] Connection to the Outside: RESTORED")
 
             # Update maintenance timer

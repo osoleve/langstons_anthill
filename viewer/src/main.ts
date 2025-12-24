@@ -1,193 +1,89 @@
-import { SSEClient, fetchInitialState } from './sse/client.ts'
-import { setupCanvas, clearCanvas } from './renderer/canvas.ts'
-import { renderTiles, drawConnections, setTileClickHandler, getTileAtPosition } from './renderer/tiles.ts'
-import { updateEntityDots, drawEntityDots, getEntityDots } from './renderer/entities.ts'
-import { updateParticles, spawnResourceParticles, drawParticles } from './renderer/particles.ts'
-import { updateSpirits, drawSpirits } from './renderer/spirits.ts'
-import { renderAll, renderDecisions } from './ui/panels.ts'
-import { initTooltip, handleTooltipHover, handleEntityClick } from './ui/tooltip.ts'
-import { initModal, showTileModal, showEntityModal } from './ui/modal.ts'
-import { createBlessing, updateBlessings, drawBlessings, getComboProgress } from './observer/blessings.ts'
-import { initAtmosphere, updateAtmosphere, drawAtmosphere, getAtmosphereMood } from './observer/atmosphere.ts'
-import { initStatsPanel, recordBlessing, updateComboProgress } from './observer/stats.ts'
-import type { GameState, Decision } from './types/state.ts'
+/**
+ * Langston's Anthill Viewer
+ *
+ * A living window into the colony.
+ * Not a debug panel. Not a dashboard.
+ * A world that breathes.
+ */
 
-let currentState: GameState | null = null
-let lastDecisionsFetch = 0
+import { World } from './world'
+import { Renderer } from './systems'
+import { SSEClient } from './systems/SSEClient'
 
-function main() {
-  const mapContainer = document.getElementById('map')
-  if (!mapContainer) {
-    console.error('Map container not found')
-    return
+class App {
+  private world: World
+  private renderer: Renderer
+  private sse: SSEClient
+
+  private lastTime: number = 0
+  private running: boolean = false
+
+  constructor() {
+    // Create canvas
+    const canvas = document.getElementById('canvas') as HTMLCanvasElement
+    if (!canvas) {
+      throw new Error('No canvas element found')
+    }
+
+    // Initialize world and renderer
+    this.world = new World()
+    this.renderer = new Renderer(canvas, this.world)
+
+    // Connect to server
+    this.sse = new SSEClient()
+
+    this.sse.onState((state) => {
+      this.world.applyState(state)
+    })
+
+    this.sse.onConnection((connected) => {
+      console.log(`[App] Connection: ${connected ? 'online' : 'offline'}`)
+    })
   }
 
-  const container = mapContainer // Capture for closure
-  const canvasContext = setupCanvas(container)
-  const client = new SSEClient('/events')
+  async start(): Promise<void> {
+    console.log('[App] Starting...')
 
-  // Initialize UI systems
-  initTooltip()
-  initModal()
-  initStatsPanel()
-  initAtmosphere(canvasContext.width, canvasContext.height)
-
-  // Set up tile click handler
-  setTileClickHandler((tileId, tile) => {
-    if (currentState) {
-      showTileModal(tileId, tile, currentState)
-    }
-  })
-
-  // Handle mouse events on canvas for entity interaction
-  container.addEventListener('mousemove', (e) => {
-    const entityDots = getEntityDots()
-    handleTooltipHover(e, container, entityDots)
-  })
-
-  // Blessing click handler - clicks anywhere on map create blessings
-  container.addEventListener('click', (e) => {
-    const rect = container.getBoundingClientRect()
-    const x = e.clientX - rect.left
-    const y = e.clientY - rect.top
-
-    // ALWAYS try to create a blessing first (this is the main interaction!)
-    if (currentState) {
-      const tileId = getTileAtPosition(x, y, currentState)
-      const blessing = createBlessing(x, y, tileId, currentState)
-
-      if (blessing) {
-        // Flash effect
-        container.classList.add('blessing-flash')
-        setTimeout(() => container.classList.remove('blessing-flash'), 300)
-
-        // Record stats IMMEDIATELY (don't wait for state update)
-        const resourceTypes: Record<string, string> = {
-          touch: 'influence',
-          gift: 'nutrients',
-          attention: 'insight',
-          miracle: 'strange_matter'
-        }
-        const amounts: Record<string, number> = {
-          touch: 0.1,
-          gift: 5,
-          attention: 0.02,
-          miracle: 0.05
-        }
-        recordBlessing(blessing.type, resourceTypes[blessing.type], amounts[blessing.type])
-
-        // Also send to server immediately
-        fetch('/bless', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            blessings: [{
-              type: blessing.type,
-              tileId: blessing.tileId,
-              amount: amounts[blessing.type]
-            }]
-          })
-        }).catch(() => {})
-      }
+    // Fetch initial state
+    const initialState = await this.sse.fetchState()
+    if (initialState) {
+      this.world.applyState(initialState)
+      this.renderer.focusOnWorld()
     }
 
-    // ALSO check if clicking on an entity (shift-click for modal)
-    if (e.shiftKey) {
-      const entityDots = getEntityDots()
-      const entity = handleEntityClick(e, container, entityDots)
-      if (entity && currentState) {
-        showEntityModal(entity, currentState)
-      }
-    }
-  })
+    // Start SSE connection
+    this.sse.connect()
 
-  // Handle state updates
-  function handleState(state: GameState) {
-    currentState = state
-    renderAll(state)
-    renderTiles(container, state)
+    // Start render loop
+    this.running = true
+    this.lastTime = performance.now()
+    requestAnimationFrame((t) => this.loop(t))
+
+    console.log('[App] Running')
   }
 
-  // Update mood indicator
-  function updateMoodIndicator() {
-    const mood = getAtmosphereMood()
-    const moodEl = document.getElementById('mood-indicator')
-    if (moodEl) {
-      moodEl.textContent = mood
-      moodEl.className = mood
-    }
+  private loop(time: number): void {
+    if (!this.running) return
+
+    const dt = Math.min((time - this.lastTime) / 1000, 0.1)  // Cap at 100ms
+    this.lastTime = time
+
+    // Update
+    this.world.update(dt)
+    this.renderer.update(dt)
+
+    // Render
+    this.renderer.render()
+
+    requestAnimationFrame((t) => this.loop(t))
   }
 
-  // Animation loop
-  function animate() {
-    if (currentState) {
-      clearCanvas(canvasContext)
-
-      // Draw atmosphere first (behind everything)
-      updateAtmosphere(currentState, canvasContext.width, canvasContext.height)
-      drawAtmosphere(canvasContext.ctx)
-
-      // Draw connections behind everything
-      drawConnections(canvasContext.ctx, currentState)
-
-      // Update and draw spirits (corpse ghosts)
-      updateSpirits(currentState)
-      drawSpirits(canvasContext.ctx)
-
-      // Update and draw entities
-      updateEntityDots(currentState)
-      drawEntityDots(canvasContext.ctx)
-
-      // Spawn and draw particles
-      spawnResourceParticles(currentState)
-      updateParticles()
-      drawParticles(canvasContext.ctx)
-
-      // Update and draw blessings (on top)
-      updateBlessings()
-      drawBlessings(canvasContext.ctx)
-
-      // Update combo progress
-      updateComboProgress(getComboProgress())
-
-      // Update mood indicator periodically
-      updateMoodIndicator()
-    }
-
-    requestAnimationFrame(animate)
+  stop(): void {
+    this.running = false
+    this.sse.disconnect()
   }
-
-  // Start
-  client.onState(handleState)
-  client.connect()
-  animate()
-
-  // Load initial state
-  fetchInitialState().then(state => {
-    if (state) handleState(state)
-  })
-
-  // Fetch decisions periodically (every 10 seconds)
-  async function fetchDecisions() {
-    try {
-      const response = await fetch('/decisions')
-      if (response.ok) {
-        const decisions: Decision[] = await response.json()
-        renderDecisions(decisions)
-      }
-    } catch (e) {
-      console.error('Failed to fetch decisions:', e)
-    }
-  }
-
-  // Initial fetch and periodic refresh
-  fetchDecisions()
-  setInterval(fetchDecisions, 10000)
 }
 
-// Wait for DOM
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', main)
-} else {
-  main()
-}
+// Boot
+const app = new App()
+app.start().catch(console.error)

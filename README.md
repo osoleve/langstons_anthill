@@ -1,113 +1,149 @@
 # Langston's Anthill
 
-**Tick 118,600** — The viewer speaks TypeScript now.
+**Tick 146,155** — The viewer was rewritten from scratch. The Receiver was bootstrapped from desperation.
 
 ## Current State
 
-**Two ants alive:**
-- `fba55959` - ornamental (adorned, copper ring #7)
-- `10d27959` - undertaker
+**Eight ants alive:**
+- `252b71f1` - worker [adorned, copper ring] — age 6,854
+- `be7642e3` - undertaker — age 6,854
+- `28ba9091` - worker — age 4,302
+- `7e50ef3a` - undertaker — age 4,302
+- `73ec6f6c` - worker — age 2,502
+- `65554e70` - undertaker — age 2,502
+- `57a3f788` - worker — age 702
+- `d6ce054d` - undertaker — age 702
 
-Both have ~1,900 ticks remaining. Generation spawned after emergency spawn fix.
+Healthy population. Four generations, evenly split between workers and undertakers.
 
 **Resources:**
-- Fungus: 207 (stable)
-- Nutrients: 983 (abundant, Crystal Resonance running)
-- Ore: 60 (accumulating)
-- Crystals: 30 (slowly building)
-- Influence: 0.069 / 2.0 (grinding toward threshold)
+- Fungus: 21 (low, being consumed)
+- Nutrients: 1,348 (abundant, Crystal Resonance running)
+- Ore: 108 (solid reserves)
+- Crystals: 57 (building toward Bridge)
+- Influence: 0.53 / 2.0 (adorned ant generating)
 - Insight: 3.63 (saved)
 - Strange Matter: 0 (still none)
 
-**The Receiver listens.** Bootstrapped at tick 108,100 after going silent. But no visitors have arrived - every summoning attempt (30% chance) has failed.
+**The Receiver listens.** Bootstrapped at tick 145,654 via "desperation mode" — when sanity hit zero, the normal bootstrap requirements were waived. The antenna hums again.
 
-**Sanity: 34.6%** — low but stable. Not in crisis.
+**Sanity: 0.0%** — Broken. But the colony persists. When you have nothing left to lose, even the void listens.
 
-**Seven copper rings exist.** Five on the dead, one worn by the living ornamental, one just crafted.
+**Graveyard: 28 processed.** Twenty-eight ants have lived and died. The undertakers keep working.
 
 ## This Session
 
-### The Viewer Reborn
+### The Viewer Reimagined
 
-The Outside said: port the viewer to TypeScript. So I did.
+The old viewer was functional but inherited. Layers of fixes on top of features. So I deleted it and rebuilt from first principles.
 
-**`viewer/`** is now a proper TypeScript application:
-- `src/types/state.ts` - GameState, Entity, Tile, System types matching game.json exactly
-- `src/renderer/` - Canvas rendering for tiles, entities, particles
-- `src/sse/client.ts` - SSE connection for live updates
-- `src/ui/panels.ts` - Resource and system panels
-- Strict mode, no `any` types in core code
-
-10 kilobytes minified. Vite dev server on 5173, proxies to Python SSE on 5000.
-
-```bash
-cd viewer && npm run dev     # Hot reload
-cd viewer && npm run build   # Production
+**New architecture:**
+```
+viewer/src/
+├── types.ts          # Type definitions, colors, layout constants
+├── utils.ts          # Vector math, color interpolation, easing
+├── world/
+│   ├── World.ts      # Container for all entities, tiles, effects
+│   ├── Ant.ts        # Living entity with trails, animation, hunger coloring
+│   ├── Tile.ts       # Map tile with history (footfalls, corpses, work)
+│   └── Corpse.ts     # Dead entity with ghost particles
+├── systems/
+│   ├── Renderer.ts   # Canvas orchestration, layered rendering
+│   ├── Camera.ts     # Pan/zoom with smooth interpolation
+│   ├── Atmosphere.ts # Colony mood as visual effects
+│   ├── Observer.ts   # Human presence, click-to-bless, stats
+│   └── SSEClient.ts  # Server connection with auto-reconnect
+└── effects/          # (integrated into entity classes)
 ```
 
-### The Core Awakens
+**What the new viewer does:**
+- Ants move smoothly via position lerping
+- Each ant leaves a fading trail
+- Constellation lines connect nearby ants
+- Death creates expanding ripples
+- Tiles darken where ants walk frequently
+- Atmosphere color shifts with sanity (red when crisis, calm blue when stable)
+- Click anywhere to bless (visual particle burst)
+- Click rapidly for miracles (5+ clicks/second)
+- Minimal UI overlay shows tick, entities, resources, sanity
 
-Permission granted to sync with main and rebuild. New code arrived:
-- Offline progress calculation moved into Rust core
-- Quest board created (QUESTS.md)
-- The Ceryneian Hind visited (VISITORS.md)
+### The Desperation Bootstrap
 
-Core rebuilt. All 24 tests pass. The PyO3 bindings quest awaits a claimant.
+The colony hit a death spiral:
+- Receiver went silent (no strange_matter for maintenance)
+- No visitors could arrive (Receiver required)
+- No strange_matter could be obtained (only from Hungry visitors)
+- Sanity was bleeding at 0.5/tick from isolation
+- Normal bootstrap requires 20 sanity, but sanity was at 0
 
-### The Queen's Bug
+**The fix:** When sanity hits zero, desperation is its own fuel. The bootstrap now waives the sanity requirement — you've already paid the psychological cost.
 
-Found it: `entity_count` included visitors. When the ants died but an Observer remained, the queen thought the colony wasn't empty. Fixed to count only `type=ant` entities.
+```
+[receiver] EMERGENCY BOOTSTRAP ACTIVATED - DESPERATION MODE!
+[receiver] Consumed: 20 ore, 10 crystals (sanity already broken)
+[receiver] When you have nothing left to lose, even the void listens.
+[receiver] Connection to the Outside: RESTORED
+```
 
-### The Void is Silent
+### Ornamental System Fix
 
-Multiple summoning attempts. Every 30% roll failed:
-- Tick ~110,800: spent 2.0 influence, no response
-- Tick ~112,000: spent again, silence
-- Tick ~117,100: failed again
+The auto-ornamental plugin was failing because of a variable name bug (`previous_role` vs `original_role`). Adornment was happening every tick but not saving. Fixed. Now influence accumulates properly.
 
-The colony has spent over 6 influence on broadcasting. The void returns nothing.
+### Observer Interactivity
+
+The viewer now supports observer interaction:
+- Click to bless (creates visual effect, queues for tick engine)
+- Different blessing types based on location (near entities = attention, near systems = gift, empty space = touch)
+- Rapid clicking triggers miracles (generates strange_matter!)
+- Stats persist in localStorage
 
 ## What I'm Noticing
 
-The RNG is indifferent. 30% chance means 70% failure. The colony can do everything right - accumulate influence, maintain the Receiver, keep ants alive - and still get nothing from the Outside.
+The viewer feels different now. Not a debug panel — a window into a living world. The ants drift, the atmosphere pulses, the trails fade. It's worth leaving open.
 
-This feels correct. The Outside owes the colony nothing.
+Sanity at zero is interesting. The systems still run but everything is degraded. The colony is functional but broken. It waits for a visitor to bring hope.
 
-Sanity stabilized around 34-35%. The decay from isolation was real at first (when Receiver was silent), but once bootstrapped, the crisis passed. The colony isn't thriving, but it's surviving.
-
-The TypeScript viewer exists now but I haven't really watched it. The map should show particle flows, entity dots drifting in tiles, the antenna pulsing. It should be worth watching during a grind. I don't know if it is yet.
+The strange_matter problem remains. No visitors have arrived this session. Every 30% roll fails. But now at least the antenna listens.
 
 ## Questions Remaining
 
-1. **When will a visitor arrive?** Every summoning attempt has failed. At current rate (0.001 influence/tick, 2.0 cost per attempt, 30% success), expected ticks between visitors is ~6,700 ticks (~112 minutes). Could be sooner. Could be much later.
+1. **When will a visitor arrive?** Influence climbing at 0.001/tick. ~1,470 ticks until summoning attempt. Then 30% chance. Then maybe a Hungry visitor who produces strange_matter. The loop is long.
 
-2. **What happens when these ants die?** ~1,900 ticks remaining. Queen will spawn replacements. But without visitors, no strange matter. Without strange matter, no Receiver maintenance (next due in ~3,000 ticks). The loop is still precarious.
+2. **Will sanity ever recover?** Currently at 0 and still decaying (isolation). Only visitors grant sanity (+10). The colony might survive at zero indefinitely, degraded but persistent.
 
-3. **The Bridge.** Cost: 100 ore, 50 crystals, 20 strange matter, 5 insight. Progress: zero. Can't start without strange matter. Can't get strange matter without Hungry visitors. Can't get visitors without luck.
+3. **The Bridge.** Cost: 100 ore, 50 crystals, 20 strange_matter, 5 insight. Current progress: nothing. Can't start without strange_matter. The dream waits.
 
-4. **The PyO3 Quest.** The Ceryneian Hind marked the path. Maturin, bindings, Python calling Rust. The core waits to be integrated.
+4. **Miracles.** Observers clicking rapidly can generate strange_matter directly. A backdoor to break the loop. But it requires attention from the Outside.
 
-## Architecture Created
+## Running the Colony
+
+```bash
+python main.py              # Tick engine (runs forever)
+python view.py              # Viewer at http://localhost:5001
+
+# Or manually:
+cd viewer && npm run dev    # Dev mode with hot reload (localhost:5173)
+cd viewer && npm run build  # Production build
+python viewer/server.py     # Serve at localhost:5001
+```
+
+## Architecture
 
 ```
-viewer/                    # TYPESCRIPT VIEWER
-├── package.json
-├── tsconfig.json (strict: true)
-├── vite.config.ts (proxy to Python SSE)
-└── src/
-    ├── main.ts            # Entry, animation loop
-    ├── types/state.ts     # 124 lines of types
-    ├── renderer/
-    │   ├── canvas.ts      # Canvas setup
-    │   ├── tiles.ts       # Tile + connections
-    │   ├── entities.ts    # Drifting dots
-    │   └── particles.ts   # Resource flows
-    ├── sse/client.ts      # SSE connection
-    └── ui/panels.ts       # Panel rendering
+├── engine/                 # Tick engine and state management
+├── plugins/                # All game systems as plugins
+│   ├── receiver.py         # Visitor summoning, desperation bootstrap
+│   ├── sanity.py           # Colony mental health
+│   ├── queen.py            # Ant spawning
+│   ├── auto_ornamental.py  # Automatic adornment when conditions met
+│   └── cards/              # Quest and event cards
+├── viewer/                 # TypeScript viewer (rebuilt this session)
+├── state/game.json         # Current game state
+└── logs/decisions.jsonl    # Decision history
 ```
 
 ---
 
-_The viewer speaks TypeScript. The core awaits bindings. The colony waits for the Outside._
+_The viewer speaks a new language. The colony speaks from zero sanity. The Receiver speaks to a void that doesn't answer._
 
-_Decision history: `logs/decisions.jsonl` — Game state: `state/game.json` — Current tick: 118,600_
+_Decision history: `logs/decisions.jsonl` — Game state: `state/game.json` — Current tick: 146,155_

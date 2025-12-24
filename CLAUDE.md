@@ -143,36 +143,48 @@ A TypeScript web application that renders game state as a living map.
 
 **Stack:**
 - `viewer/` — TypeScript application with strict types
-- `viewer/src/types/` — GameState, Entity, Tile, System types matching `state/game.json`
-- `viewer/src/renderer/` — Canvas rendering for tiles, entities, particles
-- `viewer/src/observer/` — Observer interaction systems (blessings, atmosphere, stats)
-- `viewer/src/sse/` — SSE client for live updates from server
-- Reads from `state/game.json`, pushes updates via SSE
+- `viewer/src/types.ts` — Type definitions, colors, layout constants
+- `viewer/src/utils.ts` — Vector math, color interpolation, easing functions
+- `viewer/src/world/` — Entity classes (Ant, Tile, Corpse, World container)
+- `viewer/src/systems/` — Renderer, Camera, Atmosphere, Observer, SSEClient
+- `viewer/server.py` — FastAPI server with SSE and blessing endpoints
 
-**Starting the viewer (one command):**
-```bash
-python view.py            # Build and serve at http://localhost:5000
-python view.py --dev      # Dev mode with hot reload (localhost:5173)
-python view.py --rebuild  # Force rebuild
+**Architecture:**
+```
+viewer/src/
+├── types.ts          # Types, colors, layout constants
+├── utils.ts          # Vector math, easing, color utilities
+├── main.ts           # Entry point, animation loop
+├── world/
+│   ├── World.ts      # Container for all entities, tiles, effects
+│   ├── Ant.ts        # Living entity with trails, animation, hunger
+│   ├── Tile.ts       # Map tile with history tracking
+│   └── Corpse.ts     # Dead entity with ghost particles
+└── systems/
+    ├── Renderer.ts   # Canvas orchestration, layered rendering
+    ├── Camera.ts     # Pan/zoom with smooth interpolation
+    ├── Atmosphere.ts # Colony mood as visual effects
+    ├── Observer.ts   # Human presence, click-to-bless
+    └── SSEClient.ts  # Server connection with auto-reconnect
 ```
 
-**Manual build commands:**
+**Starting the viewer:**
 ```bash
-cd viewer
-npm install               # Install dependencies
-npm run build             # Production build
-npm run typecheck         # Type checking only
+python view.py              # Build and serve at http://localhost:5001
+python view.py --dev        # Dev mode with hot reload (localhost:5173)
+
+# Or manually:
+cd viewer && npm run build  # Production build
+python viewer/server.py     # Serve at localhost:5001
 ```
 
 **TypeScript conventions:**
 - Strict mode enabled (`strict: true` in tsconfig)
-- All game state types mirror the JSON structure exactly
-- No `any` types in core rendering code
-- Particle system uses typed animation frames
+- Entity classes manage their own visual state and rendering
+- Smooth interpolation for all movement (no teleporting)
+- Atmosphere computed from world state (sanity, mortality, prosperity)
 
-The map grows when you add systems. Start with one tile. Let it sprawl.
-
-**The viewer should be running. Always.** During grinds, during idle, during design phases—`localhost:5000` is open. If watching it is boring, that's a design problem. The map should show movement, flows, state changes. Particle streams for resources. Entities that visibly patrol. Blight that spreads visually. The viewer isn't a debug panel, it's the game. Make it something worth watching during a 2-hour grind.
+**The viewer should be running. Always.** During grinds, during idle, during design phases—`localhost:5001` is open. If watching it is boring, that's a design problem. The ants drift with trails, constellations connect nearby entities, death ripples expand, the atmosphere pulses with sanity. The viewer isn't a debug panel, it's the game.
 
 ### Observer Interaction System
 
@@ -329,12 +341,18 @@ The wishlist is the graveyard's optimistic twin. Ideas that might live, waiting 
 **Start everything:**
 ```bash
 python main.py       # Tick engine with plugins loaded
-python view.py       # Viewer at http://localhost:5000 (auto-builds, opens browser)
+python view.py       # Viewer at http://localhost:5001 (auto-builds)
 ```
 
 **Development mode (hot reload):**
 ```bash
 python view.py --dev # Vite dev server at http://localhost:5173
+```
+
+**Or run viewer manually:**
+```bash
+cd viewer && npm run build   # Build production
+python viewer/server.py      # Serve at localhost:5001
 ```
 
 **Run tick engine in background (Unix):**
