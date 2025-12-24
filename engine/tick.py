@@ -85,6 +85,7 @@ def run():
     state_json = json.dumps(state_dict)
 
     tick_count = 0
+    state_dict = None  # Only parse when needed
 
     while True:
         loop_start = time.time()
@@ -97,29 +98,28 @@ def run():
             time.sleep(1)
             continue
 
-        # Parse state back to dict for Python-side consumers (saving, bus emission)
-        # Ideally we wouldn't parse this every tick if not needed, but existing consumers expect a dict
-        state_dict = json.loads(state_json)
-
-        # Add timestamp for saving
-        state_dict["last_save_timestamp"] = time.time()
-
-        # Emit events from Rust
+        # Emit events from Rust (lightweight, no state parsing needed)
         for event in events:
-            # Rust events have a 'type' field, but bus expects event name as first arg
             event_type = event.get("type", "unknown_event")
-
-            # Map Rust event types to Python bus topics if needed
-            # For now, we just emit everything
             bus.emit(event_type, event)
 
-        # Save every 50 ticks to reduce I/O
-        if state_dict["tick"] % 50 == 0:
-            # We need to save the state with the timestamp
-            save_state(state_dict)
+        # Only parse state when we need to save or emit tick events
+        # Parse once and reuse for both operations when needed
+        should_save = tick_count % 50 == 0
+        should_emit_tick = True  # Could optimize this based on handler registration
 
-        # Emit tick event with full state (expensive but required by current architecture)
-        bus.emit("tick", state_dict)
+        if should_save or should_emit_tick:
+            state_dict = json.loads(state_json)
+            state_dict["last_save_timestamp"] = time.time()
+
+            if should_save:
+                save_state(state_dict)
+
+            if should_emit_tick:
+                bus.emit("tick", state_dict)
+
+            # Update state_json with timestamp for next iteration
+            state_json = json.dumps(state_dict)
 
         tick_count += 1
 

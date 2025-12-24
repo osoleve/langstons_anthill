@@ -20,22 +20,31 @@ def load_plugin(plugin_path: Path):
         return None
 
     module_name = plugin_path.stem
-    spec = importlib.util.spec_from_file_location(module_name, plugin_path)
-    if spec is None or spec.loader is None:
+
+    try:
+        spec = importlib.util.spec_from_file_location(module_name, plugin_path)
+        if spec is None or spec.loader is None:
+            print(f"[loader] ERROR: failed to create spec for {module_name}")
+            return None
+
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+
+        plugin_id = getattr(module, 'PLUGIN_ID', module_name)
+
+        if hasattr(module, 'register'):
+            state = load_state()
+            module.register(bus, state)
+            print(f"[loader] registered plugin: {plugin_id}")
+
+        LOADED_PLUGINS[plugin_id] = module
+        return plugin_id
+
+    except Exception as e:
+        print(f"[loader] ERROR loading plugin {module_name}: {e}")
+        import traceback
+        traceback.print_exc()
         return None
-
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-
-    plugin_id = getattr(module, 'PLUGIN_ID', module_name)
-
-    if hasattr(module, 'register'):
-        state = load_state()
-        module.register(bus, state)
-        print(f"[loader] registered plugin: {plugin_id}")
-
-    LOADED_PLUGINS[plugin_id] = module
-    return plugin_id
 
 
 def load_all_plugins():

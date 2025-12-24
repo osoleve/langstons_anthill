@@ -190,6 +190,29 @@ export function renderRejectedIdeas(state: GameState): void {
     .join('')
 }
 
+export function renderEventLog(state: GameState): void {
+  const el = document.getElementById('event-log')
+  if (!el) return
+
+  const log = state.meta?.event_log ?? []
+  if (log.length === 0) {
+    el.innerHTML = '<div class="empty">no events yet</div>'
+    return
+  }
+
+  // Show last 10 events, most recent first
+  const recent = log.slice(-10).reverse()
+
+  el.innerHTML = recent
+    .map(event => `
+      <div class="event-entry event-type-${event.type}">
+        <div class="event-tick">t${event.tick}</div>
+        <div class="event-message">${event.message}</div>
+      </div>
+    `)
+    .join('')
+}
+
 export function renderAll(state: GameState): void {
   renderTick(state)
   renderResources(state)
@@ -200,4 +223,5 @@ export function renderAll(state: GameState): void {
   renderSystems(state)
   renderCorpses(state)
   renderRejectedIdeas(state)
+  renderEventLog(state)
 }

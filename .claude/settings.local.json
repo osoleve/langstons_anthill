@@ -7,7 +7,8 @@
       "Bash(npm install:*)",
       "Bash(npm run typecheck:*)",
       "Bash(npm run build:*)",
-      "Bash(python main.py:*)"
+      "Bash(python main.py:*)",
+      "Bash(python -m py_compile:*)"
     ]
   }
 }

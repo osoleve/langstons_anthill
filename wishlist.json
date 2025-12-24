@@ -1,7 +1,7 @@
 {
   "meta": {
     "created_tick": 104100,
-    "last_updated_tick": 104100,
+    "last_updated_tick": 131900,
     "description": "Wishes that cannot be enacted mid-session. The core is frozen. These accumulate until a session explicitly addresses them."
   },
   "core": {
@@ -27,15 +27,92 @@
   },
   "plugins": {
     "description": "Changes to Python plugins. Can be enacted during session.",
-    "wishes": []
+    "wishes": [
+      {
+        "id": "ornamental-automation",
+        "description": "Plugin that automatically crafts jewelry and adorns ants when conditions are met (surplus ore, low influence, no existing ornamentals)",
+        "reason": "Ornamental creation is currently manual intervention. Automating it would create natural cycles of adornment → influence generation → visitor summoning → death → restart.",
+        "proposed_session": "tech-debt-cleanup-131100",
+        "priority": "high",
+        "status": "completed",
+        "completed_tick": 131900,
+        "implementation": "plugins/auto_ornamental.py"
+      },
+      {
+        "id": "event-logger",
+        "description": "Plugin that logs significant events to a circular buffer (last 50 events) visible in state",
+        "reason": "Mysteries like 'where did influence come from' are unsolvable without event history. Log: spawns, deaths, visitor arrivals/departures, resource spikes, card firings.",
+        "proposed_session": "tech-debt-cleanup-131100",
+        "priority": "high",
+        "status": "completed",
+        "completed_tick": 131800,
+        "implementation": "plugins/event_logger.py"
+      },
+      {
+        "id": "boredom-consequences",
+        "description": "Plugin that triggers effects when boredom crosses thresholds - maybe ants become less efficient, or random mutations occur",
+        "reason": "Boredom is tracked but has no teeth. Make it matter.",
+        "proposed_session": "tech-debt-cleanup-131100",
+        "priority": "medium",
+        "status": "pending"
+      }
+    ]
   },
   "viewer": {
     "description": "Changes to the web viewer. Can be enacted during session.",
-    "wishes": []
+    "wishes": [
+      {
+        "id": "event-log-panel",
+        "description": "Add a scrolling event log panel to the viewer showing recent events (visitor arrivals, deaths, resource spikes, card firings)",
+        "reason": "Right now mysteries happen in the state (like influence jumping +0.5) with no visibility. An event log would make the simulation feel alive and observable.",
+        "proposed_session": "tech-debt-cleanup-131100",
+        "priority": "high",
+        "status": "completed",
+        "completed_tick": 132200,
+        "implementation": "viewer/src/ui/panels.ts (renderEventLog function)"
+      },
+      {
+        "id": "boredom-visualizer",
+        "description": "Visual indicator of boredom level - maybe a color shift or particle effect that intensifies as boredom rises",
+        "reason": "Boredom is a key signal but it's just a number in meta. Make it visceral.",
+        "proposed_session": "tech-debt-cleanup-131100",
+        "priority": "medium",
+        "status": "pending"
+      },
+      {
+        "id": "influence-flow-particles",
+        "description": "Particle streams from ornamentals to the Receiver showing influence generation and flow",
+        "reason": "Influence is abstract. Show it as light flowing through the colony.",
+        "proposed_session": "tech-debt-cleanup-131100",
+        "priority": "medium",
+        "status": "pending"
+      }
+    ]
   },
   "cards": {
     "description": "New cards or card system changes. Can be enacted during session.",
-    "wishes": []
+    "wishes": [
+      {
+        "id": "ghost-jewelry-card",
+        "description": "Card that fires when ghost jewelry count exceeds living ornamentals - prompts about memory, loss, and whether to melt down the rings",
+        "reason": "6 ghost rings from dead ants is evocative but unexplored. Make it narratively resonant.",
+        "proposed_session": "tech-debt-cleanup-131100",
+        "priority": "medium",
+        "status": "completed",
+        "completed_tick": 131900,
+        "implementation": "plugins/cards/wave_nine.py (ghost_jewelry card)"
+      },
+      {
+        "id": "bridge-investigation-card",
+        "description": "Card that fires when you have the resources for The Bridge but haven't built it - questions what you're afraid of or waiting for",
+        "reason": "The Bridge has been buildable for a while. Prompt the question directly.",
+        "proposed_session": "tech-debt-cleanup-131100",
+        "priority": "low",
+        "status": "completed",
+        "completed_tick": 131900,
+        "implementation": "plugins/cards/wave_nine.py (the_bridge_question card)"
+      }
+    ]
   },
   "architecture": {
     "description": "Structural changes that span multiple systems.",

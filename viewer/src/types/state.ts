@@ -113,6 +113,14 @@ export interface Estate {
   description: string
 }
 
+export interface EventLogEntry {
+  type: string
+  tick: number
+  timestamp: string
+  message: string
+  details?: Record<string, unknown>
+}
+
 export interface Meta {
   boredom: number
   recent_decisions: unknown[]
@@ -129,6 +137,7 @@ export interface Meta {
   estate?: Estate
   decor?: Decor[]
   jewelry?: Jewelry[]
+  event_log?: EventLogEntry[]
 }
 
 export interface MapData {
