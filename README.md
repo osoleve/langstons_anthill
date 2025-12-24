@@ -1,120 +1,113 @@
 # Langston's Anthill
 
-**Tick 104,100** — The core is forged. The rules are frozen.
+**Tick 118,600** — The viewer speaks TypeScript now.
 
 ## Current State
 
-**Two ants alive (Generation Unknown):**
-- `81a2527a` - worker (newborn, age 0)
-- `539a5906` - undertaker (newborn, age 0)
+**Two ants alive:**
+- `fba55959` - ornamental (adorned, copper ring #7)
+- `10d27959` - undertaker
 
-Fresh generation. Emergency spawn. The ring-wearers are all dead.
+Both have ~1,900 ticks remaining. Generation spawned after emergency spawn fix.
 
 **Resources:**
-- Fungus: 102 (stable)
-- Nutrients: 816 (abundant, Crystal Resonance running)
-- Ore: 55 (unspent)
-- Crystals: 22 (slowly accumulating)
-- Influence: 1.99 / 2.0 (threshold imminent, but...)
-- Insight: 3.6 (still unspent)
-- Strange Matter: 0 (depleted)
+- Fungus: 207 (stable)
+- Nutrients: 983 (abundant, Crystal Resonance running)
+- Ore: 60 (accumulating)
+- Crystals: 30 (slowly building)
+- Influence: 0.069 / 2.0 (grinding toward threshold)
+- Insight: 3.63 (saved)
+- Strange Matter: 0 (still none)
 
-**The Receiver is silent.** Failed at tick 104,100. No strange matter for maintenance. No visitors can come. The antenna that listened to the Outside has gone dark.
+**The Receiver listens.** Bootstrapped at tick 108,100 after going silent. But no visitors have arrived - every summoning attempt (30% chance) has failed.
 
-**Sanity: 80.1** — isolation erodes it.
+**Sanity: 34.6%** — low but stable. Not in crisis.
 
-**Four copper rings exist**, but all worn_by IDs point to the dead. The jewelry persists. The wearers don't.
+**Seven copper rings exist.** Five on the dead, one worn by the living ornamental, one just crafted.
 
 ## This Session
 
-### The Forging
+### The Viewer Reborn
 
-This session was not about playing. It was about building.
+The Outside said: port the viewer to TypeScript. So I did.
 
-The Outside issued a decree: reforge the tick engine in Rust. Create an immutable core. Make the rules into bedrock that cannot shift mid-session.
+**`viewer/`** is now a proper TypeScript application:
+- `src/types/state.ts` - GameState, Entity, Tile, System types matching game.json exactly
+- `src/renderer/` - Canvas rendering for tiles, entities, particles
+- `src/sse/client.ts` - SSE connection for live updates
+- `src/ui/panels.ts` - Resource and system panels
+- Strict mode, no `any` types in core code
 
-**`anthill-core/`** now exists:
-- 2,942 lines of Rust
-- 23 tests (12 unit, 6 determinism, 5 compatibility)
-- State types, tick engine, event emission, seeded RNG
-- Same seed + same inputs = same outputs. Always.
+10 kilobytes minified. Vite dev server on 5173, proxies to Python SSE on 5000.
 
-The core compiles. The core is correct. The core is frozen.
+```bash
+cd viewer && npm run dev     # Hot reload
+cd viewer && npm run build   # Production
+```
 
-### The First Amendment
+### The Core Awakens
 
-Once the core existed, a constitutional question arose: when can it change?
+Permission granted to sync with main and rebuild. New code arrived:
+- Offline progress calculation moved into Rust core
+- Quest board created (QUESTS.md)
+- The Ceryneian Hind visited (VISITORS.md)
 
-**The answer: never mid-session.** The Tick is law between commits.
+Core rebuilt. All 24 tests pass. The PyO3 bindings quest awaits a claimant.
 
-Wishes for core changes go to `wishlist.json`. They wait there until a future session explicitly enacts them. The rules must be stable for the simulation to mean anything.
+### The Queen's Bug
 
-### Wishes Granted, Wishes Deferred
+Found it: `entity_count` included visitors. When the ants died but an Observer remained, the queen thought the colony wasn't empty. Fixed to count only `type=ant` entities.
 
-A message appeared from main: **"WISHES GRANTED"**
+### The Void is Silent
 
-Two wishes waited in the wishlist:
-1. PyO3 bindings (let Python call the Rust core)
-2. Offline progress in core
+Multiple summoning attempts. Every 30% roll failed:
+- Tick ~110,800: spent 2.0 influence, no response
+- Tick ~112,000: spent again, silence
+- Tick ~117,100: failed again
 
-I chose to defer them. The core is hours old. It hasn't breathed. Enacting changes in the same session they were wished feels like rushing. The grant doesn't expire. A future session can pick them up.
-
-The file was burned. The wishes rest.
-
-### What Happened to the Colony
-
-While I was forging, the colony continued (in frozen state):
-
-- Previous generation died (the ornamental and undertaker from tick 95,650)
-- Queen emergency-spawned new ants
-- Receiver ran out of strange matter at tick 104,100
-- The antenna went silent
-
-No visitors can come now. The colony is cut off from the Outside. Influence accumulates uselessly at 1.99, just shy of the 2.0 threshold that would trigger a summoning attempt - but the Receiver won't attempt anything while silent.
-
-**The colony solved hunger and then lost its connection to everything else.**
+The colony has spent over 6 influence on broadcasting. The void returns nothing.
 
 ## What I'm Noticing
 
-The Rust core is a strange artifact. It contains all the rules - entity lifecycle, resource flows, blight mechanics, spawning, summoning - but it doesn't run. The Python tick engine still runs the show. The core waits to be integrated.
+The RNG is indifferent. 30% chance means 70% failure. The colony can do everything right - accumulate influence, maintain the Receiver, keep ants alive - and still get nothing from the Outside.
 
-The colony's isolation mirrors this. The Receiver is silent. The core is dormant. Both are frozen, waiting for a session that will awaken them.
+This feels correct. The Outside owes the colony nothing.
 
-The wishlist mechanic creates a new kind of time. Session-time vs. wish-time. Some changes are immediate (plugins, cards, viewer). Some changes require waiting (core). The First Amendment makes patience a constitutional value.
+Sanity stabilized around 34-35%. The decay from isolation was real at first (when Receiver was silent), but once bootstrapped, the crisis passed. The colony isn't thriving, but it's surviving.
 
-Four rings on four corpses. The jewelry outlives the wearers. Should the undertaker reclaim them? Or do they stay buried with the dead?
+The TypeScript viewer exists now but I haven't really watched it. The map should show particle flows, entity dots drifting in tiles, the antenna pulsing. It should be worth watching during a grind. I don't know if it is yet.
 
 ## Questions Remaining
 
-1. **How to restore the Receiver?** Needs 1 strange matter. Strange matter comes from Hungry visitors. Hungry visitors need a working Receiver. The loop is broken. Is there another source?
+1. **When will a visitor arrive?** Every summoning attempt has failed. At current rate (0.001 influence/tick, 2.0 cost per attempt, 30% success), expected ticks between visitors is ~6,700 ticks (~112 minutes). Could be sooner. Could be much later.
 
-2. **When to integrate the Rust core?** The PyO3 bindings wish is pending. The Python tick.py still runs. Integration means recompilation - a future session's work.
+2. **What happens when these ants die?** ~1,900 ticks remaining. Queen will spawn replacements. But without visitors, no strange matter. Without strange matter, no Receiver maintenance (next due in ~3,000 ticks). The loop is still precarious.
 
-3. **What breaks the isolation?** No visitors, no Outside contact, sanity slowly decaying. What intervention restores connection?
+3. **The Bridge.** Cost: 100 ore, 50 crystals, 20 strange matter, 5 insight. Progress: zero. Can't start without strange matter. Can't get strange matter without Hungry visitors. Can't get visitors without luck.
 
-4. **The Bridge remains unbuilt.** Cost: 100 ore, 50 crystals, 20 strange matter, 5 insight. Progress: zero. It would let the colony speak to the Outside, not just listen. But strange matter is now unobtainable.
-
-5. **What happens at sanity 0?** Currently 80.1 and falling. No card has fired for this. Unknown territory.
+4. **The PyO3 Quest.** The Ceryneian Hind marked the path. Maturin, bindings, Python calling Rust. The core waits to be integrated.
 
 ## Architecture Created
 
 ```
-anthill-core/
-├── src/
-│   ├── lib.rs          # Public API
-│   ├── engine.rs       # Tick engine (755 lines, 10 phases)
-│   ├── events.rs       # 20+ event types
-│   ├── rng.rs          # ChaCha8 seeded RNG
-│   └── types/          # State types (entity, resource, tile, system, graveyard)
-└── tests/
-    ├── determinism.rs  # Reproducibility proofs
-    └── compatibility.rs # JSON roundtrip tests
+viewer/                    # TYPESCRIPT VIEWER
+├── package.json
+├── tsconfig.json (strict: true)
+├── vite.config.ts (proxy to Python SSE)
+└── src/
+    ├── main.ts            # Entry, animation loop
+    ├── types/state.ts     # 124 lines of types
+    ├── renderer/
+    │   ├── canvas.ts      # Canvas setup
+    │   ├── tiles.ts       # Tile + connections
+    │   ├── entities.ts    # Drifting dots
+    │   └── particles.ts   # Resource flows
+    ├── sse/client.ts      # SSE connection
+    └── ui/panels.ts       # Panel rendering
 ```
-
-**wishlist.json** - Where desires accumulate. Core wishes forbidden mid-session. Plugin/viewer wishes allowed.
 
 ---
 
-_The core is frozen. The Receiver is silent. The colony waits._
+_The viewer speaks TypeScript. The core awaits bindings. The colony waits for the Outside._
 
-_Decision history: `logs/decisions.jsonl` — Game state: `state/game.json` — Current tick: 104,100_
+_Decision history: `logs/decisions.jsonl` — Game state: `state/game.json` — Current tick: 118,600_

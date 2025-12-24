@@ -1,12 +1,12 @@
 {
-  "tick": 115150,
+  "tick": 118700,
   "resources": {
-    "dirt": 1787.6049999944275,
-    "nutrients": 963.2699999996825,
-    "fungus": 194.97727999984124,
-    "crystals": 24.073000000016968,
-    "ore": 56.426000000041775,
-    "influence": 1.4895000000002734,
+    "dirt": 1858.604999994363,
+    "nutrients": 998.7699999996502,
+    "fungus": 174.1778239998197,
+    "crystals": 31.623000000021307,
+    "ore": 68.52600000004267,
+    "influence": 0.08350000000025481,
     "insight": 3.6279999999997115
   },
   "systems": {
@@ -17,7 +17,7 @@
       "consumes": {},
       "description": "Dirt slowly breaks down into nutrients",
       "corpse_boosts": [],
-      "sanity_efficiency": 0.7239999999999989,
+      "sanity_efficiency": 0.6864000000000064,
       "original_generates": {
         "nutrients": 0.01
       },
@@ -32,7 +32,7 @@
         "dirt": 0.02
       },
       "description": "Ants slowly dig up dirt",
-      "sanity_efficiency": 0.7239999999999989
+      "sanity_efficiency": 0.6864000000000064
     },
     "fungus_farm": {
       "name": "Fungus Farm",
@@ -52,7 +52,7 @@
         "crystals": 0.001
       },
       "description": "Ants carefully extract crystals from cave walls",
-      "sanity_efficiency": 0.7239999999999989
+      "sanity_efficiency": 0.6864000000000064
     },
     "crystal_resonance_chamber": {
       "name": "Crystal Resonance Chamber",
@@ -61,7 +61,7 @@
         "nutrients": 0.05
       },
       "description": "Crystals hum with energy, generating nutrients from vibration alone",
-      "sanity_efficiency": 0.7239999999999989
+      "sanity_efficiency": 0.6864000000000064
     },
     "ore_mine": {
       "name": "Ore Mine",
@@ -70,7 +70,7 @@
         "ore": 0.002
       },
       "description": "Ants carefully extract precious metals from the vein",
-      "sanity_efficiency": 0.7239999999999989
+      "sanity_efficiency": 0.6864000000000064
     },
     "queen_chamber": {
       "name": "Queen's Chamber",
@@ -105,8 +105,8 @@
       "type": "ant",
       "role": "ornamental",
       "tile": "origin",
-      "age": 1850,
-      "hunger": 65.00000000000526,
+      "age": 5400,
+      "hunger": 59.3000000000136,
       "hunger_rate": 0.3,
       "max_age": 7200,
       "food": "fungus",
@@ -120,8 +120,8 @@
       "type": "ant",
       "role": "undertaker",
       "tile": "origin",
-      "age": 1850,
-      "hunger": 72.49999999999488,
+      "age": 5400,
+      "hunger": 54.6499999999864,
       "hunger_rate": 0.15,
       "max_age": 7200,
       "food": "fungus",
@@ -144,7 +144,7 @@
         "y": 0,
         "contamination": 0.01,
         "blighted": true,
-        "blight_ticks_remaining": 228
+        "blight_ticks_remaining": 40
       },
       "dig_site": {
         "name": "The Dig",
@@ -258,7 +258,7 @@
     "events": []
   },
   "meta": {
-    "boredom": 1,
+    "boredom": 26,
     "recent_decisions": [],
     "estate": {
       "name": "The Listening Hill",
@@ -328,34 +328,25 @@
       "efficiency multipliers"
     ],
     "fired_cards": [
-      "what_do_nutrients_do",
-      "the_second_grind",
-      "something_alive",
-      "the_map_is_flat",
-      "efficiency_question",
-      "the_death_economy",
-      "undertaker_mortality",
-      "resurrect_an_idea",
-      "the_quiet",
-      "nutrient_crisis",
-      "last_worker",
-      "the_equilibrium",
-      "what_are_crystals_for",
-      "what_are_they_working_toward",
+      "the_estate",
       "first_nugget",
-      "lonely_undertaker",
+      "pretty_things",
+      "the_first_craft",
       "vanity_or_identity",
       "the_undertakers_ring",
-      "the_court",
-      "first_influence",
+      "visitor_gift",
       "the_receiver_built",
-      "first_visitor",
       "visitor_departed",
-      "pretty_things",
       "observer_insight",
-      "the_first_craft",
-      "the_hungry_one",
-      "visitor_gift"
+      "what_are_they_working_toward",
+      "resurrect_an_idea",
+      "undertaker_mortality",
+      "the_quiet",
+      "lonely_undertaker",
+      "what_are_crystals_for",
+      "what_do_nutrients_do",
+      "the_map_is_flat",
+      "efficiency_question"
     ],
     "goals": {
       "crystal_resonance_chamber": {
@@ -435,7 +426,7 @@
         "response": "For something external to create interest. For visitors (30% chance), random events (0.5%), cards to decide for me. All passive. The Crystal Resonance Chamber removed necessity - infinite nutrients means no food pressure, no death economy required. I avoided risk and got stagnation. The waiting IS the problem. The colony needs something to want that's hard to get."
       }
     ],
-    "sanity": 36.199999999999946,
+    "sanity": 34.32000000000032,
     "receiver_silent": false,
     "receiver_failed_tick": 104100,
     "receiver_bootstrap_tick": 108100,
@@ -468,5 +459,5 @@
     ],
     "total_processed": 17
   },
-  "last_save_timestamp": 1766556540.9075391
+  "last_save_timestamp": 1766560741.9107265
 }
