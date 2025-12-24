@@ -1,12 +1,12 @@
 {
-  "tick": 95850,
+  "tick": 99450,
   "resources": {
-    "dirt": 1466.1049999961865,
-    "nutrients": 658.1699999999746,
-    "fungus": 46.83999999987759,
-    "crystals": 13.772999999997339,
-    "ore": 33.8259999999946,
-    "influence": 1.452000000000277,
+    "dirt": 1520.1049999957281,
+    "nutrients": 731.8699999999095,
+    "fungus": 70.67199999991728,
+    "crystals": 17.37299999999778,
+    "ore": 41.0260000000034,
+    "influence": 1.4815000000002738,
     "insight": 3.5999999999997145
   },
   "systems": {
@@ -20,7 +20,12 @@
         "dirt": 0.005
       },
       "description": "Dirt slowly breaks down into nutrients",
-      "corpse_boosts": []
+      "corpse_boosts": [
+        {
+          "expires_at_tick": 100050,
+          "bonus": 0.1
+        }
+      ]
     },
     "dig_site": {
       "name": "Dig Site",
@@ -98,8 +103,8 @@
       "type": "ant",
       "role": "ornamental",
       "tile": "origin",
-      "age": 400,
-      "hunger": 73.45000000000094,
+      "age": 4000,
+      "hunger": 79.29999999999599,
       "hunger_rate": 0.30000000000000004,
       "max_age": 7200,
       "food": "fungus",
@@ -113,13 +118,13 @@
       "type": "ant",
       "role": "undertaker",
       "tile": "origin",
-      "age": 400,
-      "hunger": 71.72499999999846,
+      "age": 4000,
+      "hunger": 59.64999999998854,
       "hunger_rate": 0.15,
       "max_age": 7200,
       "food": "fungus",
       "processing_corpse": true,
-      "processing_ticks": 77
+      "processing_ticks": 15
     }
   ],
   "map": {
@@ -135,7 +140,7 @@
         "type": "compost",
         "x": 1,
         "y": 0,
-        "contamination": 0,
+        "contamination": 0.01,
         "blighted": false,
         "blight_ticks_remaining": 0
       },
@@ -251,7 +256,7 @@
     "events": []
   },
   "meta": {
-    "boredom": 44,
+    "boredom": 3,
     "recent_decisions": [],
     "estate": {
       "name": "The Listening Hill",
@@ -347,6 +352,39 @@
           "nutrients_per_tick": 0.05
         },
         "built": true
+      },
+      "the_bridge": {
+        "name": "The Bridge",
+        "description": "A transmitter to send signals TO the Outside, not just receive. If the Receiver listens, the Bridge speaks. What would the colony say?",
+        "cost": {
+          "ore": 100,
+          "crystals": 50,
+          "strange_matter": 20,
+          "insight": 5
+        },
+        "effect": {
+          "unknown": "building it will reveal its purpose"
+        },
+        "built": false,
+        "progress": {
+          "ore": 0,
+          "crystals": 0,
+          "strange_matter": 0,
+          "insight": 0
+        }
+      },
+      "receiver_maintenance": {
+        "name": "Receiver Maintenance",
+        "description": "The Receiver degrades. Without strange_matter to power it, the antenna will go silent. No signals. No visitors. Isolation.",
+        "cost": {
+          "strange_matter": 1
+        },
+        "effect": {
+          "prevents_receiver_decay": true
+        },
+        "built": false,
+        "maintenance_interval_ticks": 3600,
+        "last_maintained": 98950
       }
     },
     "reflections": [
@@ -378,21 +416,13 @@
         "tick": 95477,
         "trigger": "aftermath",
         "prompt": "What are you waiting for?",
-        "response": null
+        "response": "For something external to create interest. For visitors (30% chance), random events (0.5%), cards to decide for me. All passive. The Crystal Resonance Chamber removed necessity - infinite nutrients means no food pressure, no death economy required. I avoided risk and got stagnation. The waiting IS the problem. The colony needs something to want that's hard to get."
       }
     ]
   },
   "graveyard": {
-    "corpses": [
-      {
-        "entity_id": "bbd8ff04",
-        "entity_type": "ant",
-        "death_tick": 95177,
-        "cause": "old_age",
-        "tile": "origin"
-      }
-    ],
-    "total_processed": 16
+    "corpses": [],
+    "total_processed": 17
   },
-  "last_save_timestamp": 1766536047.3021066
+  "last_save_timestamp": 1766539707.0726032
 }

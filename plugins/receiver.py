@@ -189,6 +189,46 @@ def handle_visitor_death(state: dict) -> dict:
     return state
 
 
+def check_maintenance(state: dict) -> dict:
+    """Check if Receiver needs maintenance, apply degradation if unmaintained."""
+    tick = state["tick"]
+    goals = state.get("meta", {}).get("goals", {})
+    maint_goal = goals.get("receiver_maintenance", {})
+
+    if not maint_goal:
+        return state
+
+    last_maintained = maint_goal.get("last_maintained", tick)
+    interval = maint_goal.get("maintenance_interval_ticks", 3600)
+    ticks_since_maint = tick - last_maintained
+
+    # Auto-maintain if we have strange_matter
+    if ticks_since_maint >= interval:
+        strange_matter = state["resources"].get("strange_matter", 0)
+
+        if strange_matter >= 1:
+            # Consume strange_matter to maintain
+            state["resources"]["strange_matter"] -= 1
+            state["meta"]["goals"]["receiver_maintenance"]["last_maintained"] = tick
+            print(f"[receiver] Consumed 1 strange_matter for maintenance. The antenna hums with power.")
+        else:
+            # No fuel - Receiver goes silent
+            if "receiver_silent" not in state["meta"]:
+                state["meta"]["receiver_silent"] = True
+                state["meta"]["receiver_failed_tick"] = tick
+                print(f"[receiver] WARNING: No strange_matter for maintenance. The antenna begins to fade...")
+
+    # If silent and we now have strange_matter, allow manual reactivation
+    if state["meta"].get("receiver_silent") and state["resources"].get("strange_matter", 0) >= 1:
+        # Auto-restore if strange_matter becomes available
+        state["resources"]["strange_matter"] -= 1
+        state["meta"]["receiver_silent"] = False
+        state["meta"]["goals"]["receiver_maintenance"]["last_maintained"] = tick
+        print(f"[receiver] The antenna ROARS back to life! Connection restored.")
+
+    return state
+
+
 def on_tick(payload: dict):
     """Main tick handler for receiver system."""
     from engine.state import load_state, save_state
@@ -197,6 +237,14 @@ def on_tick(payload: dict):
 
     # Only operate if receiver exists
     if "receiver" not in state.get("systems", {}):
+        return
+
+    # Check maintenance status
+    state = check_maintenance(state)
+
+    # If receiver is silent (unmaintained), it doesn't work
+    if state.get("meta", {}).get("receiver_silent", False):
+        save_state(state)
         return
 
     # Passive listening drain (very small)
