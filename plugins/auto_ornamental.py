@@ -31,10 +31,10 @@ def set_last_craft_tick(state: dict, tick: int):
 
 
 def count_ornamentals(state: dict) -> int:
-    """Count living ornamental entities."""
+    """Count living adorned entities."""
     return len([
         e for e in state.get("entities", [])
-        if e.get("type") == "ant" and e.get("role") == "ornamental"
+        if e.get("type") == "ant" and e.get("adorned")
     ])
 
 
@@ -85,14 +85,13 @@ def adorn_ant(state: dict, ant_id: str, jewelry_index: int) -> dict:
     if ant.get("adorned"):
         return state
 
-    # Transform the ant
-    previous_role = ant.get("role", "worker")
+    # Transform the ant (keep original role for Rust compatibility)
+    original_role = ant.get("role", "worker")
     previous_hunger_rate = ant.get("hunger_rate", 0.1)
 
     ant["adorned"] = True
     ant["ornament"] = jewelry["type"]
-    ant["previous_role"] = previous_role
-    ant["role"] = "ornamental"
+    # Note: We don't change role - 'adorned' flag indicates ornamental status
     ant["hunger_rate"] = previous_hunger_rate * 3  # Triple hunger cost
     ant["influence_rate"] = 0.001  # Copper ring influence generation
 
@@ -100,13 +99,13 @@ def adorn_ant(state: dict, ant_id: str, jewelry_index: int) -> dict:
     jewelry["worn_by"] = ant_id
     jewelry["worn_tick"] = state["tick"]
 
-    print(f"[auto_ornamental] adorned {ant_id[:8]} (was {previous_role}, now ornamental)")
+    print(f"[auto_ornamental] adorned {ant_id[:8]} ({original_role}, now generates influence)")
     print(f"[auto_ornamental]   influence: +0.001/tick, hunger: {ant['hunger_rate']:.2f}/tick (3x)")
 
     _bus.emit("ant_adorned", {
         "tick": state["tick"],
         "ant_id": ant_id,
-        "previous_role": previous_role,
+        "previous_role": original_role,
         "ornament": jewelry["type"]
     })
 

@@ -220,9 +220,9 @@ export function renderGoals(state: GameState): void {
   const goals = state.meta?.goals ?? {}
   const resources = state.resources ?? {}
 
-  // Filter to unbuilt goals with progress tracking
+  // Filter to unbuilt goals with cost (show all goals with costs, not just those with progress)
   const activeGoals = Object.entries(goals).filter(
-    ([_id, goal]) => !goal.built && goal.progress !== undefined
+    ([_id, goal]) => !goal.built && goal.cost !== undefined
   )
 
   if (activeGoals.length === 0) {
@@ -232,7 +232,7 @@ export function renderGoals(state: GameState): void {
 
   el.innerHTML = activeGoals
     .map(([id, goal]) => {
-      const costEntries = Object.entries(goal.cost)
+      const costEntries = Object.entries(goal.cost as Record<string, number>)
       const progressBars = costEntries.map(([resource, required]) => {
         const current = resources[resource] ?? 0
         const progress = goal.progress?.[resource] ?? 0
@@ -240,12 +240,14 @@ export function renderGoals(state: GameState): void {
         const canContribute = current > 0 && progress < required
 
         return `
-          <div class="goal-resource">
+          <div class="goal-resource ${canContribute ? 'clickable' : ''}"
+               data-goal-id="${id}"
+               data-resource="${resource}">
             <div class="goal-resource-header">
               <span class="goal-resource-name">${resource}</span>
               <span class="goal-resource-count">${Math.floor(progress)}/${required}</span>
             </div>
-            <div class="goal-bar">
+            <div class="goal-bar" title="${canContribute ? 'Click to contribute 10' : ''}">
               <div class="goal-bar-fill ${canContribute ? 'can-contribute' : ''}" style="width: ${progressPct}%"></div>
             </div>
           </div>
@@ -258,7 +260,7 @@ export function renderGoals(state: GameState): void {
       }, 0) / costEntries.length * 100
 
       return `
-        <div class="goal-card">
+        <div class="goal-card" data-goal-id="${id}">
           <div class="goal-header">
             <span class="goal-name">${goal.name}</span>
             <span class="goal-pct">${totalProgress.toFixed(0)}%</span>
@@ -271,6 +273,39 @@ export function renderGoals(state: GameState): void {
       `
     })
     .join('')
+
+  // Attach click handlers for contributing
+  el.querySelectorAll('.goal-resource.clickable').forEach(resourceEl => {
+    resourceEl.addEventListener('click', async () => {
+      const goalId = resourceEl.getAttribute('data-goal-id')
+      const resource = resourceEl.getAttribute('data-resource')
+
+      if (!goalId || !resource) return
+
+      try {
+        const response = await fetch('/contribute', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            goal_id: goalId,
+            resource: resource,
+            amount: 10 // Contribute 10 at a time
+          })
+        })
+
+        if (response.ok) {
+          const result = await response.json()
+          console.log(`Contributed ${result.amount} ${resource} to ${goalId}`)
+
+          // Visual feedback
+          resourceEl.classList.add('contributed')
+          setTimeout(() => resourceEl.classList.remove('contributed'), 500)
+        }
+      } catch (e) {
+        console.error('Failed to contribute:', e)
+      }
+    })
+  })
 }
 
 export function renderDecisions(decisions: Decision[]): void {

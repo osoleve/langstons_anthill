@@ -179,6 +179,103 @@ async def clear_blessings():
     return JSONResponse(content={"status": "cleared"})
 
 
+CONTRIBUTIONS_FILE = PROJECT_DIR / "state" / "contributions.json"
+
+
+@app.post("/contribute")
+async def contribute_to_goal(request: Request):
+    """
+    Queue a contribution to a goal.
+    Contributions are queued in a file and processed by the tick engine
+    to avoid race conditions with state updates.
+    """
+    try:
+        data = await request.json()
+        goal_id = data.get("goal_id")
+        resource = data.get("resource")
+        amount = data.get("amount", 1)
+
+        if not goal_id or not resource:
+            return JSONResponse(
+                content={"status": "error", "message": "goal_id and resource required"},
+                status_code=400
+            )
+
+        # Validate goal exists
+        state = load_state()
+        if not state:
+            return JSONResponse(
+                content={"status": "error", "message": "no game state"},
+                status_code=404
+            )
+
+        goals = state.get("meta", {}).get("goals", {})
+        goal = goals.get(goal_id)
+
+        if not goal:
+            return JSONResponse(
+                content={"status": "error", "message": f"goal {goal_id} not found"},
+                status_code=404
+            )
+
+        if goal.get("built"):
+            return JSONResponse(
+                content={"status": "error", "message": "goal already built"},
+                status_code=400
+            )
+
+        cost = goal.get("cost", {})
+        if resource not in cost:
+            return JSONResponse(
+                content={"status": "error", "message": f"{resource} not required"},
+                status_code=400
+            )
+
+        # Queue contribution for tick engine to process
+        pending = {"contributions": []}
+        if CONTRIBUTIONS_FILE.exists():
+            try:
+                with open(CONTRIBUTIONS_FILE, 'r') as f:
+                    pending = json.load(f)
+            except (json.JSONDecodeError, IOError):
+                pass
+
+        pending["contributions"].append({
+            "goal_id": goal_id,
+            "resource": resource,
+            "amount": amount,
+            "timestamp": time.time()
+        })
+
+        with open(CONTRIBUTIONS_FILE, 'w') as f:
+            json.dump(pending, f)
+
+        return JSONResponse(content={
+            "status": "queued",
+            "goal_id": goal_id,
+            "resource": resource,
+            "amount": amount
+        })
+
+    except Exception as e:
+        return JSONResponse(
+            content={"status": "error", "message": str(e)},
+            status_code=500
+        )
+
+
+@app.get("/contributions")
+async def get_contributions():
+    """Get pending contributions."""
+    if CONTRIBUTIONS_FILE.exists():
+        try:
+            with open(CONTRIBUTIONS_FILE, 'r') as f:
+                return JSONResponse(content=json.load(f))
+        except (json.JSONDecodeError, IOError):
+            pass
+    return JSONResponse(content={"contributions": []})
+
+
 # Mount static files LAST so API routes take precedence
 # This serves the built Vite output
 if DIST_DIR.exists():
@@ -196,9 +293,7 @@ if DIST_DIR.exists():
 if __name__ == '__main__':
     import uvicorn
     uvicorn.run(
-        "viewer.server:app",
+        app,
         host="0.0.0.0",
-        port=5000,
-        reload=True,
-        reload_dirs=[str(PROJECT_DIR)]
+        port=5001
     )

@@ -4,10 +4,67 @@ import time
 import json
 from .state import load_state, save_state
 from .bus import bus
-from .core_wrapper import CoreEngine, StateManager
+
+# Try Rust core, fallback to Python-only
+USE_RUST_CORE = True
+try:
+    from .core_wrapper import CoreEngine, StateManager
+except ImportError:
+    USE_RUST_CORE = False
+    print("[tick] Rust core not available, using Python-only mode")
 
 
-def process_offline_progress(state_dict: dict, engine: CoreEngine) -> dict:
+def python_tick(state: dict) -> tuple[dict, list]:
+    """Pure Python tick implementation (fallback when Rust can't handle state).
+
+    This is simpler than Rust - just increments tick and applies basic entity aging.
+    Plugins handle most game logic anyway.
+    """
+    state["tick"] += 1
+    events = []
+
+    # Age entities
+    surviving = []
+    for entity in state.get("entities", []):
+        entity["age"] = entity.get("age", 0) + 1
+
+        # Check hunger
+        hunger = entity.get("hunger", 100)
+        hunger_rate = entity.get("hunger_rate", 0.1)
+        entity["hunger"] = hunger - hunger_rate
+
+        # Check death
+        max_age = entity.get("max_age", 7200)
+        died = False
+        cause = None
+
+        if entity["hunger"] <= 0:
+            died = True
+            cause = "starvation"
+        elif entity["age"] >= max_age:
+            died = True
+            cause = "old_age"
+
+        if died:
+            events.append({
+                "type": "entity_death",
+                "entity_id": entity["id"],
+                "cause": cause,
+                "tick": state["tick"]
+            })
+        else:
+            surviving.append(entity)
+
+    state["entities"] = surviving
+
+    # Increment boredom
+    meta = state.setdefault("meta", {})
+    meta["boredom"] = meta.get("boredom", 0) + 1
+
+    return state, events
+
+
+def process_offline_progress(state_dict: dict, engine) -> dict:
     """Apply catch-up ticks for time passed while offline.
 
     Caps at 3600 ticks (1 hour) to prevent massive state jumps.
@@ -62,74 +119,68 @@ def process_offline_progress(state_dict: dict, engine: CoreEngine) -> dict:
 
 def run():
     """Main loop. 1 tick = 1 second."""
-    print("[tick] engine starting (Rust Core)")
-
-    # Initialize Rust engine
-    # Use current time as seed
-    engine = CoreEngine(int(time.time()))
-
     # Load initial state
     state_dict = load_state()
+    print(f"[tick] State tick: {state_dict.get('tick')}", flush=True)
+    print(f"[tick] State has {len(state_dict.get('entities', []))} entities", flush=True)
 
-    # Validate and repair state if needed
-    try:
-        # Check if we can round-trip through Rust
-        state_json = json.dumps(state_dict)
-        print(f"[tick] State tick before validation: {state_dict.get('tick')}", flush=True)
-        print(f"[tick] State has {len(state_dict.get('entities', []))} entities", flush=True)
-        valid = StateManager.validate(state_json)
-        print(f"[tick] Validation result: {valid}", flush=True)
-        if not valid:
-             print("[tick] WARNING: Loaded state is not compatible with Rust core. Starting fresh.", flush=True)
-             state_dict = json.loads(StateManager.create_default())
-    except Exception as e:
-        print(f"[tick] ERROR loading state: {e}. Starting fresh.", flush=True)
-        import traceback
-        traceback.print_exc()
-        state_dict = json.loads(StateManager.create_default())
+    # Try to use Rust core, fall back to Python if it can't handle the state
+    use_rust = USE_RUST_CORE
+    engine = None
 
-    # Apply offline progress
-    state_dict = process_offline_progress(state_dict, engine)
+    if use_rust:
+        try:
+            state_json = json.dumps(state_dict)
+            valid = StateManager.validate(state_json)
+            if valid:
+                engine = CoreEngine(int(time.time()))
+                print("[tick] Using Rust Core", flush=True)
+            else:
+                use_rust = False
+                print("[tick] State not Rust-compatible, using Python mode", flush=True)
+        except Exception as e:
+            use_rust = False
+            print(f"[tick] Rust validation failed ({e}), using Python mode", flush=True)
+    else:
+        print("[tick] Using Python-only mode", flush=True)
+
     save_state(state_dict)
 
-    state_json = json.dumps(state_dict)
-
     tick_count = 0
-    state_dict = None  # Only parse when needed
 
     while True:
         loop_start = time.time()
 
-        # Run tick in Rust
+        # Run tick (Rust or Python)
         try:
-            state_json, events = engine.tick(state_json)
+            if use_rust and engine:
+                state_json = json.dumps(state_dict) if state_dict else state_json
+                state_json, events = engine.tick(state_json)
+                state_dict = json.loads(state_json)
+            else:
+                # Python-only mode
+                if state_dict is None:
+                    state_dict = load_state()
+                state_dict, events = python_tick(state_dict)
         except Exception as e:
-            print(f"[tick] CRITICAL ERROR in Rust core: {e}")
+            print(f"[tick] CRITICAL ERROR: {e}")
             time.sleep(1)
             continue
 
-        # Emit events from Rust (lightweight, no state parsing needed)
+        # Emit events
         for event in events:
             event_type = event.get("type", "unknown_event")
             bus.emit(event_type, event)
 
-        # Only parse state when we need to save or emit tick events
-        # Parse once and reuse for both operations when needed
-        should_save = tick_count % 50 == 0
-        should_emit_tick = True  # Could optimize this based on handler registration
+        # Always keep state_dict updated and emit tick for plugins
+        state_dict["last_save_timestamp"] = time.time()
 
-        if should_save or should_emit_tick:
-            state_dict = json.loads(state_json)
-            state_dict["last_save_timestamp"] = time.time()
+        # Save every 50 ticks
+        if tick_count % 50 == 0:
+            save_state(state_dict)
 
-            if should_save:
-                save_state(state_dict)
-
-            if should_emit_tick:
-                bus.emit("tick", state_dict)
-
-            # Update state_json with timestamp for next iteration
-            state_json = json.dumps(state_dict)
+        # Emit tick event for plugins
+        bus.emit("tick", state_dict)
 
         tick_count += 1
 

@@ -112,12 +112,10 @@ def adorn_ant(state: dict, entity_id: str, jewelry_index: int) -> dict:
         return state
 
     # The transformation
-    previous_role = entity.get("role", "worker")
-
+    # Note: We keep the original role (worker/undertaker) for Rust core compatibility
+    # The 'adorned' flag indicates they've become ornamental
     entity["adorned"] = True
     entity["ornament"] = jewelry["type"]
-    entity["previous_role"] = previous_role
-    entity["role"] = "ornamental"  # They cease to be a tool
     entity["hunger_rate"] = entity.get("hunger_rate", 0.1) * ADORNMENT_HUNGER_MULTIPLIER
     entity["influence_rate"] = JEWELRY[jewelry["type"]]["influence_rate"]
 
@@ -125,13 +123,14 @@ def adorn_ant(state: dict, entity_id: str, jewelry_index: int) -> dict:
     jewelry["worn_by"] = entity_id
     jewelry["worn_tick"] = state["tick"]
 
+    original_role = entity.get("role", "worker")
     print(f"[ornamentation] {entity_id} adorned with {jewelry['name']}")
-    print(f"[ornamentation] {entity_id} ceased to be a {previous_role}. now: ornamental")
+    print(f"[ornamentation] {entity_id} was {original_role}, now adorned (generates influence)")
 
     _bus.emit("ant_adorned", {
         "entity_id": entity_id,
         "jewelry_type": jewelry["type"],
-        "previous_role": previous_role,
+        "original_role": original_role,
         "tick": state["tick"]
     })
 
