@@ -1,9 +1,11 @@
 import { SSEClient, fetchInitialState } from './sse/client.ts'
 import { setupCanvas, clearCanvas } from './renderer/canvas.ts'
 import { renderTiles, drawConnections } from './renderer/tiles.ts'
-import { updateEntityDots, drawEntityDots } from './renderer/entities.ts'
+import { updateEntityDots, drawEntityDots, getEntityDots } from './renderer/entities.ts'
 import { updateParticles, spawnResourceParticles, drawParticles } from './renderer/particles.ts'
+import { updateSpirits, drawSpirits } from './renderer/spirits.ts'
 import { renderAll } from './ui/panels.ts'
+import { initTooltip, handleTooltipHover } from './ui/tooltip.ts'
 import type { GameState } from './types/state.ts'
 
 let currentState: GameState | null = null
@@ -19,6 +21,13 @@ function main() {
   const canvasContext = setupCanvas(container)
   const client = new SSEClient('/events')
 
+  // Initialize tooltip system
+  initTooltip()
+  container.addEventListener('mousemove', (e) => {
+    const entityDots = getEntityDots()
+    handleTooltipHover(e, container, entityDots)
+  })
+
   // Handle state updates
   function handleState(state: GameState) {
     currentState = state
@@ -33,6 +42,10 @@ function main() {
 
       // Draw connections behind everything
       drawConnections(canvasContext.ctx, currentState)
+
+      // Update and draw spirits (corpse ghosts)
+      updateSpirits(currentState)
+      drawSpirits(canvasContext.ctx)
 
       // Update and draw entities
       updateEntityDots(currentState)

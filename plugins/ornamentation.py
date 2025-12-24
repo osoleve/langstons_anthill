@@ -93,7 +93,7 @@ def adorn_ant(state: dict, entity_id: str, jewelry_index: int) -> dict:
 
     jewelry = jewelry_list[jewelry_index]
     if jewelry.get("worn_by") is not None:
-        print(f"[ornamentation] jewelry already worn")
+        print("[ornamentation] jewelry already worn")
         return state
 
     # Find the entity

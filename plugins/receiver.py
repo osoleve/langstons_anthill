@@ -122,7 +122,7 @@ def attempt_summoning(state: dict) -> dict:
             "name": visitor_type["name"]
         })
     else:
-        print(f"[receiver] The void is silent. No response.")
+        print("[receiver] The void is silent. No response.")
         _bus.emit("summoning_failed", {"tick": tick})
 
     return state
@@ -210,13 +210,13 @@ def check_maintenance(state: dict) -> dict:
             # Consume strange_matter to maintain
             state["resources"]["strange_matter"] -= 1
             state["meta"]["goals"]["receiver_maintenance"]["last_maintained"] = tick
-            print(f"[receiver] Consumed 1 strange_matter for maintenance. The antenna hums with power.")
+            print("[receiver] Consumed 1 strange_matter for maintenance. The antenna hums with power.")
         else:
             # No fuel - Receiver goes silent
-            if "receiver_silent" not in state["meta"]:
+            if not state["meta"].get("receiver_silent", False):
                 state["meta"]["receiver_silent"] = True
                 state["meta"]["receiver_failed_tick"] = tick
-                print(f"[receiver] WARNING: No strange_matter for maintenance. The antenna begins to fade...")
+                print("[receiver] WARNING: No strange_matter for maintenance. The antenna begins to fade...")
 
     # If silent and we now have strange_matter, allow manual reactivation
     if state["meta"].get("receiver_silent") and state["resources"].get("strange_matter", 0) >= 1:
@@ -224,7 +224,7 @@ def check_maintenance(state: dict) -> dict:
         state["resources"]["strange_matter"] -= 1
         state["meta"]["receiver_silent"] = False
         state["meta"]["goals"]["receiver_maintenance"]["last_maintained"] = tick
-        print(f"[receiver] The antenna ROARS back to life! Connection restored.")
+        print("[receiver] The antenna ROARS back to life! Connection restored.")
 
     return state
 
@@ -268,10 +268,10 @@ def check_bootstrap_mode(state: dict) -> dict:
             state["meta"]["receiver_silent"] = False
             state["meta"]["receiver_bootstrap_tick"] = tick
 
-            print(f"[receiver] EMERGENCY BOOTSTRAP ACTIVATED!")
+            print("[receiver] EMERGENCY BOOTSTRAP ACTIVATED!")
             print(f"[receiver] Consumed: {BOOTSTRAP_ORE} ore, {BOOTSTRAP_CRYSTALS} crystals, {BOOTSTRAP_SANITY} sanity")
-            print(f"[receiver] The antenna flickers, powered by desperation and precious metals.")
-            print(f"[receiver] Connection to the Outside: RESTORED")
+            print("[receiver] The antenna flickers, powered by desperation and precious metals.")
+            print("[receiver] Connection to the Outside: RESTORED")
 
             # Update maintenance timer
             if "goals" in state["meta"] and "receiver_maintenance" in state["meta"]["goals"]:

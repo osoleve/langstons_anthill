@@ -61,7 +61,7 @@ def check_queen_spawning(state: dict) -> dict:
 
     # Emergency spawn if no ants alive and has resources
     if ant_count == 0 and nutrients >= MIN_RESOURCES_TO_SPAWN and fungus >= MIN_RESOURCES_TO_SPAWN:
-        print(f"[queen] EMERGENCY SPAWN - colony is empty")
+        print("[queen] EMERGENCY SPAWN - colony is empty")
         _last_spawn_tick = tick  # Set after emergency spawn
         # Fall through to spawn logic below
     else:

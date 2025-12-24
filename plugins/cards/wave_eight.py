@@ -103,7 +103,6 @@ def apply_event_effect(state: dict, effect: str) -> dict:
 def on_tick(payload: dict):
     """Check card conditions and random events."""
     global _last_event_tick, _complacency_cooldown
-    from engine.state import load_state, save_state
 
     state = payload
     bus = _bus

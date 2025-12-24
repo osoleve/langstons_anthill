@@ -60,11 +60,11 @@ export interface Entity {
 }
 
 export interface Corpse {
-  id: string
-  original_role: string
-  died_at: number
+  entity_id: string
+  entity_type: 'ant' | 'visitor'
+  death_tick: number
   cause: string
-  biomass: number
+  tile: string
 }
 
 export interface Graveyard {

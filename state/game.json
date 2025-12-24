@@ -1,12 +1,12 @@
 {
-  "tick": 132400,
+  "tick": 133900,
   "resources": {
-    "dirt": 2132.6049999941138,
-    "nutrients": 1125.7699999995257,
-    "fungus": 237.61744588775014,
-    "crystals": 53.322999999990714,
-    "ore": 110.92599999997881,
-    "influence": 1.5465000000002564,
+    "dirt": 2162.6049999940865,
+    "nutrients": 1140.769999999512,
+    "fungus": 212.38595671017802,
+    "crystals": 56.82299999998722,
+    "ore": 113.92599999997182,
+    "influence": 1.551000000000256,
     "insight": 3.6279999999997115
   },
   "systems": {
@@ -17,7 +17,7 @@
       "consumes": {},
       "description": "Dirt slowly breaks down into nutrients",
       "corpse_boosts": [],
-      "sanity_efficiency": 0.6896000000000058,
+      "sanity_efficiency": 0.6914000000000055,
       "original_generates": {
         "nutrients": 0.01
       },
@@ -32,7 +32,7 @@
         "dirt": 0.02
       },
       "description": "Ants slowly dig up dirt",
-      "sanity_efficiency": 0.6896000000000058
+      "sanity_efficiency": 0.6914000000000055
     },
     "fungus_farm": {
       "name": "Fungus Farm",
@@ -52,7 +52,7 @@
         "crystals": 0.001
       },
       "description": "Ants carefully extract crystals from cave walls",
-      "sanity_efficiency": 0.6896000000000058
+      "sanity_efficiency": 0.6914000000000055
     },
     "crystal_resonance_chamber": {
       "name": "Crystal Resonance Chamber",
@@ -61,7 +61,7 @@
         "nutrients": 0.05
       },
       "description": "Crystals hum with energy, generating nutrients from vibration alone",
-      "sanity_efficiency": 0.6896000000000058
+      "sanity_efficiency": 0.6914000000000055
     },
     "ore_mine": {
       "name": "Ore Mine",
@@ -70,7 +70,7 @@
         "ore": 0.002
       },
       "description": "Ants carefully extract precious metals from the vein",
-      "sanity_efficiency": 0.6896000000000058
+      "sanity_efficiency": 0.6914000000000055
     },
     "queen_chamber": {
       "name": "Queen's Chamber",
@@ -101,7 +101,7 @@
   },
   "entities": [
     {
-      "id": "0ede3cda",
+      "id": "b07f3490",
       "type": "ant",
       "role": "worker",
       "tile": "origin",
@@ -112,7 +112,7 @@
       "food": "fungus"
     },
     {
-      "id": "b1a0de6b",
+      "id": "3312ec79",
       "type": "ant",
       "role": "undertaker",
       "tile": "origin",
@@ -140,7 +140,7 @@
         "y": 0,
         "contamination": 0.01,
         "blighted": true,
-        "blight_ticks_remaining": 56
+        "blight_ticks_remaining": 65
       },
       "dig_site": {
         "name": "The Dig",
@@ -424,7 +424,7 @@
         "response": "For something external to create interest. For visitors (30% chance), random events (0.5%), cards to decide for me. All passive. The Crystal Resonance Chamber removed necessity - infinite nutrients means no food pressure, no death economy required. I avoided risk and got stagnation. The waiting IS the problem. The colony needs something to want that's hard to get."
       }
     ],
-    "sanity": 34.48000000000029,
+    "sanity": 34.57000000000027,
     "receiver_silent": false,
     "receiver_failed_tick": 104100,
     "receiver_bootstrap_tick": 108100,
@@ -471,5 +471,5 @@
     ],
     "total_processed": 17
   },
-  "last_save_timestamp": 1766586528.4918544
+  "last_save_timestamp": 1766588174.8750226
 }

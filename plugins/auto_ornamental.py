@@ -6,14 +6,13 @@ this plugin automatically crafts jewelry and adorns an ant.
 This creates natural cycles: adornment → influence → visitors → death → restart.
 """
 
-import uuid
 
 PLUGIN_ID = "auto_ornamental"
 
 # Conditions for auto-crafting
 MIN_ORE_FOR_CRAFT = 20  # Need surplus ore
 MIN_ANTS_FOR_CRAFT = 2  # Colony must be stable
-INFLUENCE_THRESHOLD = 0.5  # Create ornamental when influence is low
+INFLUENCE_THRESHOLD = 1.8  # Create ornamental when influence is below summoning range (2.0)
 CRAFT_COOLDOWN = 3600  # 1 hour cooldown between auto-crafts
 
 _bus = None
@@ -148,7 +147,7 @@ def check_auto_craft(state: dict) -> dict:
     if worker is None:
         return state
 
-    print(f"[auto_ornamental] conditions met - crafting ornamental")
+    print("[auto_ornamental] conditions met - crafting ornamental")
     print(f"[auto_ornamental]   ore: {ore:.1f} (>{MIN_ORE_FOR_CRAFT}), ants: {ant_count} (>={MIN_ANTS_FOR_CRAFT}), influence: {influence:.3f} (<{INFLUENCE_THRESHOLD})")
 
     # Craft jewelry

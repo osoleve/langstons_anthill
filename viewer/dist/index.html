@@ -191,8 +191,123 @@
     .event-type-visitor_departure .event-message { color: #668; }
     .event-type-influence_spent .event-message { color: #a8a; }
     .event-type-card_drawn .event-message { color: #fa8; }
+
+    /* Entity tooltip */
+    .entity-tooltip {
+      position: fixed;
+      background: #2a2a2a;
+      border: 1px solid #444;
+      padding: 10px;
+      min-width: 120px;
+      z-index: 1000;
+      pointer-events: none;
+      font-size: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+    }
+    .tooltip-header {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 8px;
+      border-bottom: 1px solid #333;
+      padding-bottom: 6px;
+    }
+    .tooltip-type {
+      color: #a85;
+      font-weight: bold;
+      text-transform: capitalize;
+    }
+    .tooltip-type.visitor {
+      color: #8af;
+    }
+    .tooltip-adorned {
+      color: #ca8;
+    }
+    .tooltip-stats {
+      color: #888;
+    }
+    .tooltip-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 2px 0;
+    }
+    .tooltip-row span:first-child {
+      color: #666;
+    }
+    .tooltip-desc {
+      margin-top: 6px;
+      font-style: italic;
+      color: #668;
+      font-size: 11px;
+    }
+    .tooltip-activity {
+      margin-top: 6px;
+      color: #8a8;
+      font-size: 11px;
+    }
+
+    /* Goals panel */
+    .goal-card {
+      background: #252530;
+      border: 1px solid #3a3a4a;
+      padding: 12px;
+      margin-bottom: 12px;
+      border-radius: 4px;
+    }
+    .goal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+    .goal-name {
+      color: #a8a;
+      font-weight: bold;
+    }
+    .goal-pct {
+      color: #8a8;
+      font-size: 14px;
+    }
+    .goal-desc {
+      color: #666;
+      font-size: 11px;
+      margin-bottom: 10px;
+      font-style: italic;
+    }
+    .goal-resources {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .goal-resource-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      margin-bottom: 3px;
+    }
+    .goal-resource-name {
+      color: #888;
+    }
+    .goal-resource-count {
+      color: #666;
+    }
+    .goal-bar {
+      height: 6px;
+      background: #2a2a2a;
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .goal-bar-fill {
+      height: 100%;
+      background: #446;
+      transition: width 0.5s;
+    }
+    .goal-bar-fill.can-contribute {
+      background: #484;
+      box-shadow: 0 0 4px rgba(100, 200, 100, 0.3);
+    }
   </style>
-  <script type="module" crossorigin src="/assets/index-BsJyV81s.js"></script>
+  <script type="module" crossorigin src="/assets/index-rsnDIQNx.js"></script>
 </head>
 <body>
   <h1>Langston's Anthill</h1>
@@ -251,6 +366,11 @@
       <div class="section">
         <h2>Graveyard of Ideas</h2>
         <div id="rejected"></div>
+      </div>
+
+      <div class="section">
+        <h2>Goals</h2>
+        <div id="goals"></div>
       </div>
     </div>
   </div>

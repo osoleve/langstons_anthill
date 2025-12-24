@@ -55,6 +55,26 @@
         "proposed_session": "tech-debt-cleanup-131100",
         "priority": "medium",
         "status": "pending"
+      },
+      {
+        "id": "receiver-maintenance-bugfix",
+        "description": "Fix receiver.py check_maintenance: change 'if receiver_silent not in state' to 'if not receiver_silent'",
+        "reason": "Bug caused Receiver to never go silent even when maintenance is overdue. Fixed in code but running process has old version.",
+        "proposed_session": "play-session-133000",
+        "priority": "high",
+        "status": "completed",
+        "completed_tick": 133050,
+        "implementation": "plugins/receiver.py line 216"
+      },
+      {
+        "id": "auto-ornamental-threshold-fix",
+        "description": "Raise auto_ornamental INFLUENCE_THRESHOLD from 0.5 to 1.8",
+        "reason": "Original threshold was useless - 0.5 influence is far below the 2.0 summoning threshold. Colony could have ornamental-less periods where influence decayed to 0.5 but never recovered. Fixed in code but running process has old version.",
+        "proposed_session": "play-session-133000",
+        "priority": "high",
+        "status": "completed",
+        "completed_tick": 133150,
+        "implementation": "plugins/auto_ornamental.py line 16"
       }
     ]
   },

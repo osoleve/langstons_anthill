@@ -123,7 +123,7 @@ def on_tick(payload: dict):
                     mark_card_fired(state, card_id)
                     any_fired = True
                 print(f"[wave_seven] drew: {card_id}")
-        except Exception as e:
+        except Exception:
             pass  # Condition failed, skip
 
     # Persist fired cards to disk

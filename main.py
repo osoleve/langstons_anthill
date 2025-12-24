@@ -6,7 +6,7 @@ from pathlib import Path
 # Add project root to path
 sys.path.insert(0, str(Path(__file__).parent))
 
-from engine.state import load_state, save_state, initial_state, STATE_FILE
+from engine.state import save_state, initial_state, STATE_FILE
 from engine.bus import bus
 from plugins.loader import load_all_plugins
 from engine.tick import run

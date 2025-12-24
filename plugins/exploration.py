@@ -62,7 +62,6 @@ def on_tick(payload: dict):
     """Check for exploration opportunities."""
     global _discovery_offered
 
-    from engine.state import load_state, save_state
 
     state = payload
 

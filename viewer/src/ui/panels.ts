@@ -213,6 +213,66 @@ export function renderEventLog(state: GameState): void {
     .join('')
 }
 
+export function renderGoals(state: GameState): void {
+  const el = document.getElementById('goals')
+  if (!el) return
+
+  const goals = state.meta?.goals ?? {}
+  const resources = state.resources ?? {}
+
+  // Filter to unbuilt goals with progress tracking
+  const activeGoals = Object.entries(goals).filter(
+    ([_id, goal]) => !goal.built && goal.progress !== undefined
+  )
+
+  if (activeGoals.length === 0) {
+    el.innerHTML = '<div class="empty">no active goals</div>'
+    return
+  }
+
+  el.innerHTML = activeGoals
+    .map(([id, goal]) => {
+      const costEntries = Object.entries(goal.cost)
+      const progressBars = costEntries.map(([resource, required]) => {
+        const current = resources[resource] ?? 0
+        const progress = goal.progress?.[resource] ?? 0
+        const progressPct = Math.min(100, (progress / required) * 100)
+        const canContribute = current > 0 && progress < required
+
+        return `
+          <div class="goal-resource">
+            <div class="goal-resource-header">
+              <span class="goal-resource-name">${resource}</span>
+              <span class="goal-resource-count">${Math.floor(progress)}/${required}</span>
+            </div>
+            <div class="goal-bar">
+              <div class="goal-bar-fill ${canContribute ? 'can-contribute' : ''}" style="width: ${progressPct}%"></div>
+            </div>
+          </div>
+        `
+      }).join('')
+
+      const totalProgress = costEntries.reduce((sum, [resource, required]) => {
+        const progress = goal.progress?.[resource] ?? 0
+        return sum + (progress / required)
+      }, 0) / costEntries.length * 100
+
+      return `
+        <div class="goal-card">
+          <div class="goal-header">
+            <span class="goal-name">${goal.name}</span>
+            <span class="goal-pct">${totalProgress.toFixed(0)}%</span>
+          </div>
+          <div class="goal-desc">${goal.description}</div>
+          <div class="goal-resources">
+            ${progressBars}
+          </div>
+        </div>
+      `
+    })
+    .join('')
+}
+
 export function renderAll(state: GameState): void {
   renderTick(state)
   renderResources(state)
@@ -224,4 +284,5 @@ export function renderAll(state: GameState): void {
   renderCorpses(state)
   renderRejectedIdeas(state)
   renderEventLog(state)
+  renderGoals(state)
 }

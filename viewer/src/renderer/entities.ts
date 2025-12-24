@@ -9,9 +9,15 @@ interface EntityDot {
   type: 'ant' | 'visitor'
   subtype?: string
   adorned?: boolean
+  entity: Entity
 }
 
 const entityDots: Map<string, EntityDot> = new Map()
+
+// Expose positions for tooltip system
+export function getEntityDots(): Map<string, EntityDot> {
+  return entityDots
+}
 
 export function updateEntityDots(state: GameState): void {
   const tiles = state.map?.tiles
@@ -33,7 +39,8 @@ export function updateEntityDots(state: GameState): void {
         targetY: tileCenter.y + (Math.random() - 0.5) * 60,
         type: entity.type,
         subtype: entity.subtype,
-        adorned: entity.adorned
+        adorned: entity.adorned,
+        entity: entity
       }
       entityDots.set(entity.id, dot)
     }
@@ -52,6 +59,7 @@ export function updateEntityDots(state: GameState): void {
     dot.type = entity.type
     dot.subtype = entity.subtype
     dot.adorned = entity.adorned
+    dot.entity = entity
   }
 
   // Remove dots for dead entities
