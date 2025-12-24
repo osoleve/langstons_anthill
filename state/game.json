@@ -1,12 +1,12 @@
 {
-  "tick": 99450,
+  "tick": 101950,
   "resources": {
-    "dirt": 1520.1049999957281,
-    "nutrients": 731.8699999999095,
-    "fungus": 70.67199999991728,
-    "crystals": 17.37299999999778,
-    "ore": 41.0260000000034,
-    "influence": 1.4815000000002738,
+    "dirt": 1557.6049999954098,
+    "nutrients": 783.2699999998644,
+    "fungus": 75.78159999995431,
+    "crystals": 19.873000000000836,
+    "ore": 51.02600000000951,
+    "influence": 1.4960000000002722,
     "insight": 3.5999999999997145
   },
   "systems": {
@@ -20,12 +20,7 @@
         "dirt": 0.005
       },
       "description": "Dirt slowly breaks down into nutrients",
-      "corpse_boosts": [
-        {
-          "expires_at_tick": 100050,
-          "bonus": 0.1
-        }
-      ]
+      "corpse_boosts": []
     },
     "dig_site": {
       "name": "Dig Site",
@@ -103,8 +98,8 @@
       "type": "ant",
       "role": "ornamental",
       "tile": "origin",
-      "age": 4000,
-      "hunger": 79.29999999999599,
+      "age": 6500,
+      "hunger": 62.34999999999518,
       "hunger_rate": 0.30000000000000004,
       "max_age": 7200,
       "food": "fungus",
@@ -118,13 +113,13 @@
       "type": "ant",
       "role": "undertaker",
       "tile": "origin",
-      "age": 4000,
-      "hunger": 59.64999999998854,
+      "age": 6500,
+      "hunger": 66.17499999998186,
       "hunger_rate": 0.15,
       "max_age": 7200,
       "food": "fungus",
       "processing_corpse": true,
-      "processing_ticks": 15
+      "processing_ticks": 44
     }
   ],
   "map": {
@@ -256,7 +251,7 @@
     "events": []
   },
   "meta": {
-    "boredom": 3,
+    "boredom": 55,
     "recent_decisions": [],
     "estate": {
       "name": "The Listening Hill",
@@ -424,5 +419,5 @@
     "corpses": [],
     "total_processed": 17
   },
-  "last_save_timestamp": 1766539707.0726032
+  "last_save_timestamp": 1766542240.0545871
 }
