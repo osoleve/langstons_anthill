@@ -132,7 +132,7 @@ When you receive a card, you respond. Build what's needed. Grind what's required
 
 ### Map & Viewer (`viewer/`)
 
-A small web server that renders game state as a living map.
+A TypeScript web application that renders game state as a living map.
 
 - Systems are geography (mine = mountain, trade route = river)
 - Entities move
@@ -140,10 +140,27 @@ A small web server that renders game state as a living map.
 - Rejected ideas are a graveyard (literal)
 - Resource flows are visible particle streams
 
-Stack:
-- `viewer/server.py` — Flask/FastAPI, serves static + SSE endpoint
-- `viewer/static/index.html` — Canvas or SVG renderer
+**Stack:**
+- `viewer/` — TypeScript application with strict types
+- `viewer/src/types/` — GameState, Entity, Tile, System types matching `state/game.json`
+- `viewer/src/renderer/` — Canvas rendering for tiles, entities, particles
+- `viewer/src/sse/` — SSE client for live updates from server
 - Reads from `state/game.json`, pushes updates via SSE
+
+**Building the viewer:**
+```bash
+cd viewer
+npm install               # Install dependencies
+npm run dev               # Dev server with hot reload
+npm run build             # Production build
+npm run typecheck         # Type checking only
+```
+
+**TypeScript conventions:**
+- Strict mode enabled (`strict: true` in tsconfig)
+- All game state types mirror the JSON structure exactly
+- No `any` types in core rendering code
+- Particle system uses typed animation frames
 
 The map grows when you add systems. Start with one tile. Let it sprawl.
 
@@ -273,20 +290,24 @@ The wishlist is the graveyard's optimistic twin. Ideas that might live, waiting 
 
 **Start everything:**
 ```bash
-python3 main.py              # Tick engine with plugins loaded
-python3 viewer/server.py     # Viewer on http://localhost:5000
+python main.py               # Tick engine with plugins loaded
+cd viewer && npm run dev     # Viewer on http://localhost:5173 (Vite dev server)
 ```
 
-**Run in background:**
+**Production viewer:**
 ```bash
-python3 engine/tick.py > logs/tick.log 2>&1 &
-python3 viewer/server.py > logs/viewer.log 2>&1 &
+cd viewer && npm run build   # Build to viewer/dist/
+cd viewer && npm run preview # Preview production build
+```
+
+**Run tick engine in background:**
+```bash
+python engine/tick.py > logs/tick.log 2>&1 &
 ```
 
 **Stop background processes:**
 ```bash
-pkill -f "python3 engine/tick.py"
-pkill -f "python3 viewer/server.py"
+pkill -f "python engine/tick.py"
 ```
 
 **Inspect current state:**
@@ -383,8 +404,7 @@ langstons-anthill/
 │   └── game.json (current game state)
 ├── logs/
 │   ├── decisions.jsonl (decision history)
-│   ├── tick.log (tick engine output)
-│   └── viewer.log (viewer output)
+│   └── tick.log (tick engine output)
 ├── plugins/
 │   ├── loader.py (plugin discovery)
 │   ├── undertaker.py (corpse processing)
@@ -395,10 +415,24 @@ langstons-anthill/
 │   └── cards/
 │       ├── starter_cards.py
 │       ├── wave_two.py ... wave_six.py
-└── viewer/
-    ├── server.py (Flask SSE server)
-    └── static/
-        └── index.html (live map renderer)
+└── viewer/                   # TYPESCRIPT VIEWER
+    ├── package.json
+    ├── tsconfig.json
+    ├── vite.config.ts
+    ├── index.html
+    └── src/
+        ├── main.ts           # Entry point
+        ├── types/
+        │   └── state.ts      # GameState, Entity, Tile, System types
+        ├── renderer/
+        │   ├── canvas.ts     # Main canvas setup
+        │   ├── tiles.ts      # Tile rendering
+        │   ├── entities.ts   # Entity dot rendering
+        │   └── particles.ts  # Resource flow particles
+        ├── sse/
+        │   └── client.ts     # SSE connection to tick engine
+        └── ui/
+            └── panels.ts     # Resource/system panels
 ```
 
 ## Tone

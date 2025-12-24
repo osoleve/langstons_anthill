@@ -3,7 +3,11 @@
     "allow": [
       "Bash(pip show:*)",
       "Bash(pip install:*)",
-      "Bash(python viewer/server.py:*)"
+      "Bash(python viewer/server.py:*)",
+      "Bash(npm install:*)",
+      "Bash(npm run typecheck:*)",
+      "Bash(npm run build:*)",
+      "Bash(python main.py:*)"
     ]
   }
 }

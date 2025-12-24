@@ -1,13 +1,13 @@
 {
-  "tick": 108800,
+  "tick": 110800,
   "resources": {
-    "dirt": 1660.604999994543,
-    "nutrients": 909.7699999997402,
-    "fungus": 168.78159999993358,
-    "crystals": 16.723000000009208,
-    "ore": 44.726000000026254,
-    "influence": 0.004500000000271783,
-    "insight": 3.6079999999997137
+    "dirt": 1700.6049999945067,
+    "nutrients": 929.769999999722,
+    "fungus": 192.7815999998972,
+    "crystals": 17.723000000011652,
+    "ore": 48.72600000003114,
+    "influence": 0.507000000000272,
+    "insight": 3.612999999999713
   },
   "systems": {
     "compost_heap": {
@@ -17,7 +17,7 @@
       "consumes": {},
       "description": "Dirt slowly breaks down into nutrients",
       "corpse_boosts": [],
-      "sanity_efficiency": 0.7319999999999973,
+      "sanity_efficiency": 0.7309999999999975,
       "original_generates": {
         "nutrients": 0.01
       },
@@ -32,7 +32,7 @@
         "dirt": 0.02
       },
       "description": "Ants slowly dig up dirt",
-      "sanity_efficiency": 0.7319999999999973
+      "sanity_efficiency": 0.7309999999999975
     },
     "fungus_farm": {
       "name": "Fungus Farm",
@@ -52,7 +52,7 @@
         "crystals": 0.001
       },
       "description": "Ants carefully extract crystals from cave walls",
-      "sanity_efficiency": 0.7319999999999973
+      "sanity_efficiency": 0.7309999999999975
     },
     "crystal_resonance_chamber": {
       "name": "Crystal Resonance Chamber",
@@ -61,7 +61,7 @@
         "nutrients": 0.05
       },
       "description": "Crystals hum with energy, generating nutrients from vibration alone",
-      "sanity_efficiency": 0.7319999999999973
+      "sanity_efficiency": 0.7309999999999975
     },
     "ore_mine": {
       "name": "Ore Mine",
@@ -70,7 +70,7 @@
         "ore": 0.002
       },
       "description": "Ants carefully extract precious metals from the vein",
-      "sanity_efficiency": 0.7319999999999973
+      "sanity_efficiency": 0.7309999999999975
     },
     "queen_chamber": {
       "name": "Queen's Chamber",
@@ -105,8 +105,8 @@
       "type": "ant",
       "role": "ornamental",
       "tile": "origin",
-      "age": 4700,
-      "hunger": 76.15000000001278,
+      "age": 6700,
+      "hunger": 77.95000000000903,
       "hunger_rate": 0.30000000000000004,
       "max_age": 7200,
       "food": "fungus",
@@ -120,8 +120,8 @@
       "type": "ant",
       "role": "undertaker",
       "tile": "origin",
-      "age": 4700,
-      "hunger": 70.77499999998747,
+      "age": 6700,
+      "hunger": 56.67499999998183,
       "hunger_rate": 0.15,
       "max_age": 7200,
       "food": "fungus",
@@ -134,8 +134,8 @@
       "subtype": "observer",
       "name": "An Observer",
       "tile": "receiver",
-      "age": 50,
-      "hunger": 97.50000000000014,
+      "age": 2050,
+      "hunger": 72.79999999999373,
       "hunger_rate": 0.05,
       "max_age": 3600,
       "food": "crystals",
@@ -161,7 +161,7 @@
         "y": 0,
         "contamination": 0.01,
         "blighted": true,
-        "blight_ticks_remaining": 268
+        "blight_ticks_remaining": 263
       },
       "dig_site": {
         "name": "The Dig",
@@ -275,7 +275,7 @@
     "events": []
   },
   "meta": {
-    "boredom": 26,
+    "boredom": 33,
     "recent_decisions": [],
     "estate": {
       "name": "The Listening Hill",
@@ -445,7 +445,7 @@
         "response": "For something external to create interest. For visitors (30% chance), random events (0.5%), cards to decide for me. All passive. The Crystal Resonance Chamber removed necessity - infinite nutrients means no food pressure, no death economy required. I avoided risk and got stagnation. The waiting IS the problem. The colony needs something to want that's hard to get."
       }
     ],
-    "sanity": 36.599999999999866,
+    "sanity": 36.549999999999876,
     "receiver_silent": false,
     "receiver_failed_tick": 104100,
     "receiver_bootstrap_tick": 108100,
@@ -456,5 +456,5 @@
     "corpses": [],
     "total_processed": 17
   },
-  "last_save_timestamp": 1766549608.6379118
+  "last_save_timestamp": 1766551636.0119176
 }
