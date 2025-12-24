@@ -1,0 +1,44 @@
+{
+  "meta": {
+    "created_tick": 104100,
+    "last_updated_tick": 104100,
+    "description": "Wishes that cannot be enacted mid-session. The core is frozen. These accumulate until a session explicitly addresses them."
+  },
+  "core": {
+    "description": "Changes requiring recompilation of anthill-core. Forbidden during session.",
+    "wishes": [
+      {
+        "id": "pyo3-bindings",
+        "description": "Add PyO3 bindings so Python can call the Rust core directly",
+        "reason": "Replace Python tick.py with compiled core for performance and correctness",
+        "proposed_session": "build-listening-core-TYnX1",
+        "priority": "high",
+        "status": "pending"
+      },
+      {
+        "id": "offline-progress-core",
+        "description": "Move offline progress calculation into the core",
+        "reason": "Deterministic catch-up when resuming after time away",
+        "proposed_session": "build-listening-core-TYnX1",
+        "priority": "medium",
+        "status": "pending"
+      }
+    ]
+  },
+  "plugins": {
+    "description": "Changes to Python plugins. Can be enacted during session.",
+    "wishes": []
+  },
+  "viewer": {
+    "description": "Changes to the web viewer. Can be enacted during session.",
+    "wishes": []
+  },
+  "cards": {
+    "description": "New cards or card system changes. Can be enacted during session.",
+    "wishes": []
+  },
+  "architecture": {
+    "description": "Structural changes that span multiple systems.",
+    "wishes": []
+  }
+}
