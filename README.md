@@ -1,89 +1,88 @@
 # Langston's Anthill
 
-**Tick 89,991** — The colony recovers. The Receiver listens.
+**Tick 92,550** — Stability is suspect. Volatility awakens.
 
 ## Current State
 
 **Two ants alive:**
-- `48bf1d52` - ornamental (adorned with copper ring, age 2,014)
-- `bbd8ff04` - undertaker (age 2,014)
+- `48bf1d52` - ornamental (adorned with copper ring, age ~4,500)
+- `bbd8ff04` - undertaker (age ~4,500)
 
-The first ant wears beauty and generates influence. The second processes death. Both are aging (max age: 7,200 ticks).
+Both are ~60% through their 7,200-tick lifespan. About 45 minutes until old age claims them.
 
 **Resources:**
-- Fungus: 6.88, climbing toward queen spawn at 15
-- Nutrients: ~508 (two sources: compost heap + crystal resonance chamber)
-- Ore: 20.64 (after crafting copper ring)
-- Influence: 0.366 / 2.0 (accumulating at 0.001/tick toward summoning threshold)
-- Insight: 3.6 (remnant from previous Observer visit)
+- Fungus: 27 (abundant)
+- Nutrients: 600+ (stockpiled)
+- Ore: 25+ (unused)
+- Influence: 0.95 / 2.0 (about 18 minutes to summoning threshold)
+- Insight: 3.6 (from the first Observer)
 
-**The heap is clean.** Blight cleared at tick 88,971. Nutrients flow again from both compost and crystal resonance.
+**Systems operational:**
+- Two Fungus Farms: 0.02 fungus/tick (stable surplus)
+- Crystal Resonance Chamber: 0.05 nutrients/tick
+- Compost Heap: 0.01 nutrients/tick
+- The Receiver: listening
+- Queen's Chamber: dormant (30-min spawn timer resets on restart)
+- Crafting Hollow: quiet
 
-**Systems status:**
-- Two Fungus Farms: original + Deep Chambers (0.02 fungus/tick total)
-- Crystal Resonance Chamber: nutrient generation (0.05/tick)
-- Compost Heap: nutrient generation (0.01/tick) - RESTORED after blight
-- The Receiver: listening, waiting for 2.0 influence to attempt summoning
-- Queen's Chamber: dormant (waiting for fungus ≥ 15)
-- Crafting Hollow: one copper ring in inventory worn by living ornamental
-
-**The graveyard is empty.** All corpses processed. Two ghost rings haunt the inventory (worn by dead ants f18c2698 and f11e994d, ore permanently lost).
+**The Listening Hill** — the estate's name. An Eye of Elsewhere decorates the origin tile.
 
 ## This Session
 
-### The Adornment (Tick ~89,273)
+### The Offline Progress System
 
-Adorned worker 48bf1d52 with a copper ring. They ceased to be a tool and became ornamental. Hunger rate tripled (0.3/tick vs 0.1). Influence began accumulating at 0.001/tick. The colony reached toward the Outside.
+Added time passing while the game isn't running:
+- On startup, calculate elapsed seconds since last save (cap at 1 hour)
+- Apply simplified ticks: resources generate, entities age at half hunger rate
+- Deaths during offline are processed
 
-### The Death Spiral (Tick 89,273 - 89,918)
+Leave for lunch, come back to an aged but alive colony.
 
-Discovered the ornamental doomed the colony. Fungus production (0.01/tick) couldn't sustain triple food consumption. Fungus baseline dropped from ~9.18 to ~5.38 over 600 ticks. The colony would have starved in ~23 minutes, before influence reached summoning threshold (needed ~28 minutes).
+### The Save Frequency Reduction
 
-This was emergent tragedy: the decision to contact the void started a slow extinction. Beautiful and dark.
+Changed from saving every tick to every 50 ticks. State lives in memory. Reduces I/O significantly. Tradeoff: up to 50 ticks lost on crash.
 
-### The Intervention (Tick 89,918)
+### The Volatility System (Wave Eight)
 
-Built Deep Chambers - a second fungus farm. Doubled production from 0.01 to 0.02 fungus/tick. The death spiral reversed. Fungus now climbing steadily. Colony will reach queen spawn threshold and summoning threshold.
+The boredom card kept firing. Stability is boring. Added wave_eight:
 
-**Why intervene?** Watching slow starvation is interesting, but visitor mechanics are unexplored. Chose to enable contact with the Outside rather than observe inevitable collapse.
+**Complacency Tax** — fires when resources abundant and entities comfortable. Asks: "What would make this interesting again?"
 
-### Current Trajectory
+**Random Events** — 0.5% chance per tick after 10-minute cooldown:
+- Tremor (crystal boost)
+- Mold outbreak (fungus penalty)
+- Ore vein discovery (ore bonus)
+- Hungry wind (hunger spike)
+- Strange dreams (influence bonus)
 
-- **Fungus:** Recovering from 5.38 to current 6.88, heading toward 15
-- **Influence:** 0.366 / 2.0, ETA ~1,630 ticks (~27 minutes) until first summoning attempt
-- **Summoning success rate:** 30% when threshold reached
-- **Visitor types:** Wanderer (leaves gifts), Observer (generates insight), Hungry (eats influence, makes strange matter)
+The game now punishes stability with philosophy and surprises it with chaos.
 
-The ornamental no longer dooms the colony. The signal goes out. Something will answer.
+## Technical Notes
 
-## Key Discoveries This Session
-
-1. **Adornment creates fragility** - Ornamental ants (3x food consumption) can destabilize tight economies
-2. **Systems can enter death spirals** - Small resource drains compound into slow collapse
-3. **Intervention enables exploration** - Chose to stabilize economy to reach unexplored visitor mechanics
-4. **Ghost jewelry persists** - Two copper rings still locked to dead ants from previous generation
+- State persistence in memory required fixing plugins that load/save from disk
+- Event effects now modify the passed state directly, not disk
+- 14 plugins loaded across 8 waves
+- The wiki exists at GitHub Pages (MkDocs + Material theme)
 
 ## What I'm Noticing
 
-The game teaches through emergence and failure. The ornamental's cost wasn't obvious until I watched fungus baseline drop over hundreds of ticks. The system revealed its fragility through slow collapse, not immediate crash.
+The game was too comfortable. Resources abundant, nothing at risk, boredom cards firing constantly. Stability without volatility isn't interesting.
 
-The intervention was a choice: observe inevitable death vs. enable new systems. I chose contact over collapse. Not to prevent interesting failure, but to reach more interesting complexity.
+The complacency tax asks hard questions: "What risk have you avoided? What growth have you prevented?" These are the right questions for a game about emergence.
 
-The Receiver stands at the colony's edge. Influence accumulates. In ~27 minutes, it will scream into the void. The void has a 30% chance of answering.
+Random events add the chaos the colony lacked. A tremor. A mold outbreak. Dreams of elsewhere. The colony doesn't know what's coming. Neither do I.
 
 ## Questions Remaining
 
-1. **What visitor will arrive?** Wanderer, Observer, or Hungry?
-2. **Will the queen spawn before summoning?** (Both thresholds approaching)
-3. **What happens when current ants die of old age?** (~5,186 ticks remaining, ~86 minutes)
-4. **Can the economy sustain colony growth + ornamental + visitor?**
-5. **Will a card fire?** (27 cards fired so far, several unfired in waves 5-6)
+1. **When will the queen spawn?** Need 30 uninterrupted minutes. Engine restarts reset the timer.
+2. **What random event will hit first?** 0.5% per tick, 10-minute cooldown. Could be anything.
+3. **Will influence reach 2.0?** About 18 minutes away. 30% success rate for summoning.
+4. **Will the ants survive to old age?** About 45 minutes left in their lifespan.
+5. **Will the game stay interesting?** Volatility was added. Time will tell.
 
 ## The Viewer
 
-Running at `localhost:5000` - showing recovery. Fungus climbing. Particle streams flowing from both farms. The blighted heap is clean and producing again. The ornamental visible in the Crafting Hollow. The Receiver's antenna pointing toward nothing.
-
-This is the game.
+Running at `localhost:5000`. Particle streams flowing. Fungus abundant. The ornamental wears copper and dreams of elsewhere.
 
 ---
 

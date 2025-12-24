@@ -131,17 +131,93 @@ def check_boredom(state: dict):
         meta["boredom"] = 0  # Reset after emitting
 
 
+def process_offline_progress(state: dict) -> dict:
+    """Apply catch-up ticks for time passed while offline.
+
+    Caps at 3600 ticks (1 hour) to prevent massive state jumps.
+    Applies simplified tick logic (resources only, no entity deaths).
+    """
+    import time
+
+    last_save = state.get("last_save_timestamp")
+    if not last_save:
+        print("[tick] no previous timestamp, skipping offline progress")
+        return state
+
+    elapsed_seconds = int(time.time() - last_save)
+    if elapsed_seconds <= 0:
+        return state
+
+    # Cap at 1 hour of offline progress
+    max_offline_ticks = 3600
+    ticks_to_apply = min(elapsed_seconds, max_offline_ticks)
+
+    if ticks_to_apply < 10:  # Skip if trivial
+        return state
+
+    print(f"[tick] applying {ticks_to_apply} offline ticks ({elapsed_seconds}s elapsed, capped at {max_offline_ticks})")
+
+    # Apply simplified ticks (resource generation only, no entity processing)
+    for _ in range(ticks_to_apply):
+        state["tick"] += 1
+
+        # Process passive resource generation/consumption from systems
+        for system_id, system in state["systems"].items():
+            can_run = True
+            if "consumes" in system:
+                for resource, rate in system["consumes"].items():
+                    if state["resources"].get(resource, 0) < rate:
+                        can_run = False
+                        break
+
+            if can_run:
+                if "consumes" in system:
+                    for resource, rate in system["consumes"].items():
+                        state["resources"][resource] = state["resources"].get(resource, 0) - rate
+                if "generates" in system:
+                    for resource, rate in system["generates"].items():
+                        state["resources"][resource] = state["resources"].get(resource, 0) + rate
+
+        # Process entity hunger (reduced rate - they forage while you're away)
+        for entity in state["entities"]:
+            # Age normally
+            entity["age"] = entity.get("age", 0) + 1
+            # Hunger decreases at half rate offline (foraging bonus)
+            entity["hunger"] = entity.get("hunger", 100) - (entity.get("hunger_rate", 0.1) * 0.5)
+            # Auto-eat if hungry and food available
+            if entity["hunger"] < 50:
+                food_type = entity.get("food", "fungus")
+                if state["resources"].get(food_type, 0) >= 1:
+                    state["resources"][food_type] -= 1
+                    entity["hunger"] = min(100, entity["hunger"] + 30)
+
+        # Remove entities that died offline
+        state["entities"] = [e for e in state["entities"] if e.get("hunger", 100) > 0 and e.get("age", 0) < e.get("max_age", 7200)]
+
+    print(f"[tick] offline progress complete. Now at tick {state['tick']}")
+    return state
+
+
 def run():
     """Main loop. 1 tick = 1 second."""
     print("[tick] engine starting")
 
+    # Process any offline progress before starting main loop
+    state = load_state()
+    state = process_offline_progress(state)
+    save_state(state)
+
+    # Keep state in memory, only save periodically
+
     while True:
-        prev_state = load_state()
-        state = load_state()  # Fresh copy to mutate
+        prev_state = {k: v for k, v in state.items()}  # Shallow copy for comparison
+        prev_state["resources"] = dict(state.get("resources", {}))
 
         state = apply_tick(state)
 
-        save_state(state)
+        # Save every 50 ticks to reduce I/O
+        if state["tick"] % 50 == 0:
+            save_state(state)
 
         # Emit tick event
         bus.emit("tick", state)
