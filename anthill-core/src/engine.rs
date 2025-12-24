@@ -52,6 +52,9 @@ pub mod constants {
 
     // Thresholds to check
     pub const RESOURCE_THRESHOLDS: [f64; 7] = [10.0, 25.0, 50.0, 100.0, 250.0, 500.0, 1000.0];
+
+    // Offline Progress
+    pub const MAX_OFFLINE_TICKS: u64 = 3600;
 }
 
 /// The tick engine processes one tick at a time
@@ -117,6 +120,134 @@ impl TickEngine {
 
         // 10. Process boredom
         self.process_boredom(state, &mut events);
+
+        events
+    }
+
+    /// Process offline progress
+    pub fn process_offline_progress(&mut self, state: &mut GameState, current_timestamp: f64) -> TickEvents {
+        let events = TickEvents::new();
+
+        let last_save = match state.last_save_timestamp {
+            Some(ts) => ts,
+            None => return events,
+        };
+
+        let elapsed_seconds = current_timestamp - last_save;
+        if elapsed_seconds <= 0.0 {
+            return events;
+        }
+
+        let ticks_to_apply = (elapsed_seconds as u64).min(constants::MAX_OFFLINE_TICKS);
+
+        if ticks_to_apply < 10 {
+            return events;
+        }
+
+        // Apply simplified ticks (resource generation only, no entity processing)
+        for _ in 0..ticks_to_apply {
+            let tick = state.tick + 1;
+            state.tick = tick;
+
+            // Process passive resource generation/consumption from systems
+            // This replicates the Python logic which does simplified system processing
+            // It manually checks consumes/generates instead of calling process_systems
+
+             // Collect system operations first to avoid borrow issues
+            let operations: Vec<_> = state.systems.iter()
+                .filter(|(_, system)| !system.is_disabled())
+                .filter_map(|(id, system)| {
+                    // Check if system can run
+                    if !system.can_run(&state.resources) {
+                        return None;
+                    }
+
+                    let consumes = system.consumes.clone().unwrap_or_default();
+                    let generates = system.generates.clone().unwrap_or_default();
+
+                     // Add corpse boost bonus for compost heap - Python doesn't do this in offline mode explicitly
+                     // but to be "better", maybe we should?
+                     // The Python code is:
+                     /*
+                        for system_id, system in state["systems"].items():
+                            can_run = True
+                            if "consumes" in system:
+                                ...
+                            if can_run:
+                                if "consumes" in system: ...
+                                if "generates" in system: ...
+                     */
+                     // It does NOT invoke the full system logic (which might have side effects).
+                     // However, the Rust system logic is mostly resources.
+                     // The main difference is "corpse boost" which is dynamic in Rust.
+
+                     // I will stick to the simplified logic as requested by "move offline progress calculation into the core"
+                     // The Python code doesn't seem to account for corpse boost in offline mode explicitly?
+                     // Wait, the Python code accesses `system["generates"]` directly.
+                     // If corpse boost modifies `generates` in place in Python, then it works.
+                     // In Rust, corpse boost is calculated dynamically in `process_systems`.
+                     // I'll stick to basic `generates` to match Python behavior unless I want to improve it.
+                     // I'll match Python behavior for now.
+
+                    Some((id.clone(), consumes, generates))
+                })
+                .collect();
+
+            // Apply operations
+            for (_system_id, consumes, generates) in operations {
+                // Consume resources
+                for (resource, amount) in &consumes {
+                    state.resources.add(resource, -amount);
+                }
+
+                // Generate resources
+                for (resource, amount) in &generates {
+                    state.resources.add(resource, *amount);
+                }
+            }
+
+            // Process entity hunger (reduced rate)
+            // Python:
+            // entity["age"] = entity.get("age", 0) + 1
+            // entity["hunger"] = entity.get("hunger", 100) - (entity.get("hunger_rate", 0.1) * 0.5)
+            // if entity["hunger"] < 50: eat...
+
+            // In Rust we need to handle this carefully.
+            for entity in &mut state.entities {
+                 entity.age += 1;
+
+                 // Hunger decreases at half rate
+                 entity.hunger -= entity.hunger_rate * 0.5;
+
+                 // Auto-eat
+                 if entity.hunger < constants::HUNGER_THRESHOLD_EAT {
+                      if let Some(food) = &entity.food {
+                           // Simplified check compared to full tick
+                           if state.resources.get(food) >= 1.0 {
+                               state.resources.add(food, -1.0);
+                               entity.hunger = (entity.hunger + constants::HUNGER_GAIN_FROM_EATING).min(constants::MAX_HUNGER);
+                           }
+                      }
+                 }
+            }
+
+            // Remove entities that died offline
+            // Python: state["entities"] = [e for e in state["entities"] if e.get("hunger", 100) > 0 and e.get("age", 0) < e.get("max_age", 7200)]
+
+             state.entities.retain(|e| {
+                 let alive = e.hunger > 0.0 && e.age < constants::DEFAULT_MAX_AGE;
+                 if !alive {
+                     // Unlike full tick, we don't add to graveyard or emit death events in the loop?
+                     // Python:
+                     /*
+                        # Remove entities that died offline
+                        state["entities"] = [e for e in state["entities"] if e.get("hunger", 100) > 0 and e.get("age", 0) < e.get("max_age", 7200)]
+                     */
+                     // Python code does NOT add to graveyard during offline progress loop. It just removes them.
+                 }
+                 alive
+             });
+        }
 
         events
     }
@@ -751,5 +882,45 @@ mod tests {
         assert!(state.entities.is_empty());
         assert!(!state.graveyard.corpses.is_empty());
         assert!(events.events().iter().any(|e| matches!(e.kind, EventKind::EntityDied { .. })));
+    }
+
+    #[test]
+    fn test_offline_progress() {
+        let mut engine = TickEngine::new(42);
+        let mut state = GameState::default();
+
+        // Setup state
+        state.last_save_timestamp = Some(1000.0);
+        state.resources.set("fungus", 100.0);
+
+        // Add an entity
+        let mut entity = Entity::new_worker("test_offline".to_string(), "origin".to_string());
+        entity.hunger = 80.0;
+        state.entities.push(entity);
+
+        // Add a system that generates resources
+        let mut system_gen = HashMap::new();
+        system_gen.insert("fungus".to_string(), 1.0);
+        let system = crate::types::system::System::new_generator("fungus_farm".to_string(), system_gen);
+        state.systems.insert("fungus_farm".to_string(), system);
+
+        // 100 seconds elapsed ( > 10 ticks, < 3600)
+        let current_time = 1100.0;
+
+        engine.process_offline_progress(&mut state, current_time);
+
+        // Check ticks advanced
+        assert_eq!(state.tick, 100);
+
+        // Check resources generated: 100 ticks * 1.0 fungus = 100 + 100 start = 200
+        // BUT entity eats fungus.
+        // Entity hunger decreases by 0.1 * 0.5 = 0.05 per tick.
+        // 100 ticks -> 5.0 hunger loss.
+        // 80.0 -> 75.0. No eating should happen (threshold 50.0).
+
+        assert_eq!(state.resources.get("fungus"), 200.0);
+        assert_eq!(state.entities[0].age, 100);
+        // 80 - (0.1 * 0.5 * 100) = 80 - 5 = 75
+        assert!((state.entities[0].hunger - 75.0).abs() < 0.001);
     }
 }
