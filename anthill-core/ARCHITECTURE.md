@@ -195,6 +195,9 @@ The determinism tests verify:
 ## Future Work
 
 - [ ] PyO3 bindings via maturin
+    - [ ] Add `pyo3` dependency and configuration to `Cargo.toml`
+    - [ ] Implement `From<GameState>` for Python dict conversion
+    - [ ] Expose `TickEngine.tick()` as a Python-callable function
 - [ ] C FFI for other languages
 - [ ] Benchmark suite
 - [ ] Offline progress simulation
