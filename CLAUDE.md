@@ -172,6 +172,53 @@ Plugins can:
 - Add new event types
 - Anything, really
 
+### Rust Core (`anthill-core/`)
+
+The simulation core has been reforged in Rust. This is the immutable constitution of the simulation—the rules that cannot change mid-session.
+
+**What's in the core:**
+- State types (entities, resources, tiles, systems, graveyard)
+- Tick engine (deterministic state transitions)
+- Event emission (all changes reported as typed events)
+- Seeded RNG (reproducible randomness via ChaCha8)
+- JSON serialization (state persistence)
+
+**What stays outside:**
+- Plugin logic (cards, reflection, exploration)
+- I/O (file saves, network, display)
+- "What's interesting" decisions (observer layer)
+- Python event bus and handlers
+
+**The core rule:** Same seed + same inputs = same outputs. Always.
+
+```rust
+use anthill_core::{GameState, TickEngine};
+
+let mut state = GameState::from_json(&json)?;
+let mut engine = TickEngine::new(seed);
+
+let events = engine.tick(&mut state);
+// Events tell you what happened; you decide what's interesting
+```
+
+**Building the core:**
+```bash
+cd anthill-core
+cargo build --release    # Build the library
+cargo test               # Run all tests (23 pass)
+```
+
+**Future Python integration:**
+The core is designed for PyO3 bindings. Once enabled:
+```python
+import anthill_core
+state = anthill_core.GameState.from_json(json_str)
+engine = anthill_core.TickEngine(seed=42)
+events = engine.tick(state)
+```
+
+See `anthill-core/ARCHITECTURE.md` for full details.
+
 ## Your Job
 
 1. **Build the engine first.** Tick loop, event bus, state persistence, plugin loader.
@@ -275,9 +322,27 @@ langstons-anthill/
 ├── README.md
 ├── main.py (runs tick engine with plugins)
 ├── engine/
-│   ├── tick.py (hot loop, no LLM calls)
+│   ├── tick.py (Python hot loop, legacy)
 │   ├── bus.py (event system)
 │   └── state.py (state persistence)
+├── anthill-core/           # THE RUST CORE
+│   ├── Cargo.toml
+│   ├── ARCHITECTURE.md     # Core architecture docs
+│   ├── src/
+│   │   ├── lib.rs          # Public API
+│   │   ├── engine.rs       # Tick engine (the heart)
+│   │   ├── events.rs       # Event types
+│   │   ├── rng.rs          # Seeded RNG
+│   │   └── types/          # State types
+│   │       ├── state.rs    # GameState
+│   │       ├── entity.rs   # Ants, visitors
+│   │       ├── resource.rs # Resources
+│   │       ├── tile.rs     # Map tiles
+│   │       ├── system.rs   # Production systems
+│   │       └── graveyard.rs
+│   └── tests/
+│       ├── determinism.rs  # Reproducibility tests
+│       └── compatibility.rs
 ├── state/
 │   └── game.json (current game state)
 ├── logs/
@@ -289,11 +354,11 @@ langstons-anthill/
 │   ├── undertaker.py (corpse processing)
 │   ├── exploration.py (tile mechanics)
 │   ├── reflection.py (boredom tracking)
+│   ├── queen.py (colony reproduction)
+│   ├── receiver.py (summons visitors)
 │   └── cards/
 │       ├── starter_cards.py
-│       ├── wave_two.py
-│       ├── wave_three.py
-│       └── wave_four.py
+│       ├── wave_two.py ... wave_six.py
 └── viewer/
     ├── server.py (Flask SSE server)
     └── static/
