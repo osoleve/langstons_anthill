@@ -1,12 +1,12 @@
 {
-  "tick": 92700,
+  "tick": 95850,
   "resources": {
-    "dirt": 1418.8549999965876,
-    "nutrients": 605.1700000000319,
-    "fungus": 28.059999999857638,
-    "crystals": 10.622999999999085,
-    "ore": 27.52599999999485,
-    "influence": 1.4415000000002782,
+    "dirt": 1466.1049999961865,
+    "nutrients": 658.1699999999746,
+    "fungus": 46.83999999987759,
+    "crystals": 13.772999999997339,
+    "ore": 33.8259999999946,
+    "influence": 1.452000000000277,
     "insight": 3.5999999999997145
   },
   "systems": {
@@ -94,12 +94,12 @@
   },
   "entities": [
     {
-      "id": "48bf1d52",
+      "id": "3a775b4c",
       "type": "ant",
       "role": "ornamental",
       "tile": "origin",
-      "age": 4723,
-      "hunger": 62.40000000000859,
+      "age": 400,
+      "hunger": 73.45000000000094,
       "hunger_rate": 0.30000000000000004,
       "max_age": 7200,
       "food": "fungus",
@@ -109,17 +109,17 @@
       "influence_rate": 0.001
     },
     {
-      "id": "bbd8ff04",
+      "id": "f546cd02",
       "type": "ant",
       "role": "undertaker",
       "tile": "origin",
-      "age": 4723,
-      "hunger": 72.99999999998789,
+      "age": 400,
+      "hunger": 71.72499999999846,
       "hunger_rate": 0.15,
       "max_age": 7200,
       "food": "fungus",
-      "processing_corpse": false,
-      "processing_ticks": 0
+      "processing_corpse": true,
+      "processing_ticks": 77
     }
   ],
   "map": {
@@ -251,7 +251,7 @@
     "events": []
   },
   "meta": {
-    "boredom": 43,
+    "boredom": 44,
     "recent_decisions": [],
     "estate": {
       "name": "The Listening Hill",
@@ -289,6 +289,13 @@
         "created_tick": 89259,
         "worn_by": "48bf1d52",
         "worn_tick": 89259
+      },
+      {
+        "type": "copper_ring",
+        "name": "Copper Ring",
+        "created_tick": 95450,
+        "worn_by": "3a775b4c",
+        "worn_tick": 95450
       }
     ],
     "rejected_ideas": [
@@ -366,12 +373,26 @@
         "trigger": "aftermath",
         "prompt": "What would you miss if it disappeared?",
         "response": null
+      },
+      {
+        "tick": 95477,
+        "trigger": "aftermath",
+        "prompt": "What are you waiting for?",
+        "response": null
       }
     ]
   },
   "graveyard": {
-    "corpses": [],
+    "corpses": [
+      {
+        "entity_id": "bbd8ff04",
+        "entity_type": "ant",
+        "death_tick": 95177,
+        "cause": "old_age",
+        "tile": "origin"
+      }
+    ],
     "total_processed": 16
   },
-  "last_save_timestamp": 1766532816.09281
+  "last_save_timestamp": 1766536047.3021066
 }

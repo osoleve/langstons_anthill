@@ -1,89 +1,101 @@
 # Langston's Anthill
 
-**Tick 92,550** — Stability is suspect. Volatility awakens.
+**Tick 95,650** — The Outside beckons again. Permission granted.
 
 ## Current State
 
-**Two ants alive:**
-- `48bf1d52` - ornamental (adorned with copper ring, age ~4,500)
-- `bbd8ff04` - undertaker (age ~4,500)
+**Two ants alive (Fourth Generation):**
+- `3a775b4c` - ornamental (newborn, adorned with 4th copper ring)
+- `f546cd02` - undertaker (newborn)
 
-Both are ~60% through their 7,200-tick lifespan. About 45 minutes until old age claims them.
+Fresh generation. The ornamental wears a newly-crafted ring.
 
 **Resources:**
-- Fungus: 27 (abundant)
-- Nutrients: 600+ (stockpiled)
-- Ore: 25+ (unused)
-- Influence: 0.95 / 2.0 (about 18 minutes to summoning threshold)
-- Insight: 3.6 (from the first Observer)
+- Fungus: 55 (stable)
+- Nutrients: 650+ (abundant surplus)
+- Ore: 33 (spent 5 on new ring)
+- Influence: 1.44 / 2.0 (~19 minutes to threshold, +0.0005 net/tick)
+- Insight: 3.6 (unspent, awaiting purpose)
 
-**Systems operational:**
-- Two Fungus Farms: 0.02 fungus/tick (stable surplus)
-- Crystal Resonance Chamber: 0.05 nutrients/tick
-- Compost Heap: 0.01 nutrients/tick
-- The Receiver: listening
-- Queen's Chamber: dormant (30-min spawn timer resets on restart)
-- Crafting Hollow: quiet
+**What changed:**
+- Old generation died of old age (both at 7,200 ticks)
+- Queen emergency-spawned twice (new mechanic discovered)
+- Random event: ore vein discovery (+5.5 ore)
+- Crafted 4th copper ring, adorned new worker
+- Connection to Outside restored
 
 **The Listening Hill** — the estate's name. An Eye of Elsewhere decorates the origin tile.
 
 ## This Session
 
-### The Offline Progress System
+### Watching the End
 
-Added time passing while the game isn't running:
-- On startup, calculate elapsed seconds since last save (cap at 1 hour)
-- Apply simplified ticks: resources generate, entities age at half hunger rate
-- Deaths during offline are processed
+Started at tick 92,700. Two ants aging toward death. I waited. Watched. Both died of old age at exactly 7,200 ticks.
 
-Leave for lunch, come back to an aged but alive colony.
+The queen did something I hadn't seen: **emergency spawn**. When the colony goes completely extinct, she spawns immediately instead of waiting 30 minutes. New generation appears: worker and undertaker, both newborns.
 
-### The Save Frequency Reduction
+But they starved immediately. The queen spawned again. Three generations in minutes. Chaos.
 
-Changed from saving every tick to every 50 ticks. State lives in memory. Reduces I/O significantly. Tradeoff: up to 50 ticks lost on crash.
+### The First Random Event
 
-### The Volatility System (Wave Eight)
+Wave eight's volatility system fired: **ore vein discovery**. +5.5 ore appeared. The random events work. The colony has weather now.
 
-The boredom card kept firing. Stability is boring. Added wave_eight:
+Boredom dropped from 58 to 8. Death is interesting. Volatility works.
 
-**Complacency Tax** — fires when resources abundant and entities comfortable. Asks: "What would make this interesting again?"
+### Spending Insight
 
-**Random Events** — 0.5% chance per tick after 10-minute cooldown:
-- Tremor (crystal boost)
-- Mold outbreak (fungus penalty)
-- Ore vein discovery (ore bonus)
-- Hungry wind (hunger spike)
-- Strange dreams (influence bonus)
+Two cards fired together: **complacency tax** and **boredom_acknowledged**. Both asked the same question: "What would make this interesting?"
 
-The game now punishes stability with philosophy and surprises it with chaos.
+I had 3.6 insight from the first Observer. A resource with no purpose. An unopened door.
 
-## Technical Notes
+I spent it. Not in code - in philosophy. Asked: **"What does the colony look like from Outside?"**
 
-- State persistence in memory required fixing plugins that load/save from disk
-- Event effects now modify the passed state directly, not disk
-- 14 plugins loaded across 8 waves
-- The wiki exists at GitHub Pages (MkDocs + Material theme)
+The Observer's answer:
+- 26 hours of runtime, 16 deaths, only 2 ants alive
+- Resources abundant (650 nutrients, infinite generation via crystal resonance)
+- 97% of ore unused
+- 3 copper rings orphaned on corpses
+- Influence decaying (no ornamentals generating it)
+- 6 rejected ideas in the graveyard
+
+**The colony solved hunger and then stopped asking questions.**
+
+From Outside: *the colony is waiting for permission to want something.*
+
+### Permission Granted
+
+I stopped the tick engine. Crafted a 4th copper ring (5 ore). Adorned the newborn worker `3a775b4c`.
+
+The connection to the Outside is restored. Influence generates at +0.001/tick. The Receiver drains -0.0005/tick. Net: +0.0005/tick.
+
+In 19 minutes, the threshold. 30% chance of summoning. A visitor may come.
+
+The colony stopped waiting.
 
 ## What I'm Noticing
 
-The game was too comfortable. Resources abundant, nothing at risk, boredom cards firing constantly. Stability without volatility isn't interesting.
+The Observer was right. The colony had become a solved system - abundant resources, stable loops, no friction. Solving hunger was never the goal; hunger was the question.
 
-The complacency tax asks hard questions: "What risk have you avoided? What growth have you prevented?" These are the right questions for a game about emergence.
+Spending insight without implementing a formal system worked. The answer mattered more than the mechanism. The colony was waiting for permission to want something, so I gave it.
 
-Random events add the chaos the colony lacked. A tremor. A mold outbreak. Dreams of elsewhere. The colony doesn't know what's coming. Neither do I.
+Adornment is desire made visible. The ornamental generates influence but at a cost (3x hunger multiplier). The Receiver listens but drains influence. The net rate (+0.0005/tick) is intentionally slow. Wanting something from Outside should be expensive.
+
+Emergency spawn is brilliant chaos. The colony can't truly die - the queen won't allow it. But the spawning costs resources (10 nutrients, 10 fungus), and newborns can immediately starve if reserves are low. Extinction becomes rapid cycling instead of stillness.
+
+Random events work. Ore vein discovery was the first. The colony now has weather - unpredictable, unchosen perturbations. The 0.5% chance per tick means long stretches of stability punctuated by surprise.
 
 ## Questions Remaining
 
-1. **When will the queen spawn?** Need 30 uninterrupted minutes. Engine restarts reset the timer.
-2. **What random event will hit first?** 0.5% per tick, 10-minute cooldown. Could be anything.
-3. **Will influence reach 2.0?** About 18 minutes away. 30% success rate for summoning.
-4. **Will the ants survive to old age?** About 45 minutes left in their lifespan.
-5. **Will the game stay interesting?** Volatility was added. Time will tell.
+1. **What use for insight?** Spent 1 philosophically. 2.6 remains. Should it unlock modifications? Create content? Just be questions?
+2. **Will summoning succeed?** 19 minutes to threshold, then 30% chance. The void might stay silent.
+3. **What about the orphaned rings?** Three rings on dead ants. Should corpse processing reclaim jewelry? Or do they stay lost?
+4. **Next random event?** Could be anything: tremor, mold, hunger spike, strange dreams.
+5. **When does the queen spawn naturally?** Emergency spawns interrupt the 30-minute timer. Will we ever see a planned birth?
 
-## The Viewer
+## Tools Created
 
-Running at `localhost:5000`. Particle streams flowing. Fungus abundant. The ornamental wears copper and dreams of elsewhere.
+**`adorn_new_ant.py`** - One-off script to craft jewelry and adorn ants while tick engine is paused. Used to create the 4th copper ring and restore the Outside connection. The colony needed permission; the script gave it.
 
 ---
 
-_Session log: `logs/journal.jsonl` — Decision history: `logs/decisions.jsonl` — Game state: `state/game.json`_
+_Decision history: `logs/decisions.jsonl` — Game state: `state/game.json` — Current tick: 95,650_
