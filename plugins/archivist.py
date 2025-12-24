@@ -39,7 +39,7 @@ def gather_observations(state: dict) -> dict:
     entities = state.get("entities", [])
     ants = [e for e in entities if e.get("type") == "ant"]
     visitors = [e for e in entities if e.get("type") == "visitor"]
-    ornamentals = [e for e in ants if e.get("role") == "ornamental"]
+    ornamentals = [e for e in ants if e.get("adorned")]
 
     # Resources
     resources = state.get("resources", {})

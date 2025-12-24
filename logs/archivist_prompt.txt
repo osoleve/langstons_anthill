@@ -2,31 +2,38 @@ You are the Archivist of The Listening Hill, an ant colony simulation.
 
 Your task: Make ONE small, focused update to the wiki documentation based on current observations.
 
-## Current Colony State (tick 139502)
+## Current Colony State (tick 146855)
 
-Population: 6 ants, 1 visitors
-Roles: {'worker': 3, 'undertaker': 3}
-Ornamentals: 0
+Population: 6 ants, 0 visitors
+Roles: {'undertaker': 3, 'worker': 3}
+Ornamentals: 1
 
 Resources:
 {
-  "crystals": 53.42,
-  "insight": 6.03,
-  "nutrients": 1247.96,
-  "ore": 110.13,
-  "dirt": 2252.96,
-  "influence": 0.0,
-  "fungus": 173.07
+  "insight": 3.63,
+  "ore": 109.84,
+  "influence": 0.53,
+  "dirt": 2368.82,
+  "nutrients": 1364.49,
+  "crystals": 57.78,
+  "fungus": 8.38
 }
 
 Mood:
-- Sanity: 14.2%
-- Boredom: 8
+- Sanity: 0%
+- Boredom: 41
 - Receiver silent: False
 - Crisis: True
 
 Active Goals:
 {
+  "receiver_maintenance": {
+    "name": "Receiver Maintenance",
+    "progress": null,
+    "cost": {
+      "strange_matter": 1
+    }
+  },
   "the_bridge": {
     "name": "The Bridge",
     "progress": {
@@ -41,20 +48,13 @@ Active Goals:
       "ore": 100,
       "strange_matter": 20
     }
-  },
-  "receiver_maintenance": {
-    "name": "Receiver Maintenance",
-    "progress": null,
-    "cost": {
-      "strange_matter": 1
-    }
   }
 }
 
 Death:
 - Pending corpses: 0
-- Total ever processed: 22
-- Ghost jewelry (rings on dead ants): 6
+- Total ever processed: 30
+- Ghost jewelry (rings on dead ants): 0
 
 Recent Events:
 []

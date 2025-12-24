@@ -1,0 +1,27 @@
+INFO:     Started server process [25520]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:5001 (Press CTRL+C to quit)
+[viewer] Serving built files from C:\Users\andre\Documents\langstons_anthill\langstons_anthill\viewer\dist
+[viewer] Starting on http://localhost:5000
+[viewer] Observers can click on the map to bless the colony
+INFO:     127.0.0.1:51248 - "GET /events HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59592 - "GET /events HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62866 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63341 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63341 - "GET /assets/index-CsG5Nww9.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63341 - "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:63341 - "GET /assets/index-CsG5Nww9.js.map HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63341 - "GET /state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63341 - "GET /events HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55320 - "POST /bless HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55320 - "POST /bless HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55320 - "POST /bless HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55320 - "POST /bless HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53021 - "GET /state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62016 - "GET /state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61042 - "GET /state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61081 - "GET /state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64389 - "GET /state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51135 - "GET /state HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53948 - "GET /state HTTP/1.1" 200 OK

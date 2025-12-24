@@ -20,7 +20,7 @@ CARDS = {
         "fires_once": True,
         "condition": lambda state: (
             len([j for j in state.get("meta", {}).get("jewelry", []) if j.get("worn_by") is not None]) >= 6 and
-            len([e for e in state.get("entities", []) if e.get("role") == "ornamental"]) == 0
+            len([e for e in state.get("entities", []) if e.get("adorned")]) == 0
         )
     },
     "the_bridge_question": {
