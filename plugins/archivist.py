@@ -9,8 +9,6 @@ that spawns a Claude subagent to make documentation updates.
 """
 
 import json
-import subprocess
-import time
 from pathlib import Path
 from datetime import datetime
 
