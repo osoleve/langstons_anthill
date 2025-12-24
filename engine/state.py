@@ -32,7 +32,13 @@ def initial_state() -> dict:
         "meta": {
             "boredom": 0,
             "recent_decisions": [],
-            "rejected_ideas": []
+            "rejected_ideas": [],
+            "sanity": 100.0,
+            "fired_cards": [],
+            "decor": [],
+            "jewelry": [],
+            "goals": {},
+            "reflections": []
         }
     }
 

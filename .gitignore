@@ -4,3 +4,15 @@ __pycache__/
 .DS_Store
 logs/tick.log
 logs/viewer.log
+
+# Rust artifacts
+target/
+*.so
+*.dylib
+*.dll
+anthill-core/target/
+
+# Game state
+state/
+!state/
+!state/.keep
