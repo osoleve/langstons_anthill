@@ -1,4 +1,5 @@
 import type { GameState, Tile } from '../types/state.ts'
+import { getStalledFlows } from './particles.ts'
 
 export interface TilePosition {
   x: number
@@ -11,6 +12,14 @@ const TILE_SIZE = 100
 const TILE_GAP = 20
 const OFFSET_X = 250
 const OFFSET_Y = 150
+
+// Store click handlers for cleanup
+type TileClickHandler = (tileId: string, tile: Tile) => void
+let currentClickHandler: TileClickHandler | null = null
+
+export function setTileClickHandler(handler: TileClickHandler): void {
+  currentClickHandler = handler
+}
 
 export function getTilePosition(tile: Tile): TilePosition {
   const x = tile.x * (TILE_SIZE + TILE_GAP) + OFFSET_X
@@ -42,10 +51,28 @@ export function renderTiles(container: HTMLElement, state: GameState): void {
   const tiles = state.map?.tiles ?? {}
   const systems = state.systems ?? {}
   const entities = state.entities ?? []
+  const stalledFlows = getStalledFlows()
+
+  // Check which tiles have bottlenecks
+  const tilesWithBottlenecks = new Set<string>()
+  for (const flowKey of stalledFlows) {
+    const systemId = flowKey.split(':')[0]
+    // Find tile for this system
+    if (tiles[systemId]) {
+      tilesWithBottlenecks.add(systemId)
+    } else {
+      // Check for tile suffix pattern
+      const withSuffix = `${systemId}_tile`
+      if (tiles[withSuffix]) {
+        tilesWithBottlenecks.add(withSuffix)
+      }
+    }
+  }
 
   for (const [id, tile] of Object.entries(tiles)) {
     const div = document.createElement('div')
     div.className = 'tile'
+    div.dataset.tileId = id
 
     // System status
     const system = systems[id]
@@ -54,6 +81,11 @@ export function renderTiles(container: HTMLElement, state: GameState): void {
       if (system.generates && Object.keys(system.generates).length > 0) {
         div.classList.add('generating')
       }
+    }
+
+    // Bottleneck indicator
+    if (tilesWithBottlenecks.has(id)) {
+      div.classList.add('has-bottleneck')
     }
 
     // Blight
@@ -90,6 +122,13 @@ export function renderTiles(container: HTMLElement, state: GameState): void {
       <div class="tile-info">${tile.type}</div>
       ${entityInfo}
     `
+
+    // Click handler
+    div.addEventListener('click', () => {
+      if (currentClickHandler) {
+        currentClickHandler(id, tile)
+      }
+    })
 
     tilesContainer.appendChild(div)
   }

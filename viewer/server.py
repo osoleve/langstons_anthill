@@ -8,6 +8,7 @@ from flask import Flask, Response, send_from_directory
 app = Flask(__name__, static_folder='static')
 
 STATE_FILE = Path(__file__).parent.parent / "state" / "game.json"
+DECISIONS_FILE = Path(__file__).parent.parent / "logs" / "decisions.jsonl"
 
 
 def load_state():
@@ -16,6 +17,25 @@ def load_state():
         with open(STATE_FILE, 'r') as f:
             return json.load(f)
     return None
+
+
+def load_decisions(limit=10):
+    """Load recent decisions from the JSONL log."""
+    if not DECISIONS_FILE.exists():
+        return []
+
+    decisions = []
+    with open(DECISIONS_FILE, 'r') as f:
+        for line in f:
+            line = line.strip()
+            if line:
+                try:
+                    decisions.append(json.loads(line))
+                except json.JSONDecodeError:
+                    continue
+
+    # Return the most recent ones
+    return decisions[-limit:]
 
 
 @app.route('/')
@@ -37,6 +57,13 @@ def state():
     if state:
         return json.dumps(state)
     return json.dumps({"error": "no state"})
+
+
+@app.route('/decisions')
+def decisions():
+    """Return recent decisions as JSON array."""
+    decisions = load_decisions(limit=10)
+    return json.dumps(decisions)
 
 
 @app.route('/events')

@@ -1,46 +1,28 @@
 {
-  "tick": 135651,
+  "tick": 140051,
   "resources": {
+    "dirt": 2261.194999993494,
+    "nutrients": 1248.9399999994948,
+    "crystals": 54.973999999986404,
+    "influence": 2.048500000000255,
     "insight": 3.627999999999711,
-    "fungus": 234.4059567101465,
-    "ore": 97.42799999997179,
-    "influence": 1.5350000000002577,
-    "crystals": 50.57399999998536,
-    "dirt": 2194.5749999940094,
-    "nutrients": 1192.1799999994948
+    "ore": 111.22799999998361,
+    "fungus": 150.00476536805172
   },
   "systems": {
-    "queen_chamber": {
-      "name": "Queen's Chamber",
-      "type": "spawner",
-      "description": "The queen produces new ants, consuming nutrients and fungus"
-    },
-    "receiver": {
-      "name": "The Receiver",
-      "type": "antenna",
-      "description": "A jagged antenna of bone and crystal. It listens to frequencies the colony cannot hear."
-    },
-    "compost_heap": {
-      "name": "Compost Heap",
+    "crystal_mine": {
+      "name": "Crystal Mine",
       "type": "generator",
-      "description": "Dirt slowly breaks down into nutrients",
-      "original_generates": {
-        "nutrients": 0.01
-      },
-      "original_consumes": {
-        "dirt": 0.005
-      }
-    },
-    "fungus_farm": {
-      "name": "Fungus Farm",
-      "type": "converter",
       "generates": {
-        "fungus": 0.01
+        "crystals": 0.001
       },
-      "consumes": {
-        "nutrients": 0.02
-      },
-      "description": "Cultivates fungus from nutrients"
+      "description": "Ants carefully extract crystals from cave walls",
+      "sanity_efficiency": 0.2706000000000055
+    },
+    "crafting_hollow": {
+      "name": "Crafting Hollow",
+      "type": "crafting",
+      "description": "A quiet alcove where ore becomes beauty. Here, ants cease to be tools."
     },
     "fungus_farm_2": {
       "name": "Fungus Farm (Deep Chambers)",
@@ -53,20 +35,6 @@
       },
       "description": "A second cultivation chamber deep in the colony"
     },
-    "dig_site": {
-      "name": "Dig Site",
-      "type": "generator",
-      "generates": {
-        "dirt": 0.02
-      },
-      "description": "Ants slowly dig up dirt",
-      "sanity_efficiency": 0.2850000000000055
-    },
-    "crafting_hollow": {
-      "name": "Crafting Hollow",
-      "type": "crafting",
-      "description": "A quiet alcove where ore becomes beauty. Here, ants cease to be tools."
-    },
     "crystal_resonance_chamber": {
       "name": "Crystal Resonance Chamber",
       "type": "generator",
@@ -74,7 +42,50 @@
         "nutrients": 0.05
       },
       "description": "Crystals hum with energy, generating nutrients from vibration alone",
-      "sanity_efficiency": 0.2850000000000055
+      "sanity_efficiency": 0.2706000000000055
+    },
+    "dig_site": {
+      "name": "Dig Site",
+      "type": "generator",
+      "generates": {
+        "dirt": 0.02
+      },
+      "description": "Ants slowly dig up dirt",
+      "sanity_efficiency": 0.2706000000000055
+    },
+    "queen_chamber": {
+      "name": "Queen's Chamber",
+      "type": "spawner",
+      "description": "The queen produces new ants, consuming nutrients and fungus"
+    },
+    "fungus_farm": {
+      "name": "Fungus Farm",
+      "type": "converter",
+      "generates": {
+        "fungus": 0.01
+      },
+      "consumes": {
+        "nutrients": 0.02
+      },
+      "description": "Cultivates fungus from nutrients"
+    },
+    "receiver": {
+      "name": "The Receiver",
+      "type": "antenna",
+      "description": "A jagged antenna of bone and crystal. It listens to frequencies the colony cannot hear."
+    },
+    "compost_heap": {
+      "name": "Compost Heap",
+      "type": "generator",
+      "generates": {
+        "nutrients": 0.01
+      },
+      "consumes": {
+        "dirt": 0.005
+      },
+      "description": "Dirt slowly breaks down into nutrients",
+      "sanity_efficiency": 0.2706000000000055,
+      "corpse_boosts": []
     },
     "ore_mine": {
       "name": "Ore Mine",
@@ -83,16 +94,7 @@
         "ore": 0.002
       },
       "description": "Ants carefully extract precious metals from the vein",
-      "sanity_efficiency": 0.2850000000000055
-    },
-    "crystal_mine": {
-      "name": "Crystal Mine",
-      "type": "generator",
-      "generates": {
-        "crystals": 0.001
-      },
-      "description": "Ants carefully extract crystals from cave walls",
-      "sanity_efficiency": 0.2850000000000055
+      "sanity_efficiency": 0.2706000000000055
     }
   },
   "entities": [
@@ -101,8 +103,8 @@
       "type": "ant",
       "role": "worker",
       "tile": "origin",
-      "age": 1751,
-      "hunger": 54.90000000000544,
+      "age": 6151,
+      "hunger": 64.90000000001858,
       "hunger_rate": 0.1,
       "max_age": 7200,
       "food": "fungus"
@@ -112,8 +114,80 @@
       "type": "ant",
       "role": "undertaker",
       "tile": "origin",
-      "age": 1751,
-      "hunger": 57.34999999999507,
+      "age": 6151,
+      "hunger": 57.34999999998259,
+      "hunger_rate": 0.15,
+      "max_age": 7200,
+      "food": "fungus",
+      "processing_corpse": false,
+      "processing_ticks": 0
+    },
+    {
+      "id": "b761fd7c",
+      "type": "ant",
+      "role": "worker",
+      "tile": "origin",
+      "age": 4350,
+      "hunger": 55.00000000001168,
+      "hunger_rate": 0.1,
+      "max_age": 7200,
+      "food": "fungus"
+    },
+    {
+      "id": "4aed43a7",
+      "type": "ant",
+      "role": "undertaker",
+      "tile": "origin",
+      "age": 4350,
+      "hunger": 77.49999999998843,
+      "hunger_rate": 0.15,
+      "max_age": 7200,
+      "food": "fungus",
+      "processing_corpse": false,
+      "processing_ticks": 0
+    },
+    {
+      "id": "6fc81c0d",
+      "type": "ant",
+      "role": "worker",
+      "tile": "origin",
+      "age": 2550,
+      "hunger": 65.00000000000793,
+      "hunger_rate": 0.1,
+      "max_age": 7200,
+      "food": "fungus"
+    },
+    {
+      "id": "929bfc48",
+      "type": "ant",
+      "role": "undertaker",
+      "tile": "origin",
+      "age": 2550,
+      "hunger": 57.499999999992596,
+      "hunger_rate": 0.15,
+      "max_age": 7200,
+      "food": "fungus",
+      "processing_corpse": false,
+      "processing_ticks": 0
+    },
+    {
+      "id": "252b71f1",
+      "type": "ant",
+      "role": "worker",
+      "tile": "origin",
+      "age": 750,
+      "hunger": 55.00000000000229,
+      "hunger_rate": 0.1,
+      "max_age": 7200,
+      "food": "fungus"
+    },
+    {
+      "id": "be7642e3",
+      "type": "ant",
+      "role": "undertaker",
+      "tile": "origin",
+      "age": 750,
+      "hunger": 77.49999999999784,
       "hunger_rate": 0.15,
       "max_age": 7200,
       "food": "fungus",
@@ -123,10 +197,10 @@
   ],
   "map": {
     "tiles": {
-      "dig_site": {
-        "name": "The Dig",
-        "type": "extraction",
-        "x": -1,
+      "origin": {
+        "name": "The Starting Dirt",
+        "type": "empty",
+        "x": 0,
         "y": 0
       },
       "crystal_cave": {
@@ -137,33 +211,20 @@
         "resource": "crystals",
         "description": "Strange formations glitter in the dark"
       },
-      "crafting_hollow": {
-        "name": "The Crafting Hollow",
-        "type": "aesthetic",
-        "x": -2,
-        "y": -1,
-        "description": "A still alcove lined with unworked ore. Those who enter as workers leave as something else."
-      },
-      "receiver": {
-        "name": "The Receiver",
-        "type": "antenna",
-        "x": 4,
-        "y": 1,
-        "description": "A jagged antenna of bone and crystal. It listens to frequencies the colony cannot hear."
-      },
-      "queen_chamber": {
-        "name": "The Queen's Chamber",
-        "type": "special",
+      "fungus_farm": {
+        "name": "The Farm",
+        "type": "production",
         "x": 0,
-        "y": -1,
-        "description": "A warm, dark chamber where new life begins"
+        "y": 1
       },
-      "resonance_chamber": {
-        "name": "Resonance Chamber",
-        "type": "special",
-        "x": 3,
+      "compost": {
+        "name": "The Heap",
+        "type": "compost",
+        "x": 1,
         "y": 0,
-        "description": "The crystals sing"
+        "contamination": 0.0,
+        "blighted": false,
+        "blight_ticks_remaining": 0
       },
       "ore_vein": {
         "name": "Glittering Vein",
@@ -173,17 +234,32 @@
         "resource": "ore",
         "description": "Veins of copper and gold thread through the stone"
       },
-      "origin": {
-        "name": "The Starting Dirt",
-        "type": "empty",
-        "x": 0,
+      "dig_site": {
+        "name": "The Dig",
+        "type": "extraction",
+        "x": -1,
         "y": 0
       },
-      "fungus_farm": {
-        "name": "The Farm",
-        "type": "production",
+      "receiver": {
+        "name": "The Receiver",
+        "type": "antenna",
+        "x": 4,
+        "y": 1,
+        "description": "A jagged antenna of bone and crystal. It listens to frequencies the colony cannot hear."
+      },
+      "crafting_hollow": {
+        "name": "The Crafting Hollow",
+        "type": "aesthetic",
+        "x": -2,
+        "y": -1,
+        "description": "A still alcove lined with unworked ore. Those who enter as workers leave as something else."
+      },
+      "queen_chamber": {
+        "name": "The Queen's Chamber",
+        "type": "special",
         "x": 0,
-        "y": 1
+        "y": -1,
+        "description": "A warm, dark chamber where new life begins"
       },
       "fungus_farm_2_tile": {
         "name": "Deep Chambers",
@@ -192,14 +268,12 @@
         "y": 1,
         "description": "Additional fungus cultivation deep underground"
       },
-      "compost": {
-        "name": "The Heap",
-        "type": "compost",
-        "x": 1,
+      "resonance_chamber": {
+        "name": "Resonance Chamber",
+        "type": "special",
+        "x": 3,
         "y": 0,
-        "contamination": 0.02,
-        "blighted": true,
-        "blight_ticks_remaining": 93
+        "description": "The crystals sing"
       }
     },
     "connections": [
@@ -250,7 +324,7 @@
     "events": []
   },
   "meta": {
-    "boredom": 57,
+    "boredom": 17,
     "recent_decisions": [],
     "rejected_ideas": [
       "elevation/terrain system",
@@ -284,7 +358,8 @@
       "first_influence",
       "ghost_jewelry",
       "the_bridge_question",
-      "last_worker"
+      "last_worker",
+      "the_equilibrium"
     ],
     "estate": {
       "description": "A sprawl of tunnels and chambers that reaches toward the Outside. The name comes from the Receiver at its edge, always listening.",
@@ -346,6 +421,19 @@
       }
     ],
     "goals": {
+      "receiver_maintenance": {
+        "built": false,
+        "cost": {
+          "strange_matter": 1
+        },
+        "description": "The Receiver degrades. Without strange_matter to power it, the antenna will go silent. No signals. No visitors. Isolation.",
+        "effect": {
+          "prevents_receiver_decay": true
+        },
+        "last_maintained": 140051,
+        "maintenance_interval_ticks": 3600,
+        "name": "Receiver Maintenance"
+      },
       "the_bridge": {
         "built": false,
         "cost": {
@@ -365,19 +453,6 @@
           "ore": 0,
           "strange_matter": 0
         }
-      },
-      "receiver_maintenance": {
-        "built": false,
-        "cost": {
-          "strange_matter": 1
-        },
-        "description": "The Receiver degrades. Without strange_matter to power it, the antenna will go silent. No signals. No visitors. Isolation.",
-        "effect": {
-          "prevents_receiver_decay": true
-        },
-        "last_maintained": 135651,
-        "maintenance_interval_ticks": 3600,
-        "name": "Receiver Maintenance"
       },
       "crystal_resonance_chamber": {
         "built": true,
@@ -423,16 +498,16 @@
         "trigger": "aftermath"
       }
     ],
-    "sanity": 14.250000000000277,
+    "sanity": 13.530000000000275,
     "receiver_silent": false,
     "receiver_failed_tick": 133901,
-    "receiver_bootstrap_tick": 135651,
     "sanity_crisis": true,
-    "sanity_breaking": false
+    "sanity_breaking": false,
+    "receiver_bootstrap_tick": 140051
   },
   "graveyard": {
     "corpses": [],
     "total_processed": 22
   },
-  "last_save_timestamp": 1766593387.8989155
+  "last_save_timestamp": 1766597767.249814
 }

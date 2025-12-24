@@ -150,6 +150,15 @@ export interface Queues {
   events: unknown[]
 }
 
+export interface Decision {
+  tick: number
+  type: string
+  choice: string
+  why: string
+  alternatives_considered: string[]
+  timestamp?: string
+}
+
 export interface GameState {
   tick: number
   resources: Resources

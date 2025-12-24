@@ -15,20 +15,14 @@ export function initTooltip(): void {
   document.body.appendChild(tooltipEl)
 }
 
-export function handleTooltipHover(
-  e: MouseEvent,
-  mapContainer: HTMLElement,
-  entityDots: Map<string, EntityDot>
-): void {
-  if (!tooltipEl) return
-
-  const rect = mapContainer.getBoundingClientRect()
-  const mouseX = e.clientX - rect.left
-  const mouseY = e.clientY - rect.top
-
-  // Find nearest entity within range
+function findNearestEntity(
+  mouseX: number,
+  mouseY: number,
+  entityDots: Map<string, EntityDot>,
+  radius: number = 20
+): Entity | null {
   let nearestEntity: Entity | null = null
-  let nearestDist = 20 // Detection radius in pixels
+  let nearestDist = radius
 
   for (const [_id, dot] of entityDots) {
     const dx = dot.x - mouseX
@@ -40,11 +34,39 @@ export function handleTooltipHover(
     }
   }
 
+  return nearestEntity
+}
+
+export function handleTooltipHover(
+  e: MouseEvent,
+  mapContainer: HTMLElement,
+  entityDots: Map<string, EntityDot>
+): void {
+  if (!tooltipEl) return
+
+  const rect = mapContainer.getBoundingClientRect()
+  const mouseX = e.clientX - rect.left
+  const mouseY = e.clientY - rect.top
+
+  const nearestEntity = findNearestEntity(mouseX, mouseY, entityDots)
+
   if (nearestEntity) {
     showTooltip(nearestEntity, e.clientX, e.clientY)
   } else {
     hideTooltip()
   }
+}
+
+export function handleEntityClick(
+  e: MouseEvent,
+  mapContainer: HTMLElement,
+  entityDots: Map<string, EntityDot>
+): Entity | null {
+  const rect = mapContainer.getBoundingClientRect()
+  const mouseX = e.clientX - rect.left
+  const mouseY = e.clientY - rect.top
+
+  return findNearestEntity(mouseX, mouseY, entityDots)
 }
 
 function showTooltip(entity: Entity, x: number, y: number): void {
