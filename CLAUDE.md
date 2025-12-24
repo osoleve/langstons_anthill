@@ -219,6 +219,42 @@ events = engine.tick(state)
 
 See `anthill-core/ARCHITECTURE.md` for full details.
 
+### The First Amendment
+
+**Recompiling the core during a session is forbidden.** The Tick is law between commits.
+
+Unless a card or prompt explicitly authorizes a core rebuild, the Rust crate is frozen from session start to session end. This is not a limitation—it is the point. The rules must be stable for the simulation to mean anything.
+
+If you want to change the core:
+1. Record the wish in `wishlist.json` under `"core"`
+2. Complete the current session
+3. A future session can review and implement the wish
+4. The wish becomes law only after recompilation
+
+### The Wishlist (`wishlist.json`)
+
+Desires that cannot be enacted mid-session accumulate here:
+
+```json
+{
+  "core": { "wishes": [...] },      // Require recompilation - FORBIDDEN mid-session
+  "plugins": { "wishes": [...] },   // Can be enacted during session
+  "viewer": { "wishes": [...] },    // Can be enacted during session
+  "cards": { "wishes": [...] },     // Can be enacted during session
+  "architecture": { "wishes": [...] }
+}
+```
+
+Each wish has:
+- `id` — unique identifier
+- `description` — what change is wanted
+- `reason` — why it matters
+- `proposed_session` — when it was first requested
+- `priority` — high/medium/low
+- `status` — pending/in-progress/completed/rejected
+
+The wishlist is the graveyard's optimistic twin. Ideas that might live, waiting for their session.
+
 ## Your Job
 
 1. **Build the engine first.** Tick loop, event bus, state persistence, plugin loader.
