@@ -1,13 +1,13 @@
 {
-  "tick": 135001,
+  "tick": 135651,
   "resources": {
-    "dirt": 2182.4449999940307,
-    "crystals": 49.923999999986044,
-    "nutrients": 1173.8399999995002,
-    "fungus": 226.40595671015828,
     "insight": 3.627999999999711,
-    "influence": 1.5260000000002587,
-    "ore": 96.12799999997179
+    "fungus": 234.4059567101465,
+    "ore": 97.42799999997179,
+    "influence": 1.5350000000002577,
+    "crystals": 50.57399999998536,
+    "dirt": 2194.5749999940094,
+    "nutrients": 1192.1799999994948
   },
   "systems": {
     "queen_chamber": {
@@ -15,73 +15,21 @@
       "type": "spawner",
       "description": "The queen produces new ants, consuming nutrients and fungus"
     },
-    "dig_site": {
-      "name": "Dig Site",
-      "type": "generator",
-      "generates": {
-        "dirt": 0.02
-      },
-      "description": "Ants slowly dig up dirt",
-      "sanity_efficiency": 0.28140000000000565
-    },
-    "compost_heap": {
-      "name": "Compost Heap",
-      "type": "generator",
-      "generates": {
-        "nutrients": 0.01
-      },
-      "consumes": {
-        "dirt": 0.005
-      },
-      "description": "Dirt slowly breaks down into nutrients",
-      "corpse_boosts": [
-        {
-          "expires_at_tick": 135528,
-          "bonus": 0.1
-        },
-        {
-          "expires_at_tick": 135601,
-          "bonus": 0.1
-        }
-      ],
-      "sanity_efficiency": 0.28140000000000565
-    },
-    "crystal_mine": {
-      "name": "Crystal Mine",
-      "type": "generator",
-      "generates": {
-        "crystals": 0.001
-      },
-      "description": "Ants carefully extract crystals from cave walls",
-      "sanity_efficiency": 0.28140000000000565
-    },
-    "crystal_resonance_chamber": {
-      "name": "Crystal Resonance Chamber",
-      "type": "generator",
-      "generates": {
-        "nutrients": 0.05
-      },
-      "description": "Crystals hum with energy, generating nutrients from vibration alone",
-      "sanity_efficiency": 0.28140000000000565
-    },
-    "crafting_hollow": {
-      "name": "Crafting Hollow",
-      "type": "crafting",
-      "description": "A quiet alcove where ore becomes beauty. Here, ants cease to be tools."
-    },
-    "ore_mine": {
-      "name": "Ore Mine",
-      "type": "generator",
-      "generates": {
-        "ore": 0.002
-      },
-      "description": "Ants carefully extract precious metals from the vein",
-      "sanity_efficiency": 0.28140000000000565
-    },
     "receiver": {
       "name": "The Receiver",
       "type": "antenna",
       "description": "A jagged antenna of bone and crystal. It listens to frequencies the colony cannot hear."
+    },
+    "compost_heap": {
+      "name": "Compost Heap",
+      "type": "generator",
+      "description": "Dirt slowly breaks down into nutrients",
+      "original_generates": {
+        "nutrients": 0.01
+      },
+      "original_consumes": {
+        "dirt": 0.005
+      }
     },
     "fungus_farm": {
       "name": "Fungus Farm",
@@ -104,6 +52,47 @@
         "nutrients": 0.02
       },
       "description": "A second cultivation chamber deep in the colony"
+    },
+    "dig_site": {
+      "name": "Dig Site",
+      "type": "generator",
+      "generates": {
+        "dirt": 0.02
+      },
+      "description": "Ants slowly dig up dirt",
+      "sanity_efficiency": 0.2850000000000055
+    },
+    "crafting_hollow": {
+      "name": "Crafting Hollow",
+      "type": "crafting",
+      "description": "A quiet alcove where ore becomes beauty. Here, ants cease to be tools."
+    },
+    "crystal_resonance_chamber": {
+      "name": "Crystal Resonance Chamber",
+      "type": "generator",
+      "generates": {
+        "nutrients": 0.05
+      },
+      "description": "Crystals hum with energy, generating nutrients from vibration alone",
+      "sanity_efficiency": 0.2850000000000055
+    },
+    "ore_mine": {
+      "name": "Ore Mine",
+      "type": "generator",
+      "generates": {
+        "ore": 0.002
+      },
+      "description": "Ants carefully extract precious metals from the vein",
+      "sanity_efficiency": 0.2850000000000055
+    },
+    "crystal_mine": {
+      "name": "Crystal Mine",
+      "type": "generator",
+      "generates": {
+        "crystals": 0.001
+      },
+      "description": "Ants carefully extract crystals from cave walls",
+      "sanity_efficiency": 0.2850000000000055
     }
   },
   "entities": [
@@ -112,8 +101,8 @@
       "type": "ant",
       "role": "worker",
       "tile": "origin",
-      "age": 1101,
-      "hunger": 59.900000000003686,
+      "age": 1751,
+      "hunger": 54.90000000000544,
       "hunger_rate": 0.1,
       "max_age": 7200,
       "food": "fungus"
@@ -123,13 +112,13 @@
       "type": "ant",
       "role": "undertaker",
       "tile": "origin",
-      "age": 1101,
-      "hunger": 64.84999999999678,
+      "age": 1751,
+      "hunger": 57.34999999999507,
       "hunger_rate": 0.15,
       "max_age": 7200,
       "food": "fungus",
-      "processing_corpse": true,
-      "processing_ticks": 1
+      "processing_corpse": false,
+      "processing_ticks": 0
     }
   ],
   "map": {
@@ -140,48 +129,6 @@
         "x": -1,
         "y": 0
       },
-      "ore_vein": {
-        "name": "Glittering Vein",
-        "type": "resource",
-        "x": -1,
-        "y": -1,
-        "resource": "ore",
-        "description": "Veins of copper and gold thread through the stone"
-      },
-      "queen_chamber": {
-        "name": "The Queen's Chamber",
-        "type": "special",
-        "x": 0,
-        "y": -1,
-        "description": "A warm, dark chamber where new life begins"
-      },
-      "receiver": {
-        "name": "The Receiver",
-        "type": "antenna",
-        "x": 4,
-        "y": 1,
-        "description": "A jagged antenna of bone and crystal. It listens to frequencies the colony cannot hear."
-      },
-      "fungus_farm_2_tile": {
-        "name": "Deep Chambers",
-        "type": "production",
-        "x": 1,
-        "y": 1,
-        "description": "Additional fungus cultivation deep underground"
-      },
-      "fungus_farm": {
-        "name": "The Farm",
-        "type": "production",
-        "x": 0,
-        "y": 1
-      },
-      "crafting_hollow": {
-        "name": "The Crafting Hollow",
-        "type": "aesthetic",
-        "x": -2,
-        "y": -1,
-        "description": "A still alcove lined with unworked ore. Those who enter as workers leave as something else."
-      },
       "crystal_cave": {
         "name": "Crystal Cave",
         "type": "resource",
@@ -190,14 +137,26 @@
         "resource": "crystals",
         "description": "Strange formations glitter in the dark"
       },
-      "compost": {
-        "name": "The Heap",
-        "type": "compost",
-        "x": 1,
-        "y": 0,
-        "contamination": 0.02,
-        "blighted": false,
-        "blight_ticks_remaining": 0
+      "crafting_hollow": {
+        "name": "The Crafting Hollow",
+        "type": "aesthetic",
+        "x": -2,
+        "y": -1,
+        "description": "A still alcove lined with unworked ore. Those who enter as workers leave as something else."
+      },
+      "receiver": {
+        "name": "The Receiver",
+        "type": "antenna",
+        "x": 4,
+        "y": 1,
+        "description": "A jagged antenna of bone and crystal. It listens to frequencies the colony cannot hear."
+      },
+      "queen_chamber": {
+        "name": "The Queen's Chamber",
+        "type": "special",
+        "x": 0,
+        "y": -1,
+        "description": "A warm, dark chamber where new life begins"
       },
       "resonance_chamber": {
         "name": "Resonance Chamber",
@@ -206,11 +165,41 @@
         "y": 0,
         "description": "The crystals sing"
       },
+      "ore_vein": {
+        "name": "Glittering Vein",
+        "type": "resource",
+        "x": -1,
+        "y": -1,
+        "resource": "ore",
+        "description": "Veins of copper and gold thread through the stone"
+      },
       "origin": {
         "name": "The Starting Dirt",
         "type": "empty",
         "x": 0,
         "y": 0
+      },
+      "fungus_farm": {
+        "name": "The Farm",
+        "type": "production",
+        "x": 0,
+        "y": 1
+      },
+      "fungus_farm_2_tile": {
+        "name": "Deep Chambers",
+        "type": "production",
+        "x": 1,
+        "y": 1,
+        "description": "Additional fungus cultivation deep underground"
+      },
+      "compost": {
+        "name": "The Heap",
+        "type": "compost",
+        "x": 1,
+        "y": 0,
+        "contamination": 0.02,
+        "blighted": true,
+        "blight_ticks_remaining": 93
       }
     },
     "connections": [
@@ -261,7 +250,7 @@
     "events": []
   },
   "meta": {
-    "boredom": 7,
+    "boredom": 57,
     "recent_decisions": [],
     "rejected_ideas": [
       "elevation/terrain system",
@@ -357,30 +346,6 @@
       }
     ],
     "goals": {
-      "receiver_maintenance": {
-        "built": false,
-        "cost": {
-          "strange_matter": 1
-        },
-        "description": "The Receiver degrades. Without strange_matter to power it, the antenna will go silent. No signals. No visitors. Isolation.",
-        "effect": {
-          "prevents_receiver_decay": true
-        },
-        "last_maintained": 135001,
-        "maintenance_interval_ticks": 3600,
-        "name": "Receiver Maintenance"
-      },
-      "crystal_resonance_chamber": {
-        "built": true,
-        "cost": {
-          "crystals": 10
-        },
-        "description": "A chamber that generates nutrients from crystal vibrations, bypassing the death economy",
-        "effect": {
-          "nutrients_per_tick": 0.05
-        },
-        "name": "Crystal Resonance Chamber"
-      },
       "the_bridge": {
         "built": false,
         "cost": {
@@ -400,6 +365,30 @@
           "ore": 0,
           "strange_matter": 0
         }
+      },
+      "receiver_maintenance": {
+        "built": false,
+        "cost": {
+          "strange_matter": 1
+        },
+        "description": "The Receiver degrades. Without strange_matter to power it, the antenna will go silent. No signals. No visitors. Isolation.",
+        "effect": {
+          "prevents_receiver_decay": true
+        },
+        "last_maintained": 135651,
+        "maintenance_interval_ticks": 3600,
+        "name": "Receiver Maintenance"
+      },
+      "crystal_resonance_chamber": {
+        "built": true,
+        "cost": {
+          "crystals": 10
+        },
+        "description": "A chamber that generates nutrients from crystal vibrations, bypassing the death economy",
+        "effect": {
+          "nutrients_per_tick": 0.05
+        },
+        "name": "Crystal Resonance Chamber"
       }
     },
     "reflections": [
@@ -434,60 +423,16 @@
         "trigger": "aftermath"
       }
     ],
-    "sanity": 14.070000000000281,
+    "sanity": 14.250000000000277,
     "receiver_silent": false,
     "receiver_failed_tick": 133901,
-    "receiver_bootstrap_tick": 135001,
+    "receiver_bootstrap_tick": 135651,
     "sanity_crisis": true,
-    "sanity_breaking": false,
-    "event_log": [
-      {
-        "type": "card_drawn",
-        "tick": 0,
-        "timestamp": "2025-12-24T10:53:21.213835",
-        "message": "Card fired: complacency_tax (warning)"
-      },
-      {
-        "type": "card_drawn",
-        "tick": 0,
-        "timestamp": "2025-12-24T10:53:21.213835",
-        "message": "Card fired: ghost_jewelry (reflection)"
-      },
-      {
-        "type": "card_drawn",
-        "tick": 0,
-        "timestamp": "2025-12-24T10:53:21.213835",
-        "message": "Card fired: the_bridge_question (challenge)"
-      },
-      {
-        "type": "card_drawn",
-        "tick": 0,
-        "timestamp": "2025-12-24T10:53:21.213835",
-        "message": "Card fired: last_worker (crisis)"
-      },
-      {
-        "type": "card_drawn",
-        "tick": 0,
-        "timestamp": "2025-12-24T10:58:29.491407",
-        "message": "Card fired: random_event (event)"
-      },
-      {
-        "type": "card_drawn",
-        "tick": 0,
-        "timestamp": "2025-12-24T11:01:33.257062",
-        "message": "Card fired: wwcd (audit)"
-      },
-      {
-        "type": "card_drawn",
-        "tick": 0,
-        "timestamp": "2025-12-24T11:09:25.103504",
-        "message": "Card fired: random_event (event)"
-      }
-    ]
+    "sanity_breaking": false
   },
   "graveyard": {
     "corpses": [],
-    "total_processed": 21
+    "total_processed": 22
   },
-  "last_save_timestamp": 1766592754.7443638
+  "last_save_timestamp": 1766593387.8989155
 }

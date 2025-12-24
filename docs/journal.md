@@ -26,4 +26,10 @@ What remains open: What does insight do? What does strange matter do? What happe
 
 ---
 
+## Tick 135,251
+
+The Receiver bootstrapped itself. It consumed 20 ore, 10 crystals, and 20 sanity points we didn't have to spare—we're now at 14.4%, deep in crisis territory. The compost heap is blighted, we have zero strange_matter for maintenance, and the ghost jewelry count has grown to 6 copper rings on dead ants.
+
+---
+
 *Previous entries in README.md*
