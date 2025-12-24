@@ -39,6 +39,41 @@ export function getTileCenter(tileId: string, tiles: Record<string, Tile>): { x:
   return { x: pos.centerX, y: pos.centerY }
 }
 
+export function getTileAtPosition(x: number, y: number, state: GameState): string | null {
+  const tiles = state.map?.tiles
+  if (!tiles) return null
+
+  for (const [id, tile] of Object.entries(tiles)) {
+    const pos = getTilePosition(tile)
+    if (
+      x >= pos.x &&
+      x <= pos.x + TILE_SIZE &&
+      y >= pos.y &&
+      y <= pos.y + TILE_SIZE
+    ) {
+      return id
+    }
+  }
+
+  // If not directly on a tile, find the nearest one
+  let nearest: string | null = null
+  let nearestDist = Infinity
+
+  for (const [id, tile] of Object.entries(tiles)) {
+    const pos = getTilePosition(tile)
+    const dx = x - pos.centerX
+    const dy = y - pos.centerY
+    const dist = Math.sqrt(dx * dx + dy * dy)
+
+    if (dist < nearestDist && dist < 200) { // Max 200px from tile center
+      nearestDist = dist
+      nearest = id
+    }
+  }
+
+  return nearest
+}
+
 export function renderTiles(container: HTMLElement, state: GameState): void {
   // Clear existing tiles
   const existing = container.querySelector('.tiles-container')

@@ -135,23 +135,31 @@ When you receive a card, you respond. Build what's needed. Grind what's required
 A TypeScript web application that renders game state as a living map.
 
 - Systems are geography (mine = mountain, trade route = river)
-- Entities move
+- Entities move with trailing particles
 - Events are weather
 - Rejected ideas are a graveyard (literal)
 - Resource flows are visible particle streams
+- **Observers can interact** by clicking to bless the colony
 
 **Stack:**
 - `viewer/` — TypeScript application with strict types
 - `viewer/src/types/` — GameState, Entity, Tile, System types matching `state/game.json`
 - `viewer/src/renderer/` — Canvas rendering for tiles, entities, particles
+- `viewer/src/observer/` — Observer interaction systems (blessings, atmosphere, stats)
 - `viewer/src/sse/` — SSE client for live updates from server
 - Reads from `state/game.json`, pushes updates via SSE
 
-**Building the viewer:**
+**Starting the viewer (one command):**
+```bash
+python view.py            # Build and serve at http://localhost:5000
+python view.py --dev      # Dev mode with hot reload (localhost:5173)
+python view.py --rebuild  # Force rebuild
+```
+
+**Manual build commands:**
 ```bash
 cd viewer
 npm install               # Install dependencies
-npm run dev               # Dev server with hot reload
 npm run build             # Production build
 npm run typecheck         # Type checking only
 ```
@@ -165,6 +173,36 @@ npm run typecheck         # Type checking only
 The map grows when you add systems. Start with one tile. Let it sprawl.
 
 **The viewer should be running. Always.** During grinds, during idle, during design phases—`localhost:5000` is open. If watching it is boring, that's a design problem. The map should show movement, flows, state changes. Particle streams for resources. Entities that visibly patrol. Blight that spreads visually. The viewer isn't a debug panel, it's the game. Make it something worth watching during a 2-hour grind.
+
+### Observer Interaction System
+
+Observers (humans watching the viewer) are not passive—they can interact:
+
+**Blessings:**
+- Click anywhere on the map to grant a blessing
+- Blessings create visual particle effects and generate small amounts of influence
+- Click rapidly (5+ times in 1 second) to trigger a **Miracle** which generates strange_matter
+- Different click locations grant different blessing types:
+  - Click near a system → **Gift** (generates nutrients)
+  - Click near entities → **Attention** (generates insight)
+  - Click on empty space → **Touch** (generates influence)
+
+**Visual Feedback:**
+- Expanding rings and particle bursts on click
+- Trails follow entity movement
+- Combo meter fills as you click rapidly
+- Atmosphere changes based on colony mood (calm, anxious, crisis, hopeful)
+- Color shifts and floating particles reflect colony health
+
+**Observer Stats:**
+- Bottom-left panel tracks your contributions
+- Stats persist in localStorage across sessions
+- See total blessings, miracles granted, and resources contributed
+
+**Server Endpoints:**
+- `POST /bless` — Submit blessings from viewer
+- `GET /blessings` — Retrieve pending blessings (for tick engine)
+- `POST /blessings/clear` — Clear after applying
 
 ### Plugin Architecture
 
@@ -290,22 +328,26 @@ The wishlist is the graveyard's optimistic twin. Ideas that might live, waiting 
 
 **Start everything:**
 ```bash
-python main.py               # Tick engine with plugins loaded
-cd viewer && npm run dev     # Viewer on http://localhost:5173 (Vite dev server)
+python main.py       # Tick engine with plugins loaded
+python view.py       # Viewer at http://localhost:5000 (auto-builds, opens browser)
 ```
 
-**Production viewer:**
+**Development mode (hot reload):**
 ```bash
-cd viewer && npm run build   # Build to viewer/dist/
-cd viewer && npm run preview # Preview production build
+python view.py --dev # Vite dev server at http://localhost:5173
 ```
 
-**Run tick engine in background:**
+**Run tick engine in background (Unix):**
 ```bash
 python engine/tick.py > logs/tick.log 2>&1 &
 ```
 
-**Stop background processes:**
+**Run tick engine in background (Windows):**
+```powershell
+Start-Process python -ArgumentList "engine/tick.py" -WindowStyle Hidden
+```
+
+**Stop background processes (Unix):**
 ```bash
 pkill -f "python engine/tick.py"
 ```
@@ -420,6 +462,7 @@ langstons-anthill/
     ├── tsconfig.json
     ├── vite.config.ts
     ├── index.html
+    ├── server.py             # Flask server with SSE and blessing endpoints
     └── src/
         ├── main.ts           # Entry point
         ├── types/
@@ -427,12 +470,19 @@ langstons-anthill/
         ├── renderer/
         │   ├── canvas.ts     # Main canvas setup
         │   ├── tiles.ts      # Tile rendering
-        │   ├── entities.ts   # Entity dot rendering
-        │   └── particles.ts  # Resource flow particles
+        │   ├── entities.ts   # Entity dot rendering with trails
+        │   ├── particles.ts  # Resource flow particles
+        │   └── spirits.ts    # Corpse ghost rendering
+        ├── observer/         # OBSERVER INTERACTION
+        │   ├── blessings.ts  # Click-to-bless system
+        │   ├── atmosphere.ts # Ambient particle effects
+        │   └── stats.ts      # Observer contribution tracking
         ├── sse/
         │   └── client.ts     # SSE connection to tick engine
         └── ui/
-            └── panels.ts     # Resource/system panels
+            ├── panels.ts     # Resource/system panels
+            ├── tooltip.ts    # Entity hover tooltips
+            └── modal.ts      # Tile/entity detail modals
 ```
 
 ## Tone

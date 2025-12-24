@@ -12,7 +12,14 @@ target/
 *.dll
 anthill-core/target/
 
+# Node/JS
+node_modules/
+viewer/node_modules/
+viewer/dist/
+
 # Game state
 state/
 !state/
 !state/.keep
+.claude/settings.local.json
+.claude/settings.local.json
