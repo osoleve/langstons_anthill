@@ -1,234 +1,132 @@
 """Tick engine. Runs forever. No LLM calls in the hot loop."""
 
 import time
+import json
 from .state import load_state, save_state
 from .bus import bus
+from .core_wrapper import CoreEngine, StateManager
 
 
-def apply_tick(state: dict) -> dict:
-    """Pure math. No thinking. Process one tick."""
-    state["tick"] += 1
-
-    # Process action queue
-    remaining_actions = []
-    for action in state["queues"]["actions"]:
-        action["ticks_remaining"] -= 1
-        if action["ticks_remaining"] <= 0:
-            # Action complete - emit event
-            bus.emit("action_complete", {
-                "action": action,
-                "tick": state["tick"]
-            })
-            # Apply action effects
-            if "effects" in action:
-                for resource, delta in action["effects"].get("resources", {}).items():
-                    state["resources"][resource] = state["resources"].get(resource, 0) + delta
-        else:
-            remaining_actions.append(action)
-    state["queues"]["actions"] = remaining_actions
-
-    # Process passive resource generation/consumption from systems
-    for system_id, system in state["systems"].items():
-        # Check if system can run (has required resources to consume)
-        can_run = True
-        if "consumes" in system:
-            for resource, rate in system["consumes"].items():
-                if state["resources"].get(resource, 0) < rate:
-                    can_run = False
-                    break
-
-        if can_run:
-            # Consume resources
-            if "consumes" in system:
-                for resource, rate in system["consumes"].items():
-                    state["resources"][resource] = state["resources"].get(resource, 0) - rate
-
-            # Generate resources
-            if "generates" in system:
-                for resource, rate in system["generates"].items():
-                    state["resources"][resource] = state["resources"].get(resource, 0) + rate
-
-    # Process entities
-    surviving_entities = []
-    for entity in state["entities"]:
-        entity["age"] = entity.get("age", 0) + 1
-
-        # Hunger decreases over time
-        entity["hunger"] = entity.get("hunger", 100) - entity.get("hunger_rate", 0.1)
-
-        # Try to eat if hungry
-        if entity["hunger"] < 50:
-            food_type = entity.get("food", "fungus")
-            if state["resources"].get(food_type, 0) >= 1:
-                state["resources"][food_type] -= 1
-                entity["hunger"] = min(100, entity["hunger"] + 30)
-                bus.emit("entity_ate", {"entity": entity, "food": food_type, "tick": state["tick"]})
-
-        # Check for death
-        max_age = entity.get("max_age", 3600)  # 1 hour default lifespan
-        died = False
-        cause = None
-
-        if entity["hunger"] <= 0:
-            died = True
-            cause = "starvation"
-        elif entity["age"] >= max_age:
-            died = True
-            cause = "old_age"
-
-        if died:
-            # Add to graveyard directly (pure state mutation)
-            if "graveyard" not in state:
-                state["graveyard"] = {"corpses": [], "total_processed": 0}
-            state["graveyard"]["corpses"].append({
-                "entity_id": entity.get("id", "unknown"),
-                "entity_type": entity.get("type", "unknown"),
-                "death_tick": state["tick"],
-                "cause": cause,
-                "tile": entity.get("tile", "origin")
-            })
-            bus.emit("entity_died", {"entity": entity, "cause": cause, "tick": state["tick"]})
-        else:
-            surviving_entities.append(entity)
-
-    state["entities"] = surviving_entities
-
-    return state
-
-
-def check_thresholds(state: dict, prev_state: dict):
-    """Emit threshold events when metrics cross boundaries."""
-    # Check resource thresholds
-    for resource, amount in state["resources"].items():
-        prev_amount = prev_state.get("resources", {}).get(resource, 0)
-        # Check common thresholds: 10, 25, 50, 100, 250, 500, 1000
-        for threshold in [10, 25, 50, 100, 250, 500, 1000]:
-            if prev_amount < threshold <= amount:
-                bus.emit("threshold", {
-                    "type": "resource",
-                    "resource": resource,
-                    "threshold": threshold,
-                    "tick": state["tick"]
-                })
-
-
-def check_boredom(state: dict):
-    """Detect stalls. Emit boredom events."""
-    meta = state["meta"]
-
-    # Increase boredom if nothing's happening
-    if not state["queues"]["actions"] and not state["queues"]["events"]:
-        meta["boredom"] = meta.get("boredom", 0) + 1
-    else:
-        meta["boredom"] = max(0, meta.get("boredom", 0) - 1)
-
-    # Emit if boredom is high
-    if meta["boredom"] >= 60:  # 1 minute of nothing
-        bus.emit("boredom", {
-            "level": meta["boredom"],
-            "tick": state["tick"]
-        })
-        meta["boredom"] = 0  # Reset after emitting
-
-
-def process_offline_progress(state: dict) -> dict:
+def process_offline_progress(state_dict: dict, engine: CoreEngine) -> dict:
     """Apply catch-up ticks for time passed while offline.
 
     Caps at 3600 ticks (1 hour) to prevent massive state jumps.
-    Applies simplified tick logic (resources only, no entity deaths).
     """
-    import time
-
-    last_save = state.get("last_save_timestamp")
+    last_save = state_dict.get("last_save_timestamp")
     if not last_save:
         print("[tick] no previous timestamp, skipping offline progress")
-        return state
+        return state_dict
 
     elapsed_seconds = int(time.time() - last_save)
     if elapsed_seconds <= 0:
-        return state
+        return state_dict
 
     # Cap at 1 hour of offline progress
     max_offline_ticks = 3600
     ticks_to_apply = min(elapsed_seconds, max_offline_ticks)
 
     if ticks_to_apply < 10:  # Skip if trivial
-        return state
+        return state_dict
 
     print(f"[tick] applying {ticks_to_apply} offline ticks ({elapsed_seconds}s elapsed, capped at {max_offline_ticks})")
 
-    # Apply simplified ticks (resource generation only, no entity processing)
-    for _ in range(ticks_to_apply):
-        state["tick"] += 1
+    # Run ticks in a loop
+    # We don't emit events during catch-up to avoid flooding the bus/logs
+    # But we do need to update the state
 
-        # Process passive resource generation/consumption from systems
-        for system_id, system in state["systems"].items():
-            can_run = True
-            if "consumes" in system:
-                for resource, rate in system["consumes"].items():
-                    if state["resources"].get(resource, 0) < rate:
-                        can_run = False
-                        break
+    state_json = json.dumps(state_dict)
 
-            if can_run:
-                if "consumes" in system:
-                    for resource, rate in system["consumes"].items():
-                        state["resources"][resource] = state["resources"].get(resource, 0) - rate
-                if "generates" in system:
-                    for resource, rate in system["generates"].items():
-                        state["resources"][resource] = state["resources"].get(resource, 0) + rate
+    # Process in batches to avoid locking up too long if it's slow (though Rust is fast)
+    batch_size = 100
+    total_processed = 0
 
-        # Process entity hunger (reduced rate - they forage while you're away)
-        for entity in state["entities"]:
-            # Age normally
-            entity["age"] = entity.get("age", 0) + 1
-            # Hunger decreases at half rate offline (foraging bonus)
-            entity["hunger"] = entity.get("hunger", 100) - (entity.get("hunger_rate", 0.1) * 0.5)
-            # Auto-eat if hungry and food available
-            if entity["hunger"] < 50:
-                food_type = entity.get("food", "fungus")
-                if state["resources"].get(food_type, 0) >= 1:
-                    state["resources"][food_type] -= 1
-                    entity["hunger"] = min(100, entity["hunger"] + 30)
+    start_time = time.time()
 
-        # Remove entities that died offline
-        state["entities"] = [e for e in state["entities"] if e.get("hunger", 100) > 0 and e.get("age", 0) < e.get("max_age", 7200)]
+    while total_processed < ticks_to_apply:
+        current_batch = min(batch_size, ticks_to_apply - total_processed)
 
-    print(f"[tick] offline progress complete. Now at tick {state['tick']}")
-    return state
+        for _ in range(current_batch):
+            state_json, _ = engine.tick(state_json)
+
+        total_processed += current_batch
+
+    duration = time.time() - start_time
+    print(f"[tick] offline progress complete. Processed {total_processed} ticks in {duration:.3f}s")
+
+    return json.loads(state_json)
 
 
 def run():
     """Main loop. 1 tick = 1 second."""
-    print("[tick] engine starting")
+    print("[tick] engine starting (Rust Core)")
 
-    # Process any offline progress before starting main loop
-    state = load_state()
-    state = process_offline_progress(state)
-    save_state(state)
+    # Initialize Rust engine
+    # Use current time as seed
+    engine = CoreEngine(int(time.time()))
 
-    # Keep state in memory, only save periodically
+    # Load initial state
+    state_dict = load_state()
+
+    # Validate and repair state if needed
+    try:
+        # Check if we can round-trip through Rust
+        state_json = json.dumps(state_dict)
+        if not StateManager.validate(state_json):
+             print("[tick] WARNING: Loaded state is not compatible with Rust core. Starting fresh.")
+             state_dict = json.loads(StateManager.create_default())
+    except Exception as e:
+        print(f"[tick] ERROR loading state: {e}. Starting fresh.")
+        state_dict = json.loads(StateManager.create_default())
+
+    # Apply offline progress
+    state_dict = process_offline_progress(state_dict, engine)
+    save_state(state_dict)
+
+    state_json = json.dumps(state_dict)
+
+    tick_count = 0
 
     while True:
-        prev_state = {k: v for k, v in state.items()}  # Shallow copy for comparison
-        prev_state["resources"] = dict(state.get("resources", {}))
+        loop_start = time.time()
 
-        state = apply_tick(state)
+        # Run tick in Rust
+        try:
+            state_json, events = engine.tick(state_json)
+        except Exception as e:
+            print(f"[tick] CRITICAL ERROR in Rust core: {e}")
+            time.sleep(1)
+            continue
+
+        # Parse state back to dict for Python-side consumers (saving, bus emission)
+        # Ideally we wouldn't parse this every tick if not needed, but existing consumers expect a dict
+        state_dict = json.loads(state_json)
+
+        # Add timestamp for saving
+        state_dict["last_save_timestamp"] = time.time()
+
+        # Emit events from Rust
+        for event in events:
+            # Rust events have a 'type' field, but bus expects event name as first arg
+            event_type = event.get("type", "unknown_event")
+
+            # Map Rust event types to Python bus topics if needed
+            # For now, we just emit everything
+            bus.emit(event_type, event)
 
         # Save every 50 ticks to reduce I/O
-        if state["tick"] % 50 == 0:
-            save_state(state)
+        if state_dict["tick"] % 50 == 0:
+            # We need to save the state with the timestamp
+            save_state(state_dict)
 
-        # Emit tick event
-        bus.emit("tick", state)
+        # Emit tick event with full state (expensive but required by current architecture)
+        bus.emit("tick", state_dict)
 
-        # Check for threshold crossings
-        check_thresholds(state, prev_state)
+        tick_count += 1
 
-        # Check for boredom
-        check_boredom(state)
-
-        time.sleep(1)
+        # Sleep to maintain 1 tick/second
+        elapsed = time.time() - loop_start
+        sleep_time = max(0.0, 1.0 - elapsed)
+        time.sleep(sleep_time)
 
 
 if __name__ == "__main__":
