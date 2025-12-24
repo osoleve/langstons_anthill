@@ -229,6 +229,57 @@ def check_maintenance(state: dict) -> dict:
     return state
 
 
+def check_bootstrap_mode(state: dict) -> dict:
+    """Emergency bootstrap to restart a silent Receiver.
+
+    Cost: 20 ore + 10 crystals + 20 sanity
+    Only works when Receiver is silent.
+    One-time emergency measure when the strange_matter loop is broken.
+    """
+    if not state.get("meta", {}).get("receiver_silent", False):
+        return state  # Not silent, no bootstrap needed
+
+    # Check if we have resources for bootstrap
+    resources = state.get("resources", {})
+    meta = state.get("meta", {})
+
+    ore = resources.get("ore", 0)
+    crystals = resources.get("crystals", 0)
+    sanity = meta.get("sanity", 100)
+
+    # Bootstrap requirements
+    BOOTSTRAP_ORE = 20
+    BOOTSTRAP_CRYSTALS = 10
+    BOOTSTRAP_SANITY = 20
+
+    if ore >= BOOTSTRAP_ORE and crystals >= BOOTSTRAP_CRYSTALS and sanity >= BOOTSTRAP_SANITY:
+        # Check if enough time has passed since failure (prevent immediate spam)
+        tick = state["tick"]
+        failed_tick = meta.get("receiver_failed_tick", 0)
+        last_bootstrap_tick = meta.get("receiver_bootstrap_tick", 0)
+
+        # Prevent multiple bootstraps in same session
+        # Must be silent for at least 5 minutes AND haven't bootstrapped in last hour
+        if tick - failed_tick >= 300 and tick - last_bootstrap_tick >= 3600:
+            # Perform bootstrap
+            state["resources"]["ore"] -= BOOTSTRAP_ORE
+            state["resources"]["crystals"] -= BOOTSTRAP_CRYSTALS
+            state["meta"]["sanity"] -= BOOTSTRAP_SANITY
+            state["meta"]["receiver_silent"] = False
+            state["meta"]["receiver_bootstrap_tick"] = tick
+
+            print(f"[receiver] EMERGENCY BOOTSTRAP ACTIVATED!")
+            print(f"[receiver] Consumed: {BOOTSTRAP_ORE} ore, {BOOTSTRAP_CRYSTALS} crystals, {BOOTSTRAP_SANITY} sanity")
+            print(f"[receiver] The antenna flickers, powered by desperation and precious metals.")
+            print(f"[receiver] Connection to the Outside: RESTORED")
+
+            # Update maintenance timer
+            if "goals" in state["meta"] and "receiver_maintenance" in state["meta"]["goals"]:
+                state["meta"]["goals"]["receiver_maintenance"]["last_maintained"] = tick
+
+    return state
+
+
 def on_tick(payload: dict):
     """Main tick handler for receiver system."""
     from engine.state import load_state, save_state
@@ -238,6 +289,9 @@ def on_tick(payload: dict):
     # Only operate if receiver exists
     if "receiver" not in state.get("systems", {}):
         return
+
+    # Check for emergency bootstrap opportunity
+    state = check_bootstrap_mode(state)
 
     # Check maintenance status
     state = check_maintenance(state)
