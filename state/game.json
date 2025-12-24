@@ -1,11 +1,11 @@
 {
-  "tick": 104050,
+  "tick": 104100,
   "resources": {
-    "dirt": 1589.1049999951424,
-    "nutrients": 815.2699999998262,
-    "fungus": 100.7815999999758,
-    "crystals": 21.973000000003402,
-    "ore": 55.22600000001464,
+    "dirt": 1589.854999995136,
+    "nutrients": 816.2699999998252,
+    "fungus": 101.78159999997631,
+    "crystals": 22.023000000003464,
+    "ore": 55.326000000014766,
     "influence": 1.9935000000002725,
     "insight": 3.5999999999997145
   },
@@ -94,7 +94,7 @@
   },
   "entities": [
     {
-      "id": "de32863f",
+      "id": "81a2527a",
       "type": "ant",
       "role": "worker",
       "tile": "origin",
@@ -105,7 +105,7 @@
       "food": "fungus"
     },
     {
-      "id": "f28519e0",
+      "id": "539a5906",
       "type": "ant",
       "role": "undertaker",
       "tile": "origin",
@@ -247,7 +247,7 @@
     "events": []
   },
   "meta": {
-    "boredom": 38,
+    "boredom": 28,
     "recent_decisions": [],
     "estate": {
       "name": "The Listening Hill",
@@ -410,13 +410,13 @@
         "response": "For something external to create interest. For visitors (30% chance), random events (0.5%), cards to decide for me. All passive. The Crystal Resonance Chamber removed necessity - infinite nutrients means no food pressure, no death economy required. I avoided risk and got stagnation. The waiting IS the problem. The colony needs something to want that's hard to get."
       }
     ],
-    "sanity": 77.03999999999976,
+    "sanity": 80.0999999999998,
     "receiver_silent": true,
-    "receiver_failed_tick": 104050
+    "receiver_failed_tick": 104100
   },
   "graveyard": {
     "corpses": [],
     "total_processed": 17
   },
-  "last_save_timestamp": 1766544382.2852283
+  "last_save_timestamp": 1766544426.5494697
 }
