@@ -1,13 +1,13 @@
 {
-  "tick": 110800,
+  "tick": 113600,
   "resources": {
-    "dirt": 1700.6049999945067,
-    "nutrients": 929.769999999722,
-    "fungus": 192.7815999998972,
-    "crystals": 17.723000000011652,
-    "ore": 48.72600000003114,
-    "influence": 0.507000000000272,
-    "insight": 3.612999999999713
+    "dirt": 1756.6049999944557,
+    "nutrients": 947.7699999996966,
+    "fungus": 188.97727999986944,
+    "crystals": 22.523000000015074,
+    "ore": 53.326000000037986,
+    "influence": 1.5100000000002711,
+    "insight": 3.6279999999997115
   },
   "systems": {
     "compost_heap": {
@@ -17,7 +17,7 @@
       "consumes": {},
       "description": "Dirt slowly breaks down into nutrients",
       "corpse_boosts": [],
-      "sanity_efficiency": 0.7309999999999975,
+      "sanity_efficiency": 0.7158000000000005,
       "original_generates": {
         "nutrients": 0.01
       },
@@ -32,7 +32,7 @@
         "dirt": 0.02
       },
       "description": "Ants slowly dig up dirt",
-      "sanity_efficiency": 0.7309999999999975
+      "sanity_efficiency": 0.7158000000000005
     },
     "fungus_farm": {
       "name": "Fungus Farm",
@@ -52,7 +52,7 @@
         "crystals": 0.001
       },
       "description": "Ants carefully extract crystals from cave walls",
-      "sanity_efficiency": 0.7309999999999975
+      "sanity_efficiency": 0.7158000000000005
     },
     "crystal_resonance_chamber": {
       "name": "Crystal Resonance Chamber",
@@ -61,7 +61,7 @@
         "nutrients": 0.05
       },
       "description": "Crystals hum with energy, generating nutrients from vibration alone",
-      "sanity_efficiency": 0.7309999999999975
+      "sanity_efficiency": 0.7158000000000005
     },
     "ore_mine": {
       "name": "Ore Mine",
@@ -70,7 +70,7 @@
         "ore": 0.002
       },
       "description": "Ants carefully extract precious metals from the vein",
-      "sanity_efficiency": 0.7309999999999975
+      "sanity_efficiency": 0.7158000000000005
     },
     "queen_chamber": {
       "name": "Queen's Chamber",
@@ -101,13 +101,13 @@
   },
   "entities": [
     {
-      "id": "81a2527a",
+      "id": "fba55959",
       "type": "ant",
       "role": "ornamental",
       "tile": "origin",
-      "age": 6700,
-      "hunger": 77.95000000000903,
-      "hunger_rate": 0.30000000000000004,
+      "age": 300,
+      "hunger": 70.00000000000085,
+      "hunger_rate": 0.3,
       "max_age": 7200,
       "food": "fungus",
       "adorned": true,
@@ -116,34 +116,17 @@
       "influence_rate": 0.001
     },
     {
-      "id": "539a5906",
+      "id": "10d27959",
       "type": "ant",
       "role": "undertaker",
       "tile": "origin",
-      "age": 6700,
-      "hunger": 56.67499999998183,
+      "age": 300,
+      "hunger": 54.99999999999873,
       "hunger_rate": 0.15,
       "max_age": 7200,
       "food": "fungus",
       "processing_corpse": false,
       "processing_ticks": 0
-    },
-    {
-      "id": "v_4a4681",
-      "type": "visitor",
-      "subtype": "observer",
-      "name": "An Observer",
-      "tile": "receiver",
-      "age": 2050,
-      "hunger": 72.79999999999373,
-      "hunger_rate": 0.05,
-      "max_age": 3600,
-      "food": "crystals",
-      "from_outside": true,
-      "description": "Watches. Generates insight from the watching.",
-      "generates": {
-        "insight": 0.001
-      }
     }
   ],
   "map": {
@@ -161,7 +144,7 @@
         "y": 0,
         "contamination": 0.01,
         "blighted": true,
-        "blight_ticks_remaining": 263
+        "blight_ticks_remaining": 187
       },
       "dig_site": {
         "name": "The Dig",
@@ -275,7 +258,7 @@
     "events": []
   },
   "meta": {
-    "boredom": 33,
+    "boredom": 11,
     "recent_decisions": [],
     "estate": {
       "name": "The Listening Hill",
@@ -327,6 +310,13 @@
         "created_tick": 108250,
         "worn_by": "81a2527a",
         "worn_tick": 108250
+      },
+      {
+        "type": "copper_ring",
+        "name": "Copper Ring",
+        "created_tick": 113300,
+        "worn_by": "fba55959",
+        "worn_tick": 113300
       }
     ],
     "rejected_ideas": [
@@ -445,7 +435,7 @@
         "response": "For something external to create interest. For visitors (30% chance), random events (0.5%), cards to decide for me. All passive. The Crystal Resonance Chamber removed necessity - infinite nutrients means no food pressure, no death economy required. I avoided risk and got stagnation. The waiting IS the problem. The colony needs something to want that's hard to get."
       }
     ],
-    "sanity": 36.549999999999876,
+    "sanity": 35.79000000000003,
     "receiver_silent": false,
     "receiver_failed_tick": 104100,
     "receiver_bootstrap_tick": 108100,
@@ -453,8 +443,30 @@
     "sanity_breaking": false
   },
   "graveyard": {
-    "corpses": [],
+    "corpses": [
+      {
+        "entity_id": "81a2527a",
+        "entity_type": "ant",
+        "death_tick": 111300,
+        "cause": "old_age",
+        "tile": "origin"
+      },
+      {
+        "entity_id": "539a5906",
+        "entity_type": "ant",
+        "death_tick": 111300,
+        "cause": "old_age",
+        "tile": "origin"
+      },
+      {
+        "entity_id": "v_4a4681",
+        "entity_type": "visitor",
+        "death_tick": 112350,
+        "cause": "old_age",
+        "tile": "receiver"
+      }
+    ],
     "total_processed": 17
   },
-  "last_save_timestamp": 1766551636.0119176
+  "last_save_timestamp": 1766554858.573143
 }

@@ -55,10 +55,12 @@ def check_queen_spawning(state: dict) -> dict:
     tick = state["tick"]
     nutrients = state["resources"].get("nutrients", 0)
     fungus = state["resources"].get("fungus", 0)
-    entity_count = len(state.get("entities", []))
 
-    # Emergency spawn if colony is empty and has resources
-    if entity_count == 0 and nutrients >= MIN_RESOURCES_TO_SPAWN and fungus >= MIN_RESOURCES_TO_SPAWN:
+    # Count only ants, not visitors
+    ant_count = len([e for e in state.get("entities", []) if e.get("type") == "ant"])
+
+    # Emergency spawn if no ants alive and has resources
+    if ant_count == 0 and nutrients >= MIN_RESOURCES_TO_SPAWN and fungus >= MIN_RESOURCES_TO_SPAWN:
         print(f"[queen] EMERGENCY SPAWN - colony is empty")
         _last_spawn_tick = tick  # Set after emergency spawn
         # Fall through to spawn logic below
