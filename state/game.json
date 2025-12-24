@@ -1,12 +1,12 @@
 {
-  "tick": 95750,
+  "tick": 95850,
   "resources": {
-    "dirt": 1464.6049999961992,
-    "nutrients": 656.1699999999764,
-    "fungus": 46.83999999987799,
-    "crystals": 13.672999999997394,
-    "ore": 33.625999999994356,
-    "influence": 1.4510000000002772,
+    "dirt": 1466.1049999961865,
+    "nutrients": 658.1699999999746,
+    "fungus": 46.83999999987759,
+    "crystals": 13.772999999997339,
+    "ore": 33.8259999999946,
+    "influence": 1.4400000000002784,
     "insight": 3.5999999999997145
   },
   "systems": {
@@ -98,8 +98,8 @@
       "type": "ant",
       "role": "ornamental",
       "tile": "origin",
-      "age": 300,
-      "hunger": 73.45000000000066,
+      "age": 400,
+      "hunger": 73.45000000000094,
       "hunger_rate": 0.30000000000000004,
       "max_age": 7200,
       "food": "fungus",
@@ -113,13 +113,13 @@
       "type": "ant",
       "role": "undertaker",
       "tile": "origin",
-      "age": 300,
-      "hunger": 56.72499999999871,
+      "age": 400,
+      "hunger": 71.72499999999846,
       "hunger_rate": 0.15,
       "max_age": 7200,
       "food": "fungus",
       "processing_corpse": true,
-      "processing_ticks": 75
+      "processing_ticks": 53
     }
   ],
   "map": {
@@ -251,7 +251,7 @@
     "events": []
   },
   "meta": {
-    "boredom": 4,
+    "boredom": 44,
     "recent_decisions": [],
     "estate": {
       "name": "The Listening Hill",
@@ -394,5 +394,5 @@
     ],
     "total_processed": 16
   },
-  "last_save_timestamp": 1766535944.7656739
+  "last_save_timestamp": 1766536023.1800377
 }
