@@ -1,4 +1,4 @@
-import type { GameState, Entity } from '../types/state.ts'
+import type { GameState, Entity, Decision } from '../types/state.ts'
 
 export function renderTick(state: GameState): void {
   const el = document.getElementById('tick')
@@ -270,6 +270,29 @@ export function renderGoals(state: GameState): void {
         </div>
       `
     })
+    .join('')
+}
+
+export function renderDecisions(decisions: Decision[]): void {
+  const el = document.getElementById('decisions')
+  if (!el) return
+
+  if (decisions.length === 0) {
+    el.innerHTML = '<div class="empty">no decisions logged</div>'
+    return
+  }
+
+  // Show most recent first
+  const recent = [...decisions].reverse()
+
+  el.innerHTML = recent
+    .map(d => `
+      <div class="decision-entry">
+        <div class="decision-tick">t${d.tick}<span class="decision-type">${d.type}</span></div>
+        <div class="decision-choice">${d.choice}</div>
+        ${d.why ? `<div class="decision-why">${d.why}</div>` : ''}
+      </div>
+    `)
     .join('')
 }
 
