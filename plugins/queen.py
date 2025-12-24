@@ -15,7 +15,18 @@ SPAWN_COST_FUNGUS = 10
 MIN_RESOURCES_TO_SPAWN = 15  # Safety buffer
 
 _bus = None
-_last_spawn_tick = 0
+
+
+def get_last_spawn_tick(state: dict) -> int:
+    """Get last spawn tick from persisted state."""
+    return state.get("meta", {}).get("last_queen_spawn_tick", 0)
+
+
+def set_last_spawn_tick(state: dict, tick: int):
+    """Persist last spawn tick to state."""
+    if "meta" not in state:
+        state["meta"] = {}
+    state["meta"]["last_queen_spawn_tick"] = tick
 
 
 def spawn_ant(state: dict, role: str) -> dict:
@@ -46,13 +57,12 @@ def spawn_ant(state: dict, role: str) -> dict:
 
 def check_queen_spawning(state: dict) -> dict:
     """Check if it's time to spawn new ants."""
-    global _last_spawn_tick
-
     # Don't spawn if queen chamber doesn't exist
     if "queen_chamber" not in state["systems"]:
         return state
 
     tick = state["tick"]
+    last_spawn_tick = get_last_spawn_tick(state)
     nutrients = state["resources"].get("nutrients", 0)
     fungus = state["resources"].get("fungus", 0)
 
@@ -62,15 +72,14 @@ def check_queen_spawning(state: dict) -> dict:
     # Emergency spawn if no ants alive and has resources
     if ant_count == 0 and nutrients >= MIN_RESOURCES_TO_SPAWN and fungus >= MIN_RESOURCES_TO_SPAWN:
         print("[queen] EMERGENCY SPAWN - colony is empty")
-        _last_spawn_tick = tick  # Set after emergency spawn
         # Fall through to spawn logic below
     else:
         # Check if enough time has passed
-        if _last_spawn_tick == 0:
-            _last_spawn_tick = tick  # Initialize on first run
+        if last_spawn_tick == 0:
+            set_last_spawn_tick(state, tick)  # Initialize on first run
             return state
 
-        ticks_since_spawn = tick - _last_spawn_tick
+        ticks_since_spawn = tick - last_spawn_tick
 
         if ticks_since_spawn < SPAWN_INTERVAL_TICKS:
             return state
@@ -88,7 +97,7 @@ def check_queen_spawning(state: dict) -> dict:
     state["resources"]["nutrients"] -= SPAWN_COST_NUTRIENTS
     state["resources"]["fungus"] -= SPAWN_COST_FUNGUS
 
-    _last_spawn_tick = tick
+    set_last_spawn_tick(state, tick)
 
     print(f"[queen] spawned worker and undertaker, consumed {SPAWN_COST_NUTRIENTS} nutrients and {SPAWN_COST_FUNGUS} fungus")
 

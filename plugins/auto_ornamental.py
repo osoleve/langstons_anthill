@@ -16,7 +16,18 @@ INFLUENCE_THRESHOLD = 1.8  # Create ornamental when influence is below summoning
 CRAFT_COOLDOWN = 3600  # 1 hour cooldown between auto-crafts
 
 _bus = None
-_last_craft_tick = 0
+
+
+def get_last_craft_tick(state: dict) -> int:
+    """Get last craft tick from persisted state."""
+    return state.get("meta", {}).get("last_ornamental_craft_tick", 0)
+
+
+def set_last_craft_tick(state: dict, tick: int):
+    """Persist last craft tick to state."""
+    if "meta" not in state:
+        state["meta"] = {}
+    state["meta"]["last_ornamental_craft_tick"] = tick
 
 
 def count_ornamentals(state: dict) -> int:
@@ -102,14 +113,33 @@ def adorn_ant(state: dict, ant_id: str, jewelry_index: int) -> dict:
     return state
 
 
+def cleanup_orphaned_jewelry(state: dict) -> dict:
+    """Remove jewelry worn by dead entities, making it available for re-crafting."""
+    jewelry_list = state.get("meta", {}).get("jewelry", [])
+    living_ids = {e["id"] for e in state.get("entities", [])}
+
+    orphaned_count = 0
+    for jewelry in jewelry_list:
+        worn_by = jewelry.get("worn_by")
+        if worn_by is not None and worn_by not in living_ids:
+            # Wearer is dead - mark jewelry as available (clear worn_by)
+            jewelry["worn_by"] = None
+            jewelry["worn_tick"] = None
+            orphaned_count += 1
+
+    if orphaned_count > 0:
+        print(f"[auto_ornamental] recovered {orphaned_count} piece(s) of jewelry from the dead")
+
+    return state
+
+
 def check_auto_craft(state: dict) -> dict:
     """Check if we should auto-craft and adorn an ornamental."""
-    global _last_craft_tick
-
     tick = state.get("tick", 0)
+    last_craft_tick = get_last_craft_tick(state)
 
-    # Check cooldown
-    if _last_craft_tick > 0 and (tick - _last_craft_tick) < CRAFT_COOLDOWN:
+    # Check cooldown (persisted)
+    if last_craft_tick > 0 and (tick - last_craft_tick) < CRAFT_COOLDOWN:
         return state
 
     # Check conditions
@@ -147,26 +177,34 @@ def check_auto_craft(state: dict) -> dict:
     if worker is None:
         return state
 
-    print("[auto_ornamental] conditions met - crafting ornamental")
+    print("[auto_ornamental] conditions met - creating ornamental")
     print(f"[auto_ornamental]   ore: {ore:.1f} (>{MIN_ORE_FOR_CRAFT}), ants: {ant_count} (>={MIN_ANTS_FOR_CRAFT}), influence: {influence:.3f} (<{INFLUENCE_THRESHOLD})")
 
-    # Craft jewelry
-    state = craft_copper_ring(state)
-
-    # Find the newly crafted ring (last unworn)
+    # First, check for existing unworn jewelry (recovered from dead)
     jewelry_index = None
-    for i, j in enumerate(state["meta"]["jewelry"]):
+    for i, j in enumerate(state["meta"].get("jewelry", [])):
         if j.get("worn_by") is None:
             jewelry_index = i
+            print(f"[auto_ornamental] found unworn jewelry: {j['name']} (recovered)")
+            break
+
+    # If no existing jewelry, craft new
+    if jewelry_index is None:
+        state = craft_copper_ring(state)
+        # Find the newly crafted ring
+        for i, j in enumerate(state["meta"]["jewelry"]):
+            if j.get("worn_by") is None:
+                jewelry_index = i
 
     if jewelry_index is None:
-        print("[auto_ornamental] ERROR: crafted ring not found!")
+        print("[auto_ornamental] ERROR: no jewelry available!")
         return state
 
     # Adorn the worker
     state = adorn_ant(state, worker["id"], jewelry_index)
 
-    _last_craft_tick = tick
+    # Persist the craft tick
+    set_last_craft_tick(state, tick)
 
     return state
 
@@ -181,7 +219,12 @@ def on_tick(payload: dict):
     if "crafting_hollow" not in state.get("systems", {}):
         return
 
+    # Clean up jewelry from dead ants (runs every tick, but only logs when finding orphans)
+    state = cleanup_orphaned_jewelry(state)
+
+    # Check if we should auto-craft (will also re-adorn recovered jewelry)
     state = check_auto_craft(state)
+
     save_state(state)
 
 

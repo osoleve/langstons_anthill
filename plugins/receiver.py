@@ -17,7 +17,19 @@ SUMMON_CHANCE = 0.3  # 30% chance of success per attempt
 LISTENING_DRAIN = 0.0005  # Passive influence consumption while listening
 
 _bus = None
-_last_summon_attempt = 0
+
+
+def get_last_summon_tick(state: dict) -> int:
+    """Get last summon attempt tick from persisted state."""
+    return state.get("meta", {}).get("last_summon_attempt_tick", 0)
+
+
+def set_last_summon_tick(state: dict, tick: int):
+    """Persist last summon attempt tick to state."""
+    if "meta" not in state:
+        state["meta"] = {}
+    state["meta"]["last_summon_attempt_tick"] = tick
+
 
 VISITOR_TYPES = [
     {
@@ -85,22 +97,21 @@ def spawn_visitor(state: dict, visitor_type: dict) -> dict:
 
 def attempt_summoning(state: dict) -> dict:
     """Spend influence to attempt to summon a Visitor."""
-    global _last_summon_attempt
-
     influence = state["resources"].get("influence", 0)
 
     if influence < SUMMON_COST:
         return state
 
     tick = state["tick"]
+    last_summon_attempt = get_last_summon_tick(state)
 
     # Check cooldown
-    if _last_summon_attempt > 0 and (tick - _last_summon_attempt) < SUMMON_COOLDOWN:
+    if last_summon_attempt > 0 and (tick - last_summon_attempt) < SUMMON_COOLDOWN:
         return state
 
     # Spend influence
     state["resources"]["influence"] -= SUMMON_COST
-    _last_summon_attempt = tick
+    set_last_summon_tick(state, tick)
 
     print(f"[receiver] Spent {SUMMON_COST} influence. Broadcasting into the void...")
 
