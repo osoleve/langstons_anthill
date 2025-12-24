@@ -21,14 +21,13 @@ rand_chacha = "0.3"
 thiserror = "1.0"
 
 # Python bindings (optional, for future PyO3 integration)
-# pyo3 = { version = "0.20", features = ["extension-module"], optional = true }
+pyo3 = { version = "0.20", features = ["extension-module"] }
 
 [dev-dependencies]
 pretty_assertions = "1.4"
 
 [features]
 default = []
-# python = ["pyo3"]
 
 [profile.release]
 lto = true
