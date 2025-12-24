@@ -12,6 +12,10 @@ def process_offline_progress(state_dict: dict, engine: CoreEngine) -> dict:
 
     Caps at 3600 ticks (1 hour) to prevent massive state jumps.
     """
+    # TEMPORARILY DISABLED - offline progress was destroying state
+    print("[tick] offline progress DISABLED for debugging")
+    return state_dict
+
     last_save = state_dict.get("last_save_timestamp")
     if not last_save:
         print("[tick] no previous timestamp, skipping offline progress")
@@ -71,11 +75,17 @@ def run():
     try:
         # Check if we can round-trip through Rust
         state_json = json.dumps(state_dict)
-        if not StateManager.validate(state_json):
-             print("[tick] WARNING: Loaded state is not compatible with Rust core. Starting fresh.")
+        print(f"[tick] State tick before validation: {state_dict.get('tick')}", flush=True)
+        print(f"[tick] State has {len(state_dict.get('entities', []))} entities", flush=True)
+        valid = StateManager.validate(state_json)
+        print(f"[tick] Validation result: {valid}", flush=True)
+        if not valid:
+             print("[tick] WARNING: Loaded state is not compatible with Rust core. Starting fresh.", flush=True)
              state_dict = json.loads(StateManager.create_default())
     except Exception as e:
-        print(f"[tick] ERROR loading state: {e}. Starting fresh.")
+        print(f"[tick] ERROR loading state: {e}. Starting fresh.", flush=True)
+        import traceback
+        traceback.print_exc()
         state_dict = json.loads(StateManager.create_default())
 
     # Apply offline progress

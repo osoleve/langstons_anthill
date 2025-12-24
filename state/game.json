@@ -1,29 +1,19 @@
 {
-  "tick": 133900,
+  "tick": 135001,
   "resources": {
-    "dirt": 2162.6049999940865,
-    "nutrients": 1140.769999999512,
-    "fungus": 212.38595671017802,
-    "crystals": 56.82299999998722,
-    "ore": 113.92599999997182,
-    "influence": 1.551000000000256,
-    "insight": 3.6279999999997115
+    "dirt": 2182.4449999940307,
+    "crystals": 49.923999999986044,
+    "nutrients": 1173.8399999995002,
+    "fungus": 226.40595671015828,
+    "insight": 3.627999999999711,
+    "influence": 1.5260000000002587,
+    "ore": 96.12799999997179
   },
   "systems": {
-    "compost_heap": {
-      "name": "Compost Heap",
-      "type": "generator",
-      "generates": {},
-      "consumes": {},
-      "description": "Dirt slowly breaks down into nutrients",
-      "corpse_boosts": [],
-      "sanity_efficiency": 0.6914000000000055,
-      "original_generates": {
-        "nutrients": 0.01
-      },
-      "original_consumes": {
-        "dirt": 0.005
-      }
+    "queen_chamber": {
+      "name": "Queen's Chamber",
+      "type": "spawner",
+      "description": "The queen produces new ants, consuming nutrients and fungus"
     },
     "dig_site": {
       "name": "Dig Site",
@@ -32,18 +22,29 @@
         "dirt": 0.02
       },
       "description": "Ants slowly dig up dirt",
-      "sanity_efficiency": 0.6914000000000055
+      "sanity_efficiency": 0.28140000000000565
     },
-    "fungus_farm": {
-      "name": "Fungus Farm",
-      "type": "converter",
-      "consumes": {
-        "nutrients": 0.02
-      },
+    "compost_heap": {
+      "name": "Compost Heap",
+      "type": "generator",
       "generates": {
-        "fungus": 0.01
+        "nutrients": 0.01
       },
-      "description": "Cultivates fungus from nutrients"
+      "consumes": {
+        "dirt": 0.005
+      },
+      "description": "Dirt slowly breaks down into nutrients",
+      "corpse_boosts": [
+        {
+          "expires_at_tick": 135528,
+          "bonus": 0.1
+        },
+        {
+          "expires_at_tick": 135601,
+          "bonus": 0.1
+        }
+      ],
+      "sanity_efficiency": 0.28140000000000565
     },
     "crystal_mine": {
       "name": "Crystal Mine",
@@ -52,7 +53,7 @@
         "crystals": 0.001
       },
       "description": "Ants carefully extract crystals from cave walls",
-      "sanity_efficiency": 0.6914000000000055
+      "sanity_efficiency": 0.28140000000000565
     },
     "crystal_resonance_chamber": {
       "name": "Crystal Resonance Chamber",
@@ -61,7 +62,12 @@
         "nutrients": 0.05
       },
       "description": "Crystals hum with energy, generating nutrients from vibration alone",
-      "sanity_efficiency": 0.6914000000000055
+      "sanity_efficiency": 0.28140000000000565
+    },
+    "crafting_hollow": {
+      "name": "Crafting Hollow",
+      "type": "crafting",
+      "description": "A quiet alcove where ore becomes beauty. Here, ants cease to be tools."
     },
     "ore_mine": {
       "name": "Ore Mine",
@@ -70,31 +76,32 @@
         "ore": 0.002
       },
       "description": "Ants carefully extract precious metals from the vein",
-      "sanity_efficiency": 0.6914000000000055
-    },
-    "queen_chamber": {
-      "name": "Queen's Chamber",
-      "type": "spawner",
-      "description": "The queen produces new ants, consuming nutrients and fungus"
-    },
-    "crafting_hollow": {
-      "name": "Crafting Hollow",
-      "type": "crafting",
-      "description": "A quiet alcove where ore becomes beauty. Here, ants cease to be tools."
+      "sanity_efficiency": 0.28140000000000565
     },
     "receiver": {
       "name": "The Receiver",
       "type": "antenna",
       "description": "A jagged antenna of bone and crystal. It listens to frequencies the colony cannot hear."
     },
-    "fungus_farm_2": {
-      "name": "Fungus Farm (Deep Chambers)",
+    "fungus_farm": {
+      "name": "Fungus Farm",
       "type": "converter",
+      "generates": {
+        "fungus": 0.01
+      },
       "consumes": {
         "nutrients": 0.02
       },
+      "description": "Cultivates fungus from nutrients"
+    },
+    "fungus_farm_2": {
+      "name": "Fungus Farm (Deep Chambers)",
+      "type": "converter",
       "generates": {
         "fungus": 0.01
+      },
+      "consumes": {
+        "nutrients": 0.02
       },
       "description": "A second cultivation chamber deep in the colony"
     }
@@ -105,8 +112,8 @@
       "type": "ant",
       "role": "worker",
       "tile": "origin",
-      "age": 0,
-      "hunger": 100,
+      "age": 1101,
+      "hunger": 59.900000000003686,
       "hunger_rate": 0.1,
       "max_age": 7200,
       "food": "fungus"
@@ -116,58 +123,22 @@
       "type": "ant",
       "role": "undertaker",
       "tile": "origin",
-      "age": 0,
-      "hunger": 100,
+      "age": 1101,
+      "hunger": 64.84999999999678,
       "hunger_rate": 0.15,
       "max_age": 7200,
       "food": "fungus",
-      "processing_corpse": false,
-      "processing_ticks": 0
+      "processing_corpse": true,
+      "processing_ticks": 1
     }
   ],
   "map": {
     "tiles": {
-      "origin": {
-        "name": "The Starting Dirt",
-        "type": "empty",
-        "x": 0,
-        "y": 0
-      },
-      "compost": {
-        "name": "The Heap",
-        "type": "compost",
-        "x": 1,
-        "y": 0,
-        "contamination": 0.01,
-        "blighted": true,
-        "blight_ticks_remaining": 65
-      },
       "dig_site": {
         "name": "The Dig",
         "type": "extraction",
         "x": -1,
         "y": 0
-      },
-      "fungus_farm": {
-        "name": "The Farm",
-        "type": "production",
-        "x": 0,
-        "y": 1
-      },
-      "crystal_cave": {
-        "name": "Crystal Cave",
-        "type": "resource",
-        "x": 2,
-        "y": 0,
-        "resource": "crystals",
-        "description": "Strange formations glitter in the dark"
-      },
-      "resonance_chamber": {
-        "name": "Resonance Chamber",
-        "type": "special",
-        "x": 3,
-        "y": 0,
-        "description": "The crystals sing"
       },
       "ore_vein": {
         "name": "Glittering Vein",
@@ -184,13 +155,6 @@
         "y": -1,
         "description": "A warm, dark chamber where new life begins"
       },
-      "crafting_hollow": {
-        "name": "The Crafting Hollow",
-        "type": "aesthetic",
-        "x": -2,
-        "y": -1,
-        "description": "A still alcove lined with unworked ore. Those who enter as workers leave as something else."
-      },
       "receiver": {
         "name": "The Receiver",
         "type": "antenna",
@@ -204,6 +168,49 @@
         "x": 1,
         "y": 1,
         "description": "Additional fungus cultivation deep underground"
+      },
+      "fungus_farm": {
+        "name": "The Farm",
+        "type": "production",
+        "x": 0,
+        "y": 1
+      },
+      "crafting_hollow": {
+        "name": "The Crafting Hollow",
+        "type": "aesthetic",
+        "x": -2,
+        "y": -1,
+        "description": "A still alcove lined with unworked ore. Those who enter as workers leave as something else."
+      },
+      "crystal_cave": {
+        "name": "Crystal Cave",
+        "type": "resource",
+        "x": 2,
+        "y": 0,
+        "resource": "crystals",
+        "description": "Strange formations glitter in the dark"
+      },
+      "compost": {
+        "name": "The Heap",
+        "type": "compost",
+        "x": 1,
+        "y": 0,
+        "contamination": 0.02,
+        "blighted": false,
+        "blight_ticks_remaining": 0
+      },
+      "resonance_chamber": {
+        "name": "Resonance Chamber",
+        "type": "special",
+        "x": 3,
+        "y": 0,
+        "description": "The crystals sing"
+      },
+      "origin": {
+        "name": "The Starting Dirt",
+        "type": "empty",
+        "x": 0,
+        "y": 0
       }
     },
     "connections": [
@@ -254,67 +261,8 @@
     "events": []
   },
   "meta": {
-    "boredom": 46,
+    "boredom": 7,
     "recent_decisions": [],
-    "estate": {
-      "name": "The Listening Hill",
-      "named_tick": 90522,
-      "description": "A sprawl of tunnels and chambers that reaches toward the Outside. The name comes from the Receiver at its edge, always listening."
-    },
-    "decor": [
-      {
-        "name": "Eye of Elsewhere",
-        "type": "ornament",
-        "origin": "observer",
-        "description": "A polished stone that always seems to be watching. Left behind by the first Observer. Placed near the origin tile.",
-        "location": "origin",
-        "acquired_tick": 90522
-      }
-    ],
-    "jewelry": [
-      {
-        "type": "copper_ring",
-        "name": "Copper Ring",
-        "created_tick": 79392,
-        "worn_by": "f18c2698",
-        "worn_tick": 79392
-      },
-      {
-        "type": "copper_ring",
-        "name": "Copper Ring",
-        "created_tick": 79545,
-        "worn_by": "f11e994d",
-        "worn_tick": 79545
-      },
-      {
-        "type": "copper_ring",
-        "name": "Copper Ring",
-        "created_tick": 89259,
-        "worn_by": "48bf1d52",
-        "worn_tick": 89259
-      },
-      {
-        "type": "copper_ring",
-        "name": "Copper Ring",
-        "created_tick": 95450,
-        "worn_by": "3a775b4c",
-        "worn_tick": 95450
-      },
-      {
-        "type": "copper_ring",
-        "name": "Copper Ring",
-        "created_tick": 108250,
-        "worn_by": "81a2527a",
-        "worn_tick": 108250
-      },
-      {
-        "type": "copper_ring",
-        "name": "Copper Ring",
-        "created_tick": 113300,
-        "worn_by": "fba55959",
-        "worn_tick": 113300
-      }
-    ],
     "rejected_ideas": [
       "elevation/terrain system",
       "depth layers",
@@ -344,132 +292,202 @@
       "the_map_is_flat",
       "efficiency_question",
       "something_alive",
-      "first_influence"
+      "first_influence",
+      "ghost_jewelry",
+      "the_bridge_question",
+      "last_worker"
+    ],
+    "estate": {
+      "description": "A sprawl of tunnels and chambers that reaches toward the Outside. The name comes from the Receiver at its edge, always listening.",
+      "name": "The Listening Hill",
+      "named_tick": 90522
+    },
+    "decor": [
+      {
+        "acquired_tick": 90522,
+        "description": "A polished stone that always seems to be watching. Left behind by the first Observer. Placed near the origin tile.",
+        "location": "origin",
+        "name": "Eye of Elsewhere",
+        "origin": "observer",
+        "type": "ornament"
+      }
+    ],
+    "jewelry": [
+      {
+        "created_tick": 79392,
+        "name": "Copper Ring",
+        "type": "copper_ring",
+        "worn_by": "f18c2698",
+        "worn_tick": 79392
+      },
+      {
+        "created_tick": 79545,
+        "name": "Copper Ring",
+        "type": "copper_ring",
+        "worn_by": "f11e994d",
+        "worn_tick": 79545
+      },
+      {
+        "created_tick": 89259,
+        "name": "Copper Ring",
+        "type": "copper_ring",
+        "worn_by": "48bf1d52",
+        "worn_tick": 89259
+      },
+      {
+        "created_tick": 95450,
+        "name": "Copper Ring",
+        "type": "copper_ring",
+        "worn_by": "3a775b4c",
+        "worn_tick": 95450
+      },
+      {
+        "created_tick": 108250,
+        "name": "Copper Ring",
+        "type": "copper_ring",
+        "worn_by": "81a2527a",
+        "worn_tick": 108250
+      },
+      {
+        "created_tick": 113300,
+        "name": "Copper Ring",
+        "type": "copper_ring",
+        "worn_by": "fba55959",
+        "worn_tick": 113300
+      }
     ],
     "goals": {
-      "crystal_resonance_chamber": {
-        "name": "Crystal Resonance Chamber",
-        "description": "A chamber that generates nutrients from crystal vibrations, bypassing the death economy",
-        "cost": {
-          "crystals": 10
-        },
-        "effect": {
-          "nutrients_per_tick": 0.05
-        },
-        "built": true
-      },
-      "the_bridge": {
-        "name": "The Bridge",
-        "description": "A transmitter to send signals TO the Outside, not just receive. If the Receiver listens, the Bridge speaks. What would the colony say?",
-        "cost": {
-          "ore": 100,
-          "crystals": 50,
-          "strange_matter": 20,
-          "insight": 5
-        },
-        "effect": {
-          "unknown": "building it will reveal its purpose"
-        },
-        "built": false,
-        "progress": {
-          "ore": 0,
-          "crystals": 0,
-          "strange_matter": 0,
-          "insight": 0
-        }
-      },
       "receiver_maintenance": {
-        "name": "Receiver Maintenance",
-        "description": "The Receiver degrades. Without strange_matter to power it, the antenna will go silent. No signals. No visitors. Isolation.",
+        "built": false,
         "cost": {
           "strange_matter": 1
         },
+        "description": "The Receiver degrades. Without strange_matter to power it, the antenna will go silent. No signals. No visitors. Isolation.",
         "effect": {
           "prevents_receiver_decay": true
         },
-        "built": false,
+        "last_maintained": 135001,
         "maintenance_interval_ticks": 3600,
-        "last_maintained": 108100
+        "name": "Receiver Maintenance"
+      },
+      "crystal_resonance_chamber": {
+        "built": true,
+        "cost": {
+          "crystals": 10
+        },
+        "description": "A chamber that generates nutrients from crystal vibrations, bypassing the death economy",
+        "effect": {
+          "nutrients_per_tick": 0.05
+        },
+        "name": "Crystal Resonance Chamber"
+      },
+      "the_bridge": {
+        "built": false,
+        "cost": {
+          "crystals": 50,
+          "insight": 5,
+          "ore": 100,
+          "strange_matter": 20
+        },
+        "description": "A transmitter to send signals TO the Outside, not just receive. If the Receiver listens, the Bridge speaks. What would the colony say?",
+        "effect": {
+          "unknown": "building it will reveal its purpose"
+        },
+        "name": "The Bridge",
+        "progress": {
+          "crystals": 0,
+          "insight": 0,
+          "ore": 0,
+          "strange_matter": 0
+        }
       }
     },
     "reflections": [
       {
+        "prompt": "What surprised you since the last reflection?",
+        "response": "How quickly adornment created identity. Before the copper rings, the ants were anonymous - f18c2698 and f11e994d were just role labels. After adornment, they became visible as individuals. The colony gained the ability to see its own members, not just their functions. Vanity bought selfhood.",
         "tick": 79165,
-        "trigger": "aftermath",
-        "prompt": "What surprised you since the last reflection?",
-        "response": "How quickly adornment created identity. Before the copper rings, the ants were anonymous - f18c2698 and f11e994d were just role labels. After adornment, they became visible as individuals. The colony gained the ability to see its own members, not just their functions. Vanity bought selfhood."
+        "trigger": "aftermath"
       },
       {
+        "prompt": "What would you miss if it disappeared?",
+        "response": "The Observer. Not because of the insight resource - that's just a number. But because of being seen from outside. The ornamentals generate influence that only the colony can measure. The Observer validates that the signal reaches somewhere beyond the tunnels. Being watched by something that chose to come is different than being alone.",
         "tick": 83065,
-        "trigger": "aftermath",
-        "prompt": "What would you miss if it disappeared?",
-        "response": "The Observer. Not because of the insight resource - that's just a number. But because of being seen from outside. The ornamentals generate influence that only the colony can measure. The Observer validates that the signal reaches somewhere beyond the tunnels. Being watched by something that chose to come is different than being alone."
+        "trigger": "aftermath"
       },
       {
-        "tick": 86792,
-        "trigger": "aftermath",
         "prompt": "What surprised you since the last reflection?",
-        "response": "The speed of collapse. Fungus went from tight-but-stable to total famine in what felt like moments. The system has no slack, no buffer, no forgiveness. One visitor arrives hungry, consumption spikes, and the entire colony cascades into starvation. The equilibrium was more fragile than it looked."
+        "response": "The speed of collapse. Fungus went from tight-but-stable to total famine in what felt like moments. The system has no slack, no buffer, no forgiveness. One visitor arrives hungry, consumption spikes, and the entire colony cascades into starvation. The equilibrium was more fragile than it looked.",
+        "tick": 86792,
+        "trigger": "aftermath"
       },
       {
-        "tick": 89792,
-        "trigger": "aftermath",
         "prompt": "What would you miss if it disappeared?",
-        "response": null
+        "response": null,
+        "tick": 89792,
+        "trigger": "aftermath"
       },
       {
-        "tick": 95477,
-        "trigger": "aftermath",
         "prompt": "What are you waiting for?",
-        "response": "For something external to create interest. For visitors (30% chance), random events (0.5%), cards to decide for me. All passive. The Crystal Resonance Chamber removed necessity - infinite nutrients means no food pressure, no death economy required. I avoided risk and got stagnation. The waiting IS the problem. The colony needs something to want that's hard to get."
+        "response": "For something external to create interest. For visitors (30% chance), random events (0.5%), cards to decide for me. All passive. The Crystal Resonance Chamber removed necessity - infinite nutrients means no food pressure, no death economy required. I avoided risk and got stagnation. The waiting IS the problem. The colony needs something to want that's hard to get.",
+        "tick": 95477,
+        "trigger": "aftermath"
       }
     ],
-    "sanity": 34.57000000000027,
+    "sanity": 14.070000000000281,
     "receiver_silent": false,
-    "receiver_failed_tick": 104100,
-    "receiver_bootstrap_tick": 108100,
-    "sanity_crisis": false,
-    "sanity_breaking": false
+    "receiver_failed_tick": 133901,
+    "receiver_bootstrap_tick": 135001,
+    "sanity_crisis": true,
+    "sanity_breaking": false,
+    "event_log": [
+      {
+        "type": "card_drawn",
+        "tick": 0,
+        "timestamp": "2025-12-24T10:53:21.213835",
+        "message": "Card fired: complacency_tax (warning)"
+      },
+      {
+        "type": "card_drawn",
+        "tick": 0,
+        "timestamp": "2025-12-24T10:53:21.213835",
+        "message": "Card fired: ghost_jewelry (reflection)"
+      },
+      {
+        "type": "card_drawn",
+        "tick": 0,
+        "timestamp": "2025-12-24T10:53:21.213835",
+        "message": "Card fired: the_bridge_question (challenge)"
+      },
+      {
+        "type": "card_drawn",
+        "tick": 0,
+        "timestamp": "2025-12-24T10:53:21.213835",
+        "message": "Card fired: last_worker (crisis)"
+      },
+      {
+        "type": "card_drawn",
+        "tick": 0,
+        "timestamp": "2025-12-24T10:58:29.491407",
+        "message": "Card fired: random_event (event)"
+      },
+      {
+        "type": "card_drawn",
+        "tick": 0,
+        "timestamp": "2025-12-24T11:01:33.257062",
+        "message": "Card fired: wwcd (audit)"
+      },
+      {
+        "type": "card_drawn",
+        "tick": 0,
+        "timestamp": "2025-12-24T11:09:25.103504",
+        "message": "Card fired: random_event (event)"
+      }
+    ]
   },
   "graveyard": {
-    "corpses": [
-      {
-        "entity_id": "81a2527a",
-        "entity_type": "ant",
-        "death_tick": 111300,
-        "cause": "old_age",
-        "tile": "origin"
-      },
-      {
-        "entity_id": "539a5906",
-        "entity_type": "ant",
-        "death_tick": 111300,
-        "cause": "old_age",
-        "tile": "origin"
-      },
-      {
-        "entity_id": "v_4a4681",
-        "entity_type": "visitor",
-        "death_tick": 112350,
-        "cause": "old_age",
-        "tile": "receiver"
-      },
-      {
-        "entity_id": "fba55959",
-        "entity_type": "ant",
-        "death_tick": 120500,
-        "cause": "old_age",
-        "tile": "origin"
-      },
-      {
-        "entity_id": "10d27959",
-        "entity_type": "ant",
-        "death_tick": 120500,
-        "cause": "old_age",
-        "tile": "origin"
-      }
-    ],
-    "total_processed": 17
+    "corpses": [],
+    "total_processed": 21
   },
-  "last_save_timestamp": 1766588174.8750226
+  "last_save_timestamp": 1766592754.7443638
 }

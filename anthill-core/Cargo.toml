@@ -6,6 +6,7 @@ description = "The immutable core of Langston's Anthill - tick engine, state man
 license = "MIT"
 
 [lib]
+name = "anthill_core"
 crate-type = ["cdylib", "rlib"]
 
 [dependencies]
