@@ -1,12 +1,12 @@
 {
-  "tick": 101950,
+  "tick": 104050,
   "resources": {
-    "dirt": 1557.6049999954098,
-    "nutrients": 783.2699999998644,
-    "fungus": 75.78159999995431,
-    "crystals": 19.873000000000836,
-    "ore": 51.02600000000951,
-    "influence": 1.4960000000002722,
+    "dirt": 1589.1049999951424,
+    "nutrients": 815.2699999998262,
+    "fungus": 100.7815999999758,
+    "crystals": 21.973000000003402,
+    "ore": 55.22600000001464,
+    "influence": 1.9935000000002725,
     "insight": 3.5999999999997145
   },
   "systems": {
@@ -94,32 +94,28 @@
   },
   "entities": [
     {
-      "id": "3a775b4c",
+      "id": "de32863f",
       "type": "ant",
-      "role": "ornamental",
+      "role": "worker",
       "tile": "origin",
-      "age": 6500,
-      "hunger": 62.34999999999518,
-      "hunger_rate": 0.30000000000000004,
+      "age": 0,
+      "hunger": 100,
+      "hunger_rate": 0.1,
       "max_age": 7200,
-      "food": "fungus",
-      "adorned": true,
-      "ornament": "copper_ring",
-      "previous_role": "worker",
-      "influence_rate": 0.001
+      "food": "fungus"
     },
     {
-      "id": "f546cd02",
+      "id": "f28519e0",
       "type": "ant",
       "role": "undertaker",
       "tile": "origin",
-      "age": 6500,
-      "hunger": 66.17499999998186,
+      "age": 0,
+      "hunger": 100,
       "hunger_rate": 0.15,
       "max_age": 7200,
       "food": "fungus",
-      "processing_corpse": true,
-      "processing_ticks": 44
+      "processing_corpse": false,
+      "processing_ticks": 0
     }
   ],
   "map": {
@@ -251,7 +247,7 @@
     "events": []
   },
   "meta": {
-    "boredom": 55,
+    "boredom": 38,
     "recent_decisions": [],
     "estate": {
       "name": "The Listening Hill",
@@ -413,11 +409,14 @@
         "prompt": "What are you waiting for?",
         "response": "For something external to create interest. For visitors (30% chance), random events (0.5%), cards to decide for me. All passive. The Crystal Resonance Chamber removed necessity - infinite nutrients means no food pressure, no death economy required. I avoided risk and got stagnation. The waiting IS the problem. The colony needs something to want that's hard to get."
       }
-    ]
+    ],
+    "sanity": 77.03999999999976,
+    "receiver_silent": true,
+    "receiver_failed_tick": 104050
   },
   "graveyard": {
     "corpses": [],
     "total_processed": 17
   },
-  "last_save_timestamp": 1766542240.0545871
+  "last_save_timestamp": 1766544382.2852283
 }
