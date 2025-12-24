@@ -6,7 +6,7 @@
     "fungus": 46.83999999987759,
     "crystals": 13.772999999997339,
     "ore": 33.8259999999946,
-    "influence": 1.4400000000002784,
+    "influence": 1.452000000000277,
     "insight": 3.5999999999997145
   },
   "systems": {
@@ -119,7 +119,7 @@
       "max_age": 7200,
       "food": "fungus",
       "processing_corpse": true,
-      "processing_ticks": 53
+      "processing_ticks": 77
     }
   ],
   "map": {
@@ -394,5 +394,5 @@
     ],
     "total_processed": 16
   },
-  "last_save_timestamp": 1766536023.1800377
+  "last_save_timestamp": 1766536047.3021066
 }
