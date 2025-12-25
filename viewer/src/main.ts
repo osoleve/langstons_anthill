@@ -38,6 +38,22 @@ class App {
 
     this.sse.onConnection((connected) => {
       console.log(`[App] Connection: ${connected ? 'online' : 'offline'}`)
+      const el = document.getElementById('connection')
+      if (el) {
+        if (connected) {
+          el.className = 'connected'
+          const label = 'Server connection: Online'
+          el.setAttribute('title', label)
+          el.setAttribute('aria-label', label)
+          el.innerHTML = '<span class="sr-only">Online</span>'
+        } else {
+          el.className = 'disconnected'
+          const label = 'Server connection: Offline'
+          el.setAttribute('title', label)
+          el.setAttribute('aria-label', label)
+          el.innerHTML = '<span class="sr-only">Offline</span>'
+        }
+      }
     })
   }
 
