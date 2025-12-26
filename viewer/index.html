@@ -30,15 +30,23 @@
       position: fixed;
       top: 15px;
       right: 15px;
-      width: 8px;
-      height: 8px;
+      width: 12px;
+      height: 12px;
       border-radius: 50%;
       background: #333;
-      transition: background 0.3s;
+      transition: background 0.3s, box-shadow 0.3s;
+      cursor: help;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    #connection:focus-visible {
+      outline: 2px solid white;
+      outline-offset: 2px;
     }
 
     #connection.connected {
       background: #4a8;
+      box-shadow: 0 0 10px rgba(68, 170, 136, 0.4);
     }
 
     #connection.disconnected {
@@ -50,11 +58,32 @@
       0%, 100% { opacity: 1; }
       50% { opacity: 0.4; }
     }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border-width: 0;
+    }
   </style>
 </head>
 <body>
   <canvas id="canvas"></canvas>
-  <div id="connection" title="Server connection"></div>
+  <div
+    id="connection"
+    role="status"
+    aria-live="polite"
+    aria-label="Server connection: Connecting"
+    title="Server connection: Connecting"
+    tabindex="0"
+  >
+    <span class="sr-only">Connecting</span>
+  </div>
   <script type="module" src="/src/main.ts"></script>
 </body>
 </html>
